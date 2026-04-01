@@ -6,10 +6,10 @@ const api = axios.create({ baseURL: BASE })
 
 // ── Vendas ──────────────────────────────────────────────
 export const getVendas = (params = {}) =>
-  api.get('/vendas', { params }).then(r => r.data)
+  api.get('/vendas/', { params }).then(r => r.data)
 
 export const criarVenda = (body) =>
-  api.post('/vendas', body).then(r => r.data)
+  api.post('/vendas/', body).then(r => r.data)
 
 export const editarVenda = (id, body) =>
   api.put(`/vendas/${id}`, body).then(r => r.data)
