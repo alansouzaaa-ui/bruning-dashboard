@@ -19,7 +19,9 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://localhost:3000",
-        "https://*.vercel.app",      # substitua pelo seu domínio real depois
+        "https://*.vercel.app",
+        "https://frontend-neon-sigma-71.vercel.app",
+        "https://frontend-qkhc6o3y7-alansouzaaa-uis-projects.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
