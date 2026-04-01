@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric, Date, Text, DateTime
+from sqlalchemy import Column, Integer, BigInteger, String, Numeric, Date, Text, DateTime
 from sqlalchemy.sql import func
 from database import Base
 
@@ -6,7 +6,7 @@ from database import Base
 class Venda(Base):
     __tablename__ = "vendas"
 
-    id         = Column(Integer, primary_key=True, index=True)
+    id         = Column(BigInteger, primary_key=True, index=True)
     data       = Column(Date, nullable=False)
     cod        = Column(String(20), nullable=True)
     cliente    = Column(String(200), nullable=False)
