@@ -128,7 +128,7 @@ def _avaliar(trimestre: str, db: Session) -> AvaliacaoOut:
 
     at_mrr  = round((realizado_mrr  / meta_mrr)  * 100, 1) if meta_mrr  > 0 else 0
     at_ades = round((realizado_ades / meta_ades) * 100, 1) if meta_ades > 0 else 0
-    at_geral = round((at_mrr + at_ades) / 2, 1)
+    at_geral = at_mrr  # nível de performance baseado apenas no MRR
 
     nivel = calcular_nivel(at_geral)
 
