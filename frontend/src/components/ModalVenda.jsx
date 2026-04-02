@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { criarVenda, editarVenda, buscarCNPJ } from '../api'
+import { useToast } from './Toast'
 import styles from './ModalVenda.module.css'
 
 const EMPTY = {
@@ -15,6 +16,7 @@ export default function ModalVenda({ venda, onClose }) {
   const [cnpjLoading, setCnpjLoading] = useState(false)
   const [showChurn, setShowChurn] = useState(false)
   const qc = useQueryClient()
+  const toast = useToast()
 
   useEffect(() => {
     if (venda) {
@@ -41,16 +43,32 @@ export default function ModalVenda({ venda, onClose }) {
     setShowChurn(form.status === 'Cancelado')
   }, [form.status])
 
-  const invalidate = () => {
+  function invalidateQueries() {
     qc.invalidateQueries({ queryKey: ['vendas'] })
     qc.invalidateQueries({ queryKey: ['kpis'] })
     qc.invalidateQueries({ queryKey: ['comparativo'] })
     qc.invalidateQueries({ queryKey: ['meses'] })
-    onClose()
   }
 
-  const criar = useMutation({ mutationFn: criarVenda, onSuccess: invalidate })
-  const editar = useMutation({ mutationFn: ({ id, body }) => editarVenda(id, body), onSuccess: invalidate })
+  const criar = useMutation({
+    mutationFn: criarVenda,
+    onSuccess: () => {
+      invalidateQueries()
+      toast('Venda criada com sucesso!')
+      onClose()
+    },
+    onError: () => toast('Erro ao criar venda.', 'error'),
+  })
+
+  const editar = useMutation({
+    mutationFn: ({ id, body }) => editarVenda(id, body),
+    onSuccess: () => {
+      invalidateQueries()
+      toast('Venda atualizada!')
+      onClose()
+    },
+    onError: () => toast('Erro ao atualizar venda.', 'error'),
+  })
 
   function set(field, value) {
     setForm(f => ({ ...f, [field]: value }))

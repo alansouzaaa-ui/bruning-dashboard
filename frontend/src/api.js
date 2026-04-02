@@ -1,8 +1,12 @@
 import axios from 'axios'
 
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const BASE    = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+const API_KEY = import.meta.env.VITE_API_KEY || 'bruning-dashboard-2026'
 
-const api = axios.create({ baseURL: BASE })
+const api = axios.create({
+  baseURL: BASE,
+  headers: { Authorization: `Bearer ${API_KEY}` },
+})
 
 // ── Vendas ──────────────────────────────────────────────
 export const getVendas = (params = {}) =>
@@ -28,13 +32,20 @@ export const getMeses = () =>
 
 // ── Comissões ────────────────────────────────────────────
 export const getComissoes = () =>
-  api.get('/comissoes').then(r => r.data)
+  api.get('/comissoes/').then(r => r.data)
 
 export const criarComissao = (body) =>
-  api.post('/comissoes', body).then(r => r.data)
+  api.post('/comissoes/', body).then(r => r.data)
 
 export const excluirComissao = (id) =>
   api.delete(`/comissoes/${id}`)
+
+// ── Configurações / Metas ────────────────────────────────
+export const getMetas = () =>
+  api.get('/configs/metas').then(r => r.data)
+
+export const updateMetas = (body) =>
+  api.put('/configs/metas', body).then(r => r.data)
 
 // ── BrasilAPI ────────────────────────────────────────────
 export const buscarCNPJ = (cnpj) => {

@@ -1,8 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import engine, Base
-from routers import vendas, comissoes
+from routers import vendas, comissoes, configs
+from auth import verify_token
 
 # Cria as tabelas no banco ao iniciar
 Base.metadata.create_all(bind=engine)
@@ -13,23 +14,23 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS — permite o React (localhost:5173) e o domínio do Vercel chamar a API
+# CORS — domínio do Vercel e localhost dev
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
         "http://localhost:3000",
         "https://*.vercel.app",
-        "https://frontend-neon-sigma-71.vercel.app",
-        "https://frontend-qkhc6o3y7-alansouzaaa-uis-projects.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(vendas.router)
-app.include_router(comissoes.router)
+# Todos os routers exigem token
+app.include_router(vendas.router,    dependencies=[Depends(verify_token)])
+app.include_router(comissoes.router, dependencies=[Depends(verify_token)])
+app.include_router(configs.router,   dependencies=[Depends(verify_token)])
 
 
 @app.get("/")

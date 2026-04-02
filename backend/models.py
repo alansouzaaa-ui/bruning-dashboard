@@ -3,6 +3,13 @@ from sqlalchemy.sql import func
 from database import Base
 
 
+class AppConfig(Base):
+    __tablename__ = "configs"
+
+    chave = Column(String(50), primary_key=True)
+    valor = Column(Text, nullable=False)
+
+
 class Venda(Base):
     __tablename__ = "vendas"
 

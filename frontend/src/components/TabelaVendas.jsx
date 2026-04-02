@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getVendas, excluirVenda } from '../api'
+import { useToast } from './Toast'
 import styles from './TabelaVendas.module.css'
 
 const fmt = (v) =>
@@ -20,6 +21,7 @@ export default function TabelaVendas({ mes, onEditar }) {
   const [busca, setBusca] = useState('')
   const [statusFiltro, setStatusFiltro] = useState('')
   const qc = useQueryClient()
+  const toast = useToast()
 
   const { data: vendas = [], isLoading } = useQuery({
     queryKey: ['vendas', mes, statusFiltro],
@@ -33,7 +35,9 @@ export default function TabelaVendas({ mes, onEditar }) {
       qc.invalidateQueries({ queryKey: ['kpis'] })
       qc.invalidateQueries({ queryKey: ['comparativo'] })
       qc.invalidateQueries({ queryKey: ['meses'] })
+      toast('Venda excluída.')
     },
+    onError: () => toast('Erro ao excluir venda.', 'error'),
   })
 
   function handleDelete(id, cliente) {

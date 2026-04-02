@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getComissoes, criarComissao, excluirComissao } from '../api'
+import { useToast } from './Toast'
 import styles from './ComissoesPanel.module.css'
 
 const fmt = (v) =>
@@ -11,6 +12,7 @@ const EMPTY_FORM = { mes: '', comis_mrr: '', comis_ades: '', total_pago: '', obs
 export default function ComissoesPanel() {
   const [form, setForm] = useState(EMPTY_FORM)
   const qc = useQueryClient()
+  const toast = useToast()
 
   const { data: comissoes = [], isLoading } = useQuery({
     queryKey: ['comissoes'],
@@ -22,12 +24,18 @@ export default function ComissoesPanel() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['comissoes'] })
       setForm(EMPTY_FORM)
+      toast('Comissão registrada!')
     },
+    onError: () => toast('Erro ao registrar comissão.', 'error'),
   })
 
   const excluir = useMutation({
     mutationFn: excluirComissao,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['comissoes'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['comissoes'] })
+      toast('Comissão excluída.')
+    },
+    onError: () => toast('Erro ao excluir comissão.', 'error'),
   })
 
   function set(field, value) {

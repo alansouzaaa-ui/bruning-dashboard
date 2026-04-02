@@ -79,3 +79,15 @@ class ComparativoMes(BaseModel):
     mrr:   Decimal
     adesao: Decimal
     vendas: int
+
+
+# ── Configs / Metas ─────────────────────────────────────
+
+class MetasOut(BaseModel):
+    meta_mrr:  float
+    meta_ades: float
+
+
+class MetasIn(BaseModel):
+    meta_mrr:  float
+    meta_ades: float
