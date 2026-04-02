@@ -91,3 +91,36 @@ class MetasOut(BaseModel):
 class MetasIn(BaseModel):
     meta_mrr:  float
     meta_ades: float
+
+
+# ── Avaliação Trimestral ────────────────────────────────
+
+class MetaTrimestralIn(BaseModel):
+    trimestre: str   # '2026-Q1'
+    meta_mrr:  float
+    meta_ades: float
+
+
+class NivelPerformance(BaseModel):
+    codigo:      str    # 'excelente' | 'otimo' | 'satisfatorio' | 'repescagem' | 'atencao'
+    label:       str
+    faixa:       str    # '95%–100%+'
+    acao:        str
+    prazo:       str
+    meta_plano:  str
+    consequencia: str
+    cor:         str    # '#22c55e' etc
+
+
+class AvaliacaoOut(BaseModel):
+    trimestre:     str
+    label:         str        # 'Q1 2026'
+    meta_mrr:      float
+    meta_ades:     float
+    realizado_mrr: float
+    realizado_ades: float
+    atingimento_mrr:  float   # percentual 0-100+
+    atingimento_ades: float
+    atingimento_geral: float  # média ponderada
+    nivel:         NivelPerformance
+    meses:         list       # meses do trimestre

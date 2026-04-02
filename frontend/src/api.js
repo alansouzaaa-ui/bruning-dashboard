@@ -47,6 +47,26 @@ export const getMetas = () =>
 export const updateMetas = (body) =>
   api.put('/configs/metas', body).then(r => r.data)
 
+// ── Avaliação Trimestral ─────────────────────────────────
+export const getAvaliacaoAtual = () =>
+  api.get('/trimestral/atual').then(r => r.data)
+
+export const getHistoricoTrimestral = () =>
+  api.get('/trimestral/historico').then(r => r.data)
+
+export const salvarMetaTrimestral = (body) =>
+  api.put('/trimestral/meta', body).then(r => r.data)
+
+// ── CRM / Nectar ─────────────────────────────────────────
+export const getCRMStatus = () =>
+  api.get('/crm/status').then(r => r.data)
+
+export const getCRMFunil = (mes) =>
+  api.get('/crm/funil', { params: mes ? { mes } : {} }).then(r => r.data)
+
+export const getCRMKpis = (mes) =>
+  api.get('/crm/kpis', { params: mes ? { mes } : {} }).then(r => r.data)
+
 // ── BrasilAPI ────────────────────────────────────────────
 export const buscarCNPJ = (cnpj) => {
   const limpo = cnpj.replace(/\D/g, '')

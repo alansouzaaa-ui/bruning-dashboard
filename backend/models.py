@@ -10,6 +10,15 @@ class AppConfig(Base):
     valor = Column(Text, nullable=False)
 
 
+class MetaTrimestral(Base):
+    __tablename__ = "metas_trimestrais"
+
+    id         = Column(Integer, primary_key=True, index=True)
+    trimestre  = Column(String(7), nullable=False, unique=True)  # '2026-Q1'
+    meta_mrr   = Column(Numeric(10, 2), default=0)
+    meta_ades  = Column(Numeric(10, 2), default=0)
+
+
 class Venda(Base):
     __tablename__ = "vendas"
 

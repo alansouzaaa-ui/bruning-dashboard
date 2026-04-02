@@ -9,11 +9,13 @@ import ComparativoChart from './components/ComparativoChart'
 import TabelaVendas from './components/TabelaVendas'
 import ModalVenda from './components/ModalVenda'
 import ComissoesPanel from './components/ComissoesPanel'
+import AvaliacaoTrimestral from './components/AvaliacaoTrimestral'
+import CRMPanel from './components/CRMPanel'
 import './App.css'
 
 export default function App() {
   const [mesFiltro, setMesFiltro] = useState('')
-  const [aba, setAba] = useState('dashboard') // 'dashboard' | 'comissoes'
+  const [aba, setAba] = useState('dashboard')
   const [modalAberto, setModalAberto] = useState(false)
   const [vendaEditar, setVendaEditar] = useState(null)
 
@@ -63,6 +65,18 @@ export default function App() {
         {aba === 'comissoes' && (
           <main className="main">
             <ComissoesPanel />
+          </main>
+        )}
+
+        {aba === 'trimestral' && (
+          <main className="main">
+            <AvaliacaoTrimestral />
+          </main>
+        )}
+
+        {aba === 'crm' && (
+          <main className="main">
+            <CRMPanel mes={mesFiltro} />
           </main>
         )}
 

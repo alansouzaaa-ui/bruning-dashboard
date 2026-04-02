@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import engine, Base
-from routers import vendas, comissoes, configs
+from routers import vendas, comissoes, configs, trimestral, crm
 from auth import verify_token
 
 # Cria as tabelas no banco ao iniciar
@@ -29,9 +29,11 @@ app.add_middleware(
 )
 
 # Todos os routers exigem token
-app.include_router(vendas.router,    dependencies=[Depends(verify_token)])
-app.include_router(comissoes.router, dependencies=[Depends(verify_token)])
-app.include_router(configs.router,   dependencies=[Depends(verify_token)])
+app.include_router(vendas.router,      dependencies=[Depends(verify_token)])
+app.include_router(comissoes.router,   dependencies=[Depends(verify_token)])
+app.include_router(configs.router,     dependencies=[Depends(verify_token)])
+app.include_router(trimestral.router,  dependencies=[Depends(verify_token)])
+app.include_router(crm.router,         dependencies=[Depends(verify_token)])
 
 
 @app.get("/")

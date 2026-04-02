@@ -1,0 +1,291 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.atualWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.atualHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.titulo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.editBtn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+.editBtn:hover { color: var(--text); border-color: var(--accent); }
+
+/* Card de avaliação */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.destaque {
+  border-color: var(--accent);
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cardLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.cardMeses {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.nivelBadge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.atingimentoGeral {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.atingimentoNum {
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.atingimentoSub {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.metricas {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.metrica {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.metricaHeader {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.barWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bar {
+  flex: 1;
+  height: 8px;
+  background: var(--surface2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 99px;
+  transition: width .4s ease;
+}
+
+.barPct {
+  font-size: 11px;
+  color: var(--muted);
+  min-width: 36px;
+  text-align: right;
+}
+
+/* Plano de ação */
+.planoAcao {
+  border: 1px solid;
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.planoHeader {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.planoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 16px;
+  font-size: 12px;
+  color: var(--text);
+}
+
+.planoCons {
+  grid-column: 1 / -1;
+}
+
+.planoLabel {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin-bottom: 2px;
+}
+
+/* Histórico */
+.historicoWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.historicoTitulo {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.historicoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+/* Tabela referência */
+.tabelaTitulo {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.table tr:last-child td { border-bottom: none; }
+
+.faixaBadge {
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.muted { color: var(--muted); }
+
+/* Edit form */
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px;
+}
+
+.editTitulo {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.editGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.editField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.editField label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.editField input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.editActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+@media (max-width: 700px) {
+  .editGrid { grid-template-columns: 1fr; }
+  .planoGrid { grid-template-columns: 1fr; }
+  .planoCons { grid-column: 1; }
+}
