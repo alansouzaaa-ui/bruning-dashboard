@@ -54,6 +54,9 @@ export const getAvaliacaoAtual = () =>
 export const getHistoricoTrimestral = () =>
   api.get('/trimestral/historico').then(r => r.data)
 
+export const getPerformanceGeral = () =>
+  api.get('/trimestral/performance-geral').then(r => r.data)
+
 export const salvarMetaTrimestral = (body) =>
   api.put('/trimestral/meta', body).then(r => r.data)
 

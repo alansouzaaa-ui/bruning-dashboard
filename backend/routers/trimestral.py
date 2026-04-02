@@ -158,21 +158,80 @@ def avaliacao_atual(db: Session = Depends(get_db)):
 
 @router.get("/historico")
 def historico(db: Session = Depends(get_db)):
-    """Retorna os últimos 4 trimestres."""
-    hoje = date.today()
-    q_atual = (hoje.month - 1) // 3 + 1
-    ano_atual = hoje.year
+    """Retorna todos os trimestres com vendas registradas + trimestre atual."""
+    from sqlalchemy import func as sqlfunc
 
-    trimestres = []
-    q, ano = q_atual, ano_atual
-    for _ in range(4):
-        trimestres.append(f"{ano}-Q{q}")
-        q -= 1
-        if q == 0:
-            q = 4
-            ano -= 1
+    # Descobrir todos os anos/meses com vendas
+    rows = (
+        db.query(
+            extract("year",  Venda.data).label("ano"),
+            extract("month", Venda.data).label("mes"),
+        )
+        .distinct()
+        .order_by("ano", "mes")
+        .all()
+    )
+
+    # Converter para trimestres únicos
+    trimestres_set = set()
+    for r in rows:
+        ano = int(r.ano)
+        q = (int(r.mes) - 1) // 3 + 1
+        trimestres_set.add(f"{ano}-Q{q}")
+
+    # Garantir que o trimestre atual está incluído
+    trimestres_set.add(get_trimestre_atual())
+
+    # Ordenar do mais recente para o mais antigo
+    trimestres = sorted(trimestres_set, reverse=True)
 
     return [_avaliar(t, db) for t in trimestres]
+
+
+@router.get("/performance-geral")
+def performance_geral(db: Session = Depends(get_db)):
+    """Calcula o indicador de performance geral com base em todos os trimestres com dados."""
+    from sqlalchemy import func as sqlfunc
+
+    rows = (
+        db.query(
+            extract("year",  Venda.data).label("ano"),
+            extract("month", Venda.data).label("mes"),
+        )
+        .distinct()
+        .all()
+    )
+
+    trimestres_set = set()
+    for r in rows:
+        ano = int(r.ano)
+        q = (int(r.mes) - 1) // 3 + 1
+        trimestres_set.add(f"{ano}-Q{q}")
+
+    if not trimestres_set:
+        return {"media_atingimento": 0, "total_trimestres": 0, "nivel": None, "distribuicao": {}}
+
+    avaliacoes = [_avaliar(t, db) for t in trimestres_set]
+
+    # Só considera trimestres com vendas (atingimento > 0)
+    com_dados = [a for a in avaliacoes if a.atingimento_geral > 0]
+
+    media = round(sum(a.atingimento_geral for a in com_dados) / len(com_dados), 1) if com_dados else 0
+    nivel_geral = calcular_nivel(media)
+
+    # Distribuição dos níveis
+    dist = {}
+    for a in avaliacoes:
+        codigo = a.nivel.codigo
+        dist[codigo] = dist.get(codigo, 0) + 1
+
+    return {
+        "media_atingimento": media,
+        "total_trimestres": len(avaliacoes),
+        "trimestres_com_dados": len(com_dados),
+        "nivel": nivel_geral,
+        "distribuicao": dist,
+    }
 
 
 @router.put("/meta", response_model=MetaTrimestralIn)

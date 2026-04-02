@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { getAvaliacaoAtual, getHistoricoTrimestral, salvarMetaTrimestral } from '../api'
+import { getAvaliacaoAtual, getHistoricoTrimestral, getPerformanceGeral, salvarMetaTrimestral } from '../api'
 import { useToast } from './Toast'
 import styles from './AvaliacaoTrimestral.module.css'
 
@@ -95,6 +95,11 @@ export default function AvaliacaoTrimestral() {
     queryFn: getHistoricoTrimestral,
   })
 
+  const { data: perfGeral } = useQuery({
+    queryKey: ['trimestral-performance-geral'],
+    queryFn: getPerformanceGeral,
+  })
+
   const salvar = useMutation({
     mutationFn: salvarMetaTrimestral,
     onSuccess: () => {
@@ -125,8 +130,47 @@ export default function AvaliacaoTrimestral() {
   // histórico sem o trimestre atual (já exibido em destaque)
   const historicoPast = historico.filter(h => h.trimestre !== atual?.trimestre)
 
+  const NIVEL_CORES = {
+    excelente:    '#22c55e',
+    otimo:        '#84cc16',
+    satisfatorio: '#eab308',
+    repescagem:   '#f97316',
+    atencao:      '#ef4444',
+  }
+
   return (
     <div className={styles.wrap}>
+
+      {/* Indicador de Performance Geral */}
+      {perfGeral && perfGeral.trimestres_com_dados > 0 && (
+        <div className={`card ${styles.geralCard}`}>
+          <div className={styles.geralLeft}>
+            <span className={styles.geralTitulo}>Performance Geral</span>
+            <span className={styles.geralSub}>
+              Média de {perfGeral.trimestres_com_dados} trimestre{perfGeral.trimestres_com_dados !== 1 ? 's' : ''} com dados
+            </span>
+          </div>
+          <div className={styles.geralCenter}>
+            <span className={styles.geralNum} style={{ color: perfGeral.nivel?.cor }}>
+              {perfGeral.media_atingimento.toFixed(1)}%
+            </span>
+            <NivelBadge nivel={perfGeral.nivel} />
+          </div>
+          <div className={styles.geralDist}>
+            {Object.entries(perfGeral.distribuicao).map(([codigo, qtd]) => (
+              <div key={codigo} className={styles.distItem}>
+                <span className={styles.distDot} style={{ background: NIVEL_CORES[codigo] }} />
+                <span className={styles.distQtd}>{qtd}x</span>
+                <span className={styles.distLabel}>{perfGeral.nivel?.codigo === codigo
+                  ? <strong>{perfGeral.nivel.label}</strong>
+                  : codigo.charAt(0).toUpperCase() + codigo.slice(1)
+                }</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Trimestre atual em destaque */}
       <div className={styles.atualWrap}>
         <div className={styles.atualHeader}>
