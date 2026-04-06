@@ -299,7 +299,7 @@ export default function AvaliacaoTrimestral() {
           <div className={styles.geralLeft}>
             <span className={styles.geralTitulo}>Performance Geral</span>
             <span className={styles.geralSub}>
-              Média de {perfGeral.trimestres_com_dados} trimestre{perfGeral.trimestres_com_dados !== 1 ? 's' : ''} com dados
+              Média de {perfGeral.total_meses ?? perfGeral.trimestres_com_dados} mese{(perfGeral.total_meses ?? perfGeral.trimestres_com_dados) !== 1 ? 's' : ''} com dados
             </span>
           </div>
           <div className={styles.geralCenter}>

@@ -220,45 +220,66 @@ def historico(db: Session = Depends(get_db)):
 
 @router.get("/performance-geral")
 def performance_geral(db: Session = Depends(get_db)):
-    """Calcula o indicador de performance geral com base em todos os trimestres com dados."""
-    from sqlalchemy import func as sqlfunc
+    """
+    Calcula o indicador de performance geral mês a mês.
+    - Usa meta mensal individual se configurada (período de rampagem)
+    - Para demais meses usa a meta mensal global (configs.meta_mrr)
+    """
+    from models import AppConfig
 
+    # Meta mensal global (fallback)
+    cfg_mrr = db.query(AppConfig).filter(AppConfig.chave == "meta_mrr").first()
+    meta_mensal_global = float(cfg_mrr.valor) if cfg_mrr else 5000.0
+
+    # Metas mensais individuais configuradas
+    metas_mensais = {
+        m.mes: float(m.meta_mrr)
+        for m in db.query(MetaMensal).all()
+    }
+
+    # Buscar todos os meses com vendas
     rows = (
         db.query(
             extract("year",  Venda.data).label("ano"),
-            extract("month", Venda.data).label("mes"),
+            extract("month", Venda.data).label("mes_num"),
+            func.sum(Venda.mrr).filter(Venda.status == "Ativo").label("realizado"),
         )
-        .distinct()
+        .group_by("ano", "mes_num")
+        .order_by("ano", "mes_num")
         .all()
     )
 
-    trimestres_set = set()
+    if not rows:
+        return {"media_atingimento": 0, "total_meses": 0, "nivel": None, "distribuicao": {}}
+
+    meses_calc = []
     for r in rows:
-        ano = int(r.ano)
-        q = (int(r.mes) - 1) // 3 + 1
-        trimestres_set.add(f"{ano}-Q{q}")
+        mes_str = f"{int(r.ano)}-{str(int(r.mes_num)).zfill(2)}"
+        meta = metas_mensais.get(mes_str, meta_mensal_global)
+        realizado = float(r.realizado or 0)
+        if meta > 0:
+            at = round((realizado / meta) * 100, 1)
+            nivel = calcular_nivel(at)
+            meses_calc.append({
+                "mes": mes_str,
+                "meta": meta,
+                "realizado": realizado,
+                "atingimento": at,
+                "nivel_codigo": nivel.codigo,
+            })
 
-    if not trimestres_set:
-        return {"media_atingimento": 0, "total_trimestres": 0, "nivel": None, "distribuicao": {}}
-
-    avaliacoes = [_avaliar(t, db) for t in trimestres_set]
-
-    # Só considera trimestres com vendas (atingimento > 0)
-    com_dados = [a for a in avaliacoes if a.atingimento_geral > 0]
-
-    media = round(sum(a.atingimento_geral for a in com_dados) / len(com_dados), 1) if com_dados else 0
+    media = round(sum(m["atingimento"] for m in meses_calc) / len(meses_calc), 1) if meses_calc else 0
     nivel_geral = calcular_nivel(media)
 
-    # Distribuição dos níveis
     dist = {}
-    for a in avaliacoes:
-        codigo = a.nivel.codigo
+    for m in meses_calc:
+        codigo = m["nivel_codigo"]
         dist[codigo] = dist.get(codigo, 0) + 1
 
     return {
         "media_atingimento": media,
-        "total_trimestres": len(avaliacoes),
-        "trimestres_com_dados": len(com_dados),
+        "total_meses": len(meses_calc),
+        "trimestres_com_dados": len(meses_calc),  # mantido para compatibilidade com frontend
         "nivel": nivel_geral,
         "distribuicao": dist,
     }
