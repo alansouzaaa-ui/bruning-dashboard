@@ -9,8 +9,8 @@ import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from database import get_db
-from models import Venda, MetaTrimestral
-from schemas import MetaTrimestralIn, AvaliacaoOut, NivelPerformance
+from models import Venda, MetaTrimestral, MetaMensal
+from schemas import MetaTrimestralIn, MetasMensaisIn, MetaMensalItem, AvaliacaoOut, NivelPerformance
 
 router = APIRouter(prefix="/trimestral", tags=["trimestral"])
 
@@ -107,10 +107,24 @@ def _avaliar(trimestre: str, db: Session) -> AvaliacaoOut:
     q_str = trimestre.split("-")[1]
     label = f"{q_str} {ano}"
 
-    # Buscar meta configurada
-    cfg = db.query(MetaTrimestral).filter(MetaTrimestral.trimestre == trimestre).first()
-    meta_mrr  = float(cfg.meta_mrr)  if cfg else 15000.0
-    meta_ades = float(cfg.meta_ades) if cfg else 9000.0
+    # Buscar metas mensais para os meses do trimestre
+    meses_str = [f"{ano}-{str(m).zfill(2)}" for m in meses_num]
+    metas_mensais_db = {
+        cfg.mes: float(cfg.meta_mrr)
+        for cfg in db.query(MetaMensal).filter(MetaMensal.mes.in_(meses_str)).all()
+    }
+
+    usa_meta_mensal = bool(metas_mensais_db)
+
+    # Meta trimestral: soma das metas mensais se existirem, senão usa a trimestral configurada
+    if usa_meta_mensal:
+        meta_mrr = sum(metas_mensais_db.get(m, 0) for m in meses_str)
+    else:
+        cfg = db.query(MetaTrimestral).filter(MetaTrimestral.trimestre == trimestre).first()
+        meta_mrr = float(cfg.meta_mrr) if cfg else 15000.0
+
+    cfg_trim = db.query(MetaTrimestral).filter(MetaTrimestral.trimestre == trimestre).first()
+    meta_ades = float(cfg_trim.meta_ades) if cfg_trim else 9000.0
 
     # Buscar vendas do trimestre
     vendas = (
@@ -132,9 +146,23 @@ def _avaliar(trimestre: str, db: Session) -> AvaliacaoOut:
 
     nivel = calcular_nivel(at_geral)
 
-    meses_label = [
-        f"{MESES_PT[m - 1]}/{str(ano)[2:]}" for m in meses_num
-    ]
+    # Detalhe por mês
+    vendas_por_mes = {}
+    for v in ativos:
+        mes_key = f"{v.data.year}-{str(v.data.month).zfill(2)}"
+        vendas_por_mes[mes_key] = vendas_por_mes.get(mes_key, 0) + float(v.mrr)
+
+    meses_detail = []
+    for m, mes_str in zip(meses_num, meses_str):
+        label_mes = f"{MESES_PT[m - 1]}/{str(ano)[2:]}"
+        meta_m = metas_mensais_db.get(mes_str, 0) if usa_meta_mensal else 0
+        real_m = vendas_por_mes.get(mes_str, 0)
+        meses_detail.append({
+            "mes": mes_str,
+            "label": label_mes,
+            "meta_mrr": meta_m,
+            "realizado_mrr": real_m,
+        })
 
     return AvaliacaoOut(
         trimestre=trimestre,
@@ -147,7 +175,9 @@ def _avaliar(trimestre: str, db: Session) -> AvaliacaoOut:
         atingimento_ades=at_ades,
         atingimento_geral=at_geral,
         nivel=nivel,
-        meses=meses_label,
+        meses=[d["label"] for d in meses_detail],
+        metas_mensais=meses_detail,
+        usa_meta_mensal=usa_meta_mensal,
     )
 
 
@@ -232,6 +262,38 @@ def performance_geral(db: Session = Depends(get_db)):
         "nivel": nivel_geral,
         "distribuicao": dist,
     }
+
+
+@router.get("/metas-mensais")
+def get_metas_mensais(db: Session = Depends(get_db)):
+    """Retorna todas as metas mensais configuradas."""
+    return [
+        {"mes": m.mes, "meta_mrr": float(m.meta_mrr)}
+        for m in db.query(MetaMensal).order_by(MetaMensal.mes).all()
+    ]
+
+
+@router.put("/metas-mensais")
+def salvar_metas_mensais(body: MetasMensaisIn, db: Session = Depends(get_db)):
+    """Salva metas mensais individuais (upsert)."""
+    for item in body.metas:
+        existing = db.query(MetaMensal).filter(MetaMensal.mes == item.mes).first()
+        if existing:
+            existing.meta_mrr = item.meta_mrr
+        else:
+            db.add(MetaMensal(mes=item.mes, meta_mrr=item.meta_mrr))
+    db.commit()
+    return {"ok": True, "saved": len(body.metas)}
+
+
+@router.delete("/metas-mensais/{mes}")
+def deletar_meta_mensal(mes: str, db: Session = Depends(get_db)):
+    """Remove a meta mensal de um mês específico."""
+    obj = db.query(MetaMensal).filter(MetaMensal.mes == mes).first()
+    if obj:
+        db.delete(obj)
+        db.commit()
+    return {"ok": True}
 
 
 @router.put("/meta", response_model=MetaTrimestralIn)

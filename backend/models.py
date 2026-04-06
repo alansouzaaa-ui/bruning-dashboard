@@ -19,6 +19,13 @@ class MetaTrimestral(Base):
     meta_ades  = Column(Numeric(10, 2), default=0)
 
 
+class MetaMensal(Base):
+    __tablename__ = "metas_mensais"
+
+    mes      = Column(String(7), primary_key=True)  # '2024-11'
+    meta_mrr = Column(Numeric(10, 2), default=0)
+
+
 class Venda(Base):
     __tablename__ = "vendas"
 

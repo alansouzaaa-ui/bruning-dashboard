@@ -60,6 +60,15 @@ export const getPerformanceGeral = () =>
 export const salvarMetaTrimestral = (body) =>
   api.put('/trimestral/meta', body).then(r => r.data)
 
+export const getMetasMensais = () =>
+  api.get('/trimestral/metas-mensais').then(r => r.data)
+
+export const salvarMetasMensais = (metas) =>
+  api.put('/trimestral/metas-mensais', { metas }).then(r => r.data)
+
+export const deletarMetaMensal = (mes) =>
+  api.delete(`/trimestral/metas-mensais/${mes}`)
+
 // ── CRM / Nectar ─────────────────────────────────────────
 export const getCRMStatus = () =>
   api.get('/crm/status').then(r => r.data)

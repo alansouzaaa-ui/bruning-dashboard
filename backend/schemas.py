@@ -101,6 +101,15 @@ class MetaTrimestralIn(BaseModel):
     meta_ades: float
 
 
+class MetaMensalItem(BaseModel):
+    mes:      str    # '2024-11'
+    meta_mrr: float
+
+
+class MetasMensaisIn(BaseModel):
+    metas: list[MetaMensalItem]
+
+
 class NivelPerformance(BaseModel):
     codigo:      str    # 'excelente' | 'otimo' | 'satisfatorio' | 'repescagem' | 'atencao'
     label:       str
@@ -119,8 +128,10 @@ class AvaliacaoOut(BaseModel):
     meta_ades:     float
     realizado_mrr: float
     realizado_ades: float
-    atingimento_mrr:  float   # percentual 0-100+
+    atingimento_mrr:  float
     atingimento_ades: float
-    atingimento_geral: float  # média ponderada
+    atingimento_geral: float
     nivel:         NivelPerformance
-    meses:         list       # meses do trimestre
+    meses:         list
+    metas_mensais: list       # [{mes, label, meta_mrr, realizado_mrr}]
+    usa_meta_mensal: bool     # True se veio de metas mensais individuais
