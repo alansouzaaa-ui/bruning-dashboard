@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 from database import engine, Base
 from routers import vendas, comissoes, configs, trimestral, crm
@@ -7,6 +8,16 @@ from auth import verify_token
 
 # Cria as tabelas no banco ao iniciar
 Base.metadata.create_all(bind=engine)
+
+# Migrações incrementais — seguras para rodar múltiplas vezes
+def run_migrations():
+    with engine.connect() as conn:
+        conn.execute(text(
+            "ALTER TABLE vendas ADD COLUMN IF NOT EXISTS origem VARCHAR(50)"
+        ))
+        conn.commit()
+
+run_migrations()
 
 app = FastAPI(
     title="Bruning Dashboard API",

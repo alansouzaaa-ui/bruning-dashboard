@@ -42,6 +42,7 @@ class Venda(Base):
     churn_mrr  = Column(Numeric(10, 2), default=0)
     status     = Column(String(20), nullable=True)   # 'Ativo' | 'Trial' | 'Cancelado'
     tipo       = Column(String(30), nullable=True)   # 'CLIENTE NOVO' | 'CHURN' | etc
+    origem     = Column(String(50), nullable=True)   # 'Indicação' | 'Prospecção' | 'LinkedIn' | etc
     obs        = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 

@@ -19,6 +19,7 @@ class VendaBase(BaseModel):
     churn_mrr: Optional[Decimal] = Decimal("0")
     status:    Optional[str] = None
     tipo:      Optional[str] = None
+    origem:    Optional[str] = None
     obs:       Optional[str] = None
 
 
