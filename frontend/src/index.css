@@ -1,22 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:        #0f1117;
-  --surface:   #1a1d27;
-  --surface2:  #22263a;
-  --border:    #2e3450;
-  --text:      #e8eaf6;
-  --muted:     #8892b0;
+  /* Backgrounds */
+  --bg:        #05070d;
+  --surface:   #0e1420;
+  --surface2:  #141c2e;
+  --border:    #1a2440;
+  --borderb:   #1f2d4e;
+
+  /* Text */
+  --text:      #f0f4ff;
+  --muted:     #4d6080;
+  --text1:     #a8b8d8;
+
+  /* Bruning Green como cor primária */
   --accent:    #ccf46a;
-  --accent2:   #60a5fa;
-  --danger:    #f87171;
-  --success:   #4ade80;
-  --radius:    12px;
-  --shadow:    0 4px 24px rgba(0,0,0,.35);
+  --accent2:   #00d4ff;
+
+  /* Cores dos cards KPI */
+  --c-green:   #ccf46a;   /* Bruning — principal */
+  --c-cyan:    #00d4ff;
+  --c-blue:    #4f8ef7;
+  --c-purple:  #b060ff;
+  --c-yellow:  #ffb830;
+  --c-red:     #ff4d6a;
+  --c-orange:  #ff7e3a;
+
+  /* Semânticas */
+  --danger:    #ff4d6a;
+  --success:   #ccf46a;
+  --green:     #ccf46a;
+  --yellow:    #ffb830;
+  --red:       #ff4d6a;
+
+  --radius:    16px;
+  --shadow:    0 4px 24px rgba(0,0,0,.45);
+
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Inter', sans-serif;
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--sans);
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -46,7 +73,7 @@ input, select, textarea {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px;
+  padding: 22px;
   box-shadow: var(--shadow);
 }
 
@@ -75,14 +102,14 @@ input, select, textarea {
   font-size: 11px;
   font-weight: 600;
 }
-.badge-ativo     { background: rgba(74,222,128,.15); color: var(--success); }
-.badge-cancelado { background: rgba(248,113,113,.15); color: var(--danger); }
-.badge-trial     { background: rgba(96,165,250,.15);  color: var(--accent2); }
-.badge-pausado   { background: rgba(251,191,36,.15);  color: #fbbf24; }
+.badge-ativo     { background: rgba(204,244,106,.12); color: var(--c-green); }
+.badge-cancelado { background: rgba(255,77,106,.12);  color: var(--c-red); }
+.badge-trial     { background: rgba(0,212,255,.12);   color: var(--c-cyan); }
+.badge-pausado   { background: rgba(255,184,48,.12);  color: var(--c-yellow); }
 
-.trend-up   { color: var(--success); font-size: 12px; }
-.trend-down { color: var(--danger);  font-size: 12px; }
-.trend-flat { color: var(--muted);   font-size: 12px; }
+.trend-up   { color: var(--c-green);  font-size: 11px; font-weight: 700; font-family: var(--mono); }
+.trend-down { color: var(--c-red);    font-size: 11px; font-weight: 700; font-family: var(--mono); }
+.trend-flat { color: var(--muted);    font-size: 11px; font-family: var(--mono); }
 
 /* Modal overlay */
 .modal-overlay {

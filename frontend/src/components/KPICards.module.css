@@ -1,36 +1,101 @@
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 760px) {
   .grid { grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 560px) {
+@media (max-width: 480px) {
   .grid { grid-template-columns: 1fr; }
 }
 
+/* ── Card base ── */
 .card {
+  position: relative;
+  border-radius: 16px;
+  padding: 20px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  min-height: 100px;
+  gap: 0;
+  min-height: 130px;
+  cursor: default;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 36px rgba(0,0,0,.5);
+}
+
+/* ── Border inset colorido ── */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid currentColor;
+  opacity: .18;
+  pointer-events: none;
+}
+
+/* ── Linha de brilho no topo ── */
+.card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, currentColor, transparent);
+  opacity: .4;
+  pointer-events: none;
+}
+
+/* ── Variantes de cor ── */
+.green  { background: linear-gradient(135deg, rgba(204,244,106,.14), rgba(204,244,106,.04)); color: var(--c-green); }
+.cyan   { background: linear-gradient(135deg, rgba(0,212,255,.14),   rgba(0,212,255,.04));   color: var(--c-cyan); }
+.blue   { background: linear-gradient(135deg, rgba(79,142,247,.14),  rgba(79,142,247,.04));  color: var(--c-blue); }
+.purple { background: linear-gradient(135deg, rgba(176,96,255,.14),  rgba(176,96,255,.04));  color: var(--c-purple); }
+.yellow { background: linear-gradient(135deg, rgba(255,184,48,.14),  rgba(255,184,48,.04));  color: var(--c-yellow); }
+.red    { background: linear-gradient(135deg, rgba(255,77,106,.14),  rgba(255,77,106,.04));  color: var(--c-red); }
+.orange { background: linear-gradient(135deg, rgba(255,126,58,.14),  rgba(255,126,58,.04));  color: var(--c-orange); }
+
+/* ── Conteúdo ── */
+.inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 0;
+}
+
+.icon {
+  font-size: 19px;
+  display: block;
+  margin-bottom: 10px;
+  line-height: 1;
 }
 
 .title {
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 500;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
   text-transform: uppercase;
-  letter-spacing: .5px;
+  color: var(--muted);
+  margin-bottom: 7px;
 }
 
 .value {
-  font-size: 26px;
+  font-family: var(--mono);
+  font-size: 21px;
   font-weight: 700;
-  color: var(--text);
   line-height: 1.1;
+  color: currentColor;
+  margin-bottom: 8px;
 }
 
 .footer {
@@ -38,18 +103,22 @@
   align-items: center;
   gap: 8px;
   margin-top: auto;
+  flex-wrap: wrap;
 }
 
 .sub {
-  font-size: 12px;
+  font-size: 10px;
   color: var(--muted);
+  font-weight: 500;
 }
 
+/* ── Skeleton ── */
 .skeleton {
-  min-height: 100px;
-  background: linear-gradient(90deg, var(--surface2) 25%, var(--border) 50%, var(--surface2) 75%);
+  min-height: 130px;
+  background: linear-gradient(90deg, var(--surface2) 25%, var(--borderb) 50%, var(--surface2) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
+  border-radius: 16px;
 }
 
 @keyframes shimmer {

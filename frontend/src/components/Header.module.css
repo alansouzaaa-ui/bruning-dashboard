@@ -1,8 +1,10 @@
 .header {
-  background: var(--surface);
+  background: rgba(5,7,13,.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border);
   padding: 0 24px;
-  height: 60px;
+  height: 58px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -19,12 +21,22 @@
 }
 
 .logo {
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 700;
-  color: var(--muted);
+  color: var(--text1);
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.2px;
 }
 .logo span { color: var(--accent); }
+
+.logoIcon {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
 
 .nav {
   display: flex;
@@ -38,9 +50,14 @@
   font-size: 13px;
   font-weight: 500;
   transition: background .15s, color .15s;
+  border: 1px solid transparent;
 }
-.nav button:hover { background: var(--surface2); color: var(--text); }
-.nav button.active { background: var(--surface2); color: var(--accent); }
+.nav button:hover  { background: var(--surface2); color: var(--text1); }
+.nav button.active {
+  background: var(--surface2);
+  color: var(--accent);
+  border-color: var(--border);
+}
 
 .right {
   display: flex;
@@ -48,18 +65,92 @@
   gap: 10px;
 }
 
-.select {
+/* ── Navegador de mês ── */
+.monthNav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.navArrow {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  width: 28px;
+  height: 30px;
+  border-radius: 6px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .15s;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.navArrow:hover:not(:disabled) {
+  background: var(--surface2);
+  color: var(--text);
+  border-color: var(--accent);
+}
+.navArrow:disabled {
+  opacity: .25;
+  cursor: default;
+}
+
+.mesLabel {
   background: var(--surface2);
   border: 1px solid var(--border);
-  border-radius: 8px;
   color: var(--text);
-  padding: 7px 10px;
+  padding: 4px 14px;
+  border-radius: 6px;
   font-size: 13px;
-  outline: none;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
   cursor: pointer;
+  transition: border-color .15s, color .15s;
+  white-space: nowrap;
+  min-width: 72px;
+  text-align: center;
 }
-.select:focus { border-color: var(--accent); }
+.mesLabel:hover { border-color: var(--accent); }
 
+/* Destaque sutil quando exibindo o mês mais recente */
+.mesHoje {
+  border-color: rgba(204, 244, 106, .4);
+  color: var(--accent);
+}
+
+/* ── Botão Todos ── */
+.todosBtn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.todosBtn:hover { border-color: var(--accent); color: var(--text); }
+.todosActive {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+.todosActive:hover { background: var(--accent); color: #000; }
+
+.mesNav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  transition: opacity .15s;
+}
+.mesNavDim { opacity: .3; pointer-events: none; }
+
+/* ── Botão CRM com badge ── */
 .crmBtn {
   display: flex;
   align-items: center;
