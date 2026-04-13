@@ -30,7 +30,12 @@ STATUS_DESCARTADA   = 4
 
 
 def _headers():
-    return {"Access-Token": NECTAR_API_KEY}
+    return {
+        "Access-Token": NECTAR_API_KEY,
+        "User-Agent":   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "Accept":       "application/json",
+        "Referer":      "https://app.nectarcrm.com.br/",
+    }
 
 
 def _configurado() -> bool:
@@ -62,16 +67,22 @@ async def debug_nectar():
     idx = raw.find('eyJ')
     token_live = raw[idx:].strip() if idx >= 0 else raw.strip()
 
+    hdrs = {
+        "Access-Token": token_live,
+        "User-Agent":   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "Accept":       "application/json",
+        "Referer":      "https://app.nectarcrm.com.br/",
+    }
     async with httpx.AsyncClient() as c:
         results = {}
         for endpoint in ["/pipelines/", "/oportunidades/", "/contatos/"]:
             try:
                 r = await c.get(
                     f"{NECTAR_BASE_URL}{endpoint}",
-                    headers={"Access-Token": token_live},
+                    headers=hdrs,
                     timeout=10,
                 )
-                results[endpoint] = {"status": r.status_code, "body": r.text[:300]}
+                results[endpoint] = {"status": r.status_code, "body": r.text[:500]}
             except Exception as e:
                 results[endpoint] = {"erro": str(e)}
 
