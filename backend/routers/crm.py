@@ -1,164 +1,279 @@
 """
-Router CRM — integração com Nectar CRM
-======================================
-Estrutura pronta para conectar à API do Nectar.
-
-Para ativar:
-  1. Defina a variável de ambiente NECTAR_API_KEY no Railway
-  2. Descubra o base URL da API Nectar (ex: https://api.nectar.com.br/v1)
-  3. Substitua os placeholders abaixo pelos endpoints reais
-
-Endpoints que serão consumidos do Nectar:
-  - GET /funnels/{funnel_id}/stages  → etapas e contagens
-  - GET /deals                        → negócios (para ciclo e win rate)
-  - GET /leads                        → volume de leads por período
+Router CRM — integração real com Nectar CRM
+============================================
+Base URL : https://app.nectarcrm.com.br/crm/api/1/
+Auth     : header  Access-Token: <JWT>
+Docs     : https://nectarcrm.docs.apiary.io/
 """
 
 import os
+import calendar
 import httpx
 from fastapi import APIRouter, HTTPException, Query
 from typing import Optional
 
 router = APIRouter(prefix="/crm", tags=["crm"])
 
+NECTAR_BASE_URL = os.getenv("NECTAR_BASE_URL", "https://app.nectarcrm.com.br/crm/api/1")
 NECTAR_API_KEY  = os.getenv("NECTAR_API_KEY", "")
-NECTAR_BASE_URL = os.getenv("NECTAR_BASE_URL", "https://api.nectar.com.br/v1")
+
+# Status de oportunidade no Nectar
+STATUS_EM_ANDAMENTO = 1
+STATUS_GANHA        = 2
+STATUS_PERDIDA      = 3
+STATUS_DESCARTADA   = 4
 
 
-def _nectar_headers():
+def _headers():
     return {
-        "Authorization": f"Bearer {NECTAR_API_KEY}",
-        "Content-Type": "application/json",
+        "Access-Token":  NECTAR_API_KEY,
+        "Content-Type":  "application/json",
+        "Accept":        "application/json",
     }
 
 
-def _is_configured() -> bool:
+def _configurado() -> bool:
     return bool(NECTAR_API_KEY)
 
 
-# ── STATUS ───────────────────────────────────────────────
+def _mes_para_datas(mes: str):
+    """'2026-04' → ('2026-04-01', '2026-04-30')"""
+    ano, m = map(int, mes.split("-"))
+    ultimo = calendar.monthrange(ano, m)[1]
+    return f"{ano}-{m:02d}-01", f"{ano}-{m:02d}-{ultimo:02d}"
+
+
+def _como_lista(resp) -> list:
+    """Nectar às vezes retorna lista, às vezes {'data': [...]}."""
+    if isinstance(resp, list):
+        return resp
+    if isinstance(resp, dict):
+        return resp.get("data", resp.get("results", resp.get("items", [])))
+    return []
+
+
+# ── STATUS ───────────────────────────────────────────────────────────────────
+
 @router.get("/status")
 def crm_status():
-    """Verifica se o Nectar está configurado."""
     return {
-        "configurado": _is_configured(),
+        "configurado": _configurado(),
         "mensagem": (
             "Nectar CRM conectado."
-            if _is_configured()
-            else "Configure NECTAR_API_KEY no Railway para ativar."
+            if _configurado()
+            else "Configure NECTAR_API_KEY no Railway para ativar os dados reais."
         ),
     }
 
 
-# ── FUNIL DE VENDAS ──────────────────────────────────────
+# ── PIPELINES (para o frontend listar) ───────────────────────────────────────
+
+@router.get("/pipelines")
+async def listar_pipelines():
+    if not _configurado():
+        return {"pipelines": []}
+
+    async with httpx.AsyncClient() as c:
+        try:
+            r = await c.get(f"{NECTAR_BASE_URL}/pipelines/", headers=_headers(), timeout=10)
+            r.raise_for_status()
+            pipelines = _como_lista(r.json())
+            return {
+                "pipelines": [
+                    {"id": p["id"], "nome": p.get("nome", ""), "etapas": len(p.get("sequencias", []))}
+                    for p in pipelines
+                ]
+            }
+        except Exception as e:
+            raise HTTPException(502, f"Erro ao buscar pipelines: {e}")
+
+
+# ── FUNIL DE VENDAS ───────────────────────────────────────────────────────────
+
 @router.get("/funil")
-async def funil(mes: Optional[str] = Query(None)):
+async def funil(
+    mes:         Optional[str] = Query(None),
+    pipeline_id: Optional[int] = Query(None),
+):
     """
-    Retorna as etapas do funil com contagem e taxa de conversão.
-    Fonte: Nectar GET /funnels/{id}/stages
+    Retorna as etapas do funil com contagem de oportunidades em andamento.
+    Se pipeline_id não for informado, usa o primeiro pipeline da conta.
     """
-    if not _is_configured():
+    if not _configurado():
         return _mock_funil()
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient() as c:
         try:
-            r = await client.get(
-                f"{NECTAR_BASE_URL}/funnels/default/stages",
-                headers=_nectar_headers(),
-                params={"mes": mes} if mes else {},
-                timeout=10,
-            )
-            r.raise_for_status()
-            dados = r.json()
-            return _processar_funil(dados)
+            # 1. Busca pipelines
+            pr = await c.get(f"{NECTAR_BASE_URL}/pipelines/", headers=_headers(), timeout=10)
+            pr.raise_for_status()
+            pipelines = _como_lista(pr.json())
+
+            if not pipelines:
+                return _mock_funil()
+
+            # Seleciona pipeline: preferência para o informado, ou o que contém "bruning", ou o primeiro
+            pipeline = None
+            if pipeline_id:
+                pipeline = next((p for p in pipelines if p["id"] == pipeline_id), None)
+            if not pipeline:
+                pipeline = next((p for p in pipelines if "bruning" in p.get("nome", "").lower()), pipelines[0])
+
+            etapas_def = pipeline.get("sequencias", [])
+            pid        = pipeline["id"]
+
+            # 2. Busca oportunidades em andamento neste pipeline
+            params: dict = {
+                "displayLength": 200,
+                "funil":         pid,
+                "status":        STATUS_EM_ANDAMENTO,
+            }
+            if mes:
+                inicio, fim = _mes_para_datas(mes)
+                params["dataInicio"] = inicio
+                params["dataFim"]    = fim
+
+            or_ = await c.get(f"{NECTAR_BASE_URL}/oportunidades/", headers=_headers(), params=params, timeout=15)
+            or_.raise_for_status()
+            opps = _como_lista(or_.json())
+
+            # 3. Conta por etapa
+            contagens: dict[int, int] = {}
+            for opp in opps:
+                etapa_id = None
+                etapa_obj = opp.get("etapaAtual")
+                if isinstance(etapa_obj, dict):
+                    etapa_id = etapa_obj.get("id")
+                elif isinstance(etapa_obj, int):
+                    etapa_id = etapa_obj
+                if etapa_id:
+                    contagens[etapa_id] = contagens.get(etapa_id, 0) + 1
+
+            # 4. Monta resultado
+            resultado = []
+            total_entrada = contagens.get(etapas_def[0]["id"], 0) if etapas_def else 1
+
+            for i, etapa in enumerate(etapas_def):
+                count      = contagens.get(etapa["id"], 0)
+                prev_count = contagens.get(etapas_def[i - 1]["id"], count) if i > 0 else count
+                taxa_etapa = round((count / prev_count) * 100, 1) if prev_count > 0 else 100
+                taxa_acum  = round((count / total_entrada) * 100, 1) if total_entrada > 0 else 0
+
+                resultado.append({
+                    "nome":           etapa.get("nome", f"Etapa {i+1}"),
+                    "quantidade":     count,
+                    "taxa_conversao": taxa_etapa,
+                    "taxa_acumulada": taxa_acum,
+                })
+
+            return {
+                "etapas":   resultado,
+                "pipeline": pipeline.get("nome", ""),
+                "fonte":    "nectar",
+            }
+
+        except HTTPException:
+            raise
         except Exception as e:
-            raise HTTPException(status_code=502, detail=f"Erro ao consultar Nectar: {str(e)}")
+            raise HTTPException(502, f"Erro ao consultar Nectar (funil): {e}")
 
 
-# ── KPIs DE CONVERSÃO ────────────────────────────────────
+# ── KPIs DE CONVERSÃO ─────────────────────────────────────────────────────────
+
 @router.get("/kpis")
 async def kpis_crm(mes: Optional[str] = Query(None)):
     """
-    KPIs calculados a partir dos dados do Nectar.
-    Fonte: Nectar GET /deals + /leads
+    KPIs calculados a partir das oportunidades do Nectar.
+    Filtra por mês de conclusão quando `mes` é informado.
     """
-    if not _is_configured():
+    if not _configurado():
         return _mock_kpis()
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient() as c:
         try:
-            deals_r = await client.get(
-                f"{NECTAR_BASE_URL}/deals",
-                headers=_nectar_headers(),
-                params={"mes": mes} if mes else {},
-                timeout=10,
+            params: dict = {"displayLength": 200}
+
+            if mes:
+                inicio, fim = _mes_para_datas(mes)
+                params["dataInicio"] = inicio
+                params["dataFim"]    = fim
+
+            # Busca ganhas e perdidas separadamente para garantir completude
+            ganhas_r  = await c.get(
+                f"{NECTAR_BASE_URL}/oportunidades/",
+                headers=_headers(),
+                params={**params, "status": STATUS_GANHA},
+                timeout=15,
             )
-            deals_r.raise_for_status()
-            return _calcular_kpis(deals_r.json())
+            ganhas_r.raise_for_status()
+            ganhas = _como_lista(ganhas_r.json())
+
+            perdidas_r = await c.get(
+                f"{NECTAR_BASE_URL}/oportunidades/",
+                headers=_headers(),
+                params={**params, "status": STATUS_PERDIDA},
+                timeout=15,
+            )
+            perdidas_r.raise_for_status()
+            perdidas = _como_lista(perdidas_r.json())
+
+            total    = len(ganhas) + len(perdidas)
+            win_rate = round((len(ganhas) / total) * 100, 1) if total > 0 else 0
+
+            # Ciclo médio em dias (dataCriacao → dataConclusao)
+            from datetime import datetime
+            ciclos = []
+            for d in ganhas:
+                criacao    = d.get("dataCriacao")
+                conclusao  = d.get("dataConclusao")
+                if criacao and conclusao:
+                    try:
+                        fmt = "%Y-%m-%d %H:%M:%S"
+                        dt_c = datetime.strptime(criacao[:19],   fmt)
+                        dt_f = datetime.strptime(conclusao[:19], fmt)
+                        dias = (dt_f - dt_c).days
+                        if dias >= 0:
+                            ciclos.append(dias)
+                    except Exception:
+                        pass
+
+            ciclo_medio = round(sum(ciclos) / len(ciclos)) if ciclos else 0
+
+            # Valor total ganho
+            valor_ganho = sum(float(d.get("valorTotal") or 0) for d in ganhas)
+
+            # Leads necessários para fechar 1 negócio
+            leads_para_fechar = round(total / len(ganhas), 1) if ganhas else 0
+
+            return {
+                "win_rate":           win_rate,
+                "ciclo_medio_dias":   ciclo_medio,
+                "leads_para_fechar":  leads_para_fechar,
+                "total_ganhos":       len(ganhas),
+                "total_perdidos":     len(perdidas),
+                "valor_ganho":        round(valor_ganho, 2),
+                "fonte":              "nectar",
+            }
+
+        except HTTPException:
+            raise
         except Exception as e:
-            raise HTTPException(status_code=502, detail=f"Erro ao consultar Nectar: {str(e)}")
+            raise HTTPException(502, f"Erro ao consultar Nectar (kpis): {e}")
 
 
-# ── PROCESSAMENTO (ajustar conforme resposta real do Nectar) ──
-
-def _processar_funil(dados: dict) -> dict:
-    """Transforma resposta do Nectar em formato do dashboard."""
-    etapas = dados.get("stages", dados if isinstance(dados, list) else [])
-    resultado = []
-    total_entrada = etapas[0].get("count", 1) if etapas else 1
-
-    for i, etapa in enumerate(etapas):
-        count = etapa.get("count", 0)
-        count_anterior = etapas[i - 1].get("count", count) if i > 0 else count
-        taxa = round((count / count_anterior) * 100, 1) if count_anterior > 0 else 100
-
-        resultado.append({
-            "nome":       etapa.get("name", f"Etapa {i+1}"),
-            "quantidade": count,
-            "taxa_conversao": taxa,
-            "taxa_acumulada": round((count / total_entrada) * 100, 1) if total_entrada > 0 else 0,
-        })
-
-    return {"etapas": resultado, "fonte": "nectar"}
-
-
-def _calcular_kpis(dados: dict) -> dict:
-    """Calcula KPIs a partir dos negócios do Nectar."""
-    deals = dados.get("deals", dados if isinstance(dados, list) else [])
-
-    ganhos   = [d for d in deals if d.get("status") == "won"]
-    perdidos = [d for d in deals if d.get("status") == "lost"]
-    total    = len(ganhos) + len(perdidos)
-
-    win_rate = round((len(ganhos) / total) * 100, 1) if total > 0 else 0
-
-    ciclos = [d.get("cycle_days", 0) for d in ganhos if d.get("cycle_days")]
-    ciclo_medio = round(sum(ciclos) / len(ciclos), 0) if ciclos else 0
-
-    leads_para_fechar = round(total / len(ganhos), 1) if ganhos else 0
-
-    return {
-        "win_rate":           win_rate,
-        "ciclo_medio_dias":   int(ciclo_medio),
-        "leads_para_fechar":  leads_para_fechar,
-        "total_ganhos":       len(ganhos),
-        "total_perdidos":     len(perdidos),
-        "fonte": "nectar",
-    }
-
-
-# ── MOCKS (exibidos enquanto Nectar não está configurado) ─
+# ── MOCKS ─────────────────────────────────────────────────────────────────────
 
 def _mock_funil():
     return {
         "etapas": [
-            {"nome": "Prospecção",    "quantidade": 120, "taxa_conversao": 100, "taxa_acumulada": 100},
-            {"nome": "Qualificação",  "quantidade":  85, "taxa_conversao":  71, "taxa_acumulada":  71},
-            {"nome": "Apresentação",  "quantidade":  52, "taxa_conversao":  61, "taxa_acumulada":  43},
-            {"nome": "Proposta",      "quantidade":  30, "taxa_conversao":  58, "taxa_acumulada":  25},
-            {"nome": "Negociação",    "quantidade":  18, "taxa_conversao":  60, "taxa_acumulada":  15},
-            {"nome": "Fechamento",    "quantidade":  10, "taxa_conversao":  56, "taxa_acumulada":   8},
+            {"nome": "Prospecção",   "quantidade": 42, "taxa_conversao": 100, "taxa_acumulada": 100},
+            {"nome": "Qualificação", "quantidade": 28, "taxa_conversao":  67, "taxa_acumulada":  67},
+            {"nome": "Apresentação", "quantidade": 18, "taxa_conversao":  64, "taxa_acumulada":  43},
+            {"nome": "Proposta",     "quantidade": 11, "taxa_conversao":  61, "taxa_acumulada":  26},
+            {"nome": "Negociação",   "quantidade":  7, "taxa_conversao":  64, "taxa_acumulada":  17},
+            {"nome": "Fechamento",   "quantidade":  4, "taxa_conversao":  57, "taxa_acumulada":  10},
         ],
+        "pipeline": "Demo",
         "fonte": "mock — configure NECTAR_API_KEY para dados reais",
     }
 
@@ -167,8 +282,9 @@ def _mock_kpis():
     return {
         "win_rate":           33.3,
         "ciclo_medio_dias":   28,
-        "leads_para_fechar":  12,
-        "total_ganhos":       10,
-        "total_perdidos":     20,
+        "leads_para_fechar":  10.5,
+        "total_ganhos":       4,
+        "total_perdidos":     8,
+        "valor_ganho":        0,
         "fonte": "mock — configure NECTAR_API_KEY para dados reais",
     }
