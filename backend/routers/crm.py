@@ -30,11 +30,7 @@ STATUS_DESCARTADA   = 4
 
 
 def _headers():
-    return {
-        "Access-Token":  NECTAR_API_KEY,
-        "Content-Type":  "application/json",
-        "Accept":        "application/json",
-    }
+    return {"Access-Token": NECTAR_API_KEY}
 
 
 def _configurado() -> bool:
