@@ -15,7 +15,10 @@ from typing import Optional
 router = APIRouter(prefix="/crm", tags=["crm"])
 
 NECTAR_BASE_URL = os.getenv("NECTAR_BASE_URL", "https://app.nectarcrm.com.br/crm/api/1")
-NECTAR_API_KEY  = os.getenv("NECTAR_API_KEY", "")
+
+# Sanitiza o token: remove espaços, quebras de linha e eventual prefixo "NECTAR_API_KEY = "
+_raw_key       = os.getenv("NECTAR_API_KEY", "")
+NECTAR_API_KEY = _raw_key.strip().split("=")[-1].strip()
 
 # Status de oportunidade no Nectar
 STATUS_EM_ANDAMENTO = 1
