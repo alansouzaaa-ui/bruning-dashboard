@@ -17,10 +17,10 @@ router = APIRouter(prefix="/crm", tags=["crm"])
 
 NECTAR_BASE_URL = os.getenv("NECTAR_BASE_URL", "https://app.nectarcrm.com.br/crm/api/1")
 
-# Extrai o JWT da variável — robusto contra lixo ao redor (newlines, prefixos, etc.)
-_raw_key  = os.getenv("NECTAR_API_KEY", "")
-_jwt_match = re.search(r'eyJ[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+', _raw_key)
-NECTAR_API_KEY = _jwt_match.group(0) if _jwt_match else _raw_key.strip()
+# Extrai o JWT — JWTs sempre começam com 'eyJ' (base64url de '{"')
+_raw_key = os.getenv("NECTAR_API_KEY", "")
+_idx     = _raw_key.find('eyJ')
+NECTAR_API_KEY = _raw_key[_idx:].strip() if _idx >= 0 else _raw_key.strip()
 
 # Status de oportunidade no Nectar
 STATUS_EM_ANDAMENTO = 1
