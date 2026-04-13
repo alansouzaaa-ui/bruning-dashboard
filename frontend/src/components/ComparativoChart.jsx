@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  Legend, ResponsiveContainer,
+  ResponsiveContainer, Cell,
 } from 'recharts'
 import { getComparativo } from '../api'
 import styles from './ComparativoChart.module.css'
@@ -9,15 +9,20 @@ import styles from './ComparativoChart.module.css'
 const fmt = (v) =>
   Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
 
+const COLOR_MRR  = '#ccf46a'
+const COLOR_ADES = '#00d4ff'
+
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
   return (
     <div className={styles.tooltip}>
       <p className={styles.tooltipLabel}>{label}</p>
       {payload.map(p => (
-        <p key={p.name} style={{ color: p.color }}>
-          {p.name}: {fmt(p.value)}
-        </p>
+        <div key={p.name} className={styles.tooltipRow}>
+          <span className={styles.tooltipDot} style={{ background: p.color }} />
+          <span style={{ color: 'var(--text1)' }}>{p.name}:</span>
+          <span style={{ color: p.color }}>{fmt(p.value)}</span>
+        </div>
       ))}
     </div>
   )
@@ -29,28 +34,76 @@ export default function ComparativoChart() {
     queryFn: getComparativo,
   })
 
-  const chartData = data.map(d => ({
+  const chartData = data.map((d, i) => ({
     name: d.label,
     MRR: +d.mrr,
     Adesão: +d.adesao,
-    vendas: d.vendas,
+    isLast: i === data.length - 1,
   }))
 
   return (
     <div className={`card ${styles.card}`}>
-      <h3 className={styles.title}>Comparativo — Últimos 6 Meses</h3>
+      <div className={styles.titleRow}>
+        <h3 className={styles.title}>MRR — Últimos 6 Meses</h3>
+        <div className={styles.legend}>
+          <span className={styles.legendItem}>
+            <span className={styles.legendDot} style={{ background: COLOR_MRR }} />
+            MRR
+          </span>
+          <span className={styles.legendItem}>
+            <span className={styles.legendDot} style={{ background: COLOR_ADES }} />
+            Adesão
+          </span>
+        </div>
+      </div>
+
       {isLoading ? (
         <div className={styles.loading}>Carregando...</div>
       ) : (
-        <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={chartData} barGap={4} barCategoryGap="30%">
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-            <XAxis dataKey="name" tick={{ fill: 'var(--muted)', fontSize: 12 }} axisLine={false} tickLine={false} />
-            <YAxis tickFormatter={v => `R$${(v/1000).toFixed(0)}k`} tick={{ fill: 'var(--muted)', fontSize: 11 }} axisLine={false} tickLine={false} />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,.04)' }} />
-            <Legend wrapperStyle={{ fontSize: 12, color: 'var(--muted)' }} />
-            <Bar dataKey="MRR"    fill="rgba(204,244,106,.8)" radius={[4,4,0,0]} />
-            <Bar dataKey="Adesão" fill="rgba(96,165,250,.8)"  radius={[4,4,0,0]} />
+        <ResponsiveContainer width="100%" height={210}>
+          <BarChart data={chartData} barGap={3} barCategoryGap="32%">
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="var(--border)"
+              vertical={false}
+            />
+            <XAxis
+              dataKey="name"
+              tick={{ fill: 'var(--muted)', fontSize: 11, fontFamily: 'var(--mono)', fontWeight: 600 }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <YAxis
+              tickFormatter={v => `${(v / 1000).toFixed(0)}k`}
+              tick={{ fill: 'var(--muted)', fontSize: 10, fontFamily: 'var(--mono)' }}
+              axisLine={false}
+              tickLine={false}
+              width={32}
+            />
+            <Tooltip
+              content={<CustomTooltip />}
+              cursor={{ fill: 'rgba(255,255,255,.04)' }}
+            />
+            <Bar dataKey="MRR" radius={[5, 5, 0, 0]}>
+              {chartData.map((entry, i) => (
+                <Cell
+                  key={i}
+                  fill={entry.isLast
+                    ? COLOR_MRR
+                    : 'rgba(204,244,106,.35)'}
+                />
+              ))}
+            </Bar>
+            <Bar dataKey="Adesão" radius={[5, 5, 0, 0]}>
+              {chartData.map((entry, i) => (
+                <Cell
+                  key={i}
+                  fill={entry.isLast
+                    ? COLOR_ADES
+                    : 'rgba(0,212,255,.3)'}
+                />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       )}

@@ -1,0 +1,130 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Cabeçalho ── */
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.title {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+  margin: 0;
+}
+
+.statusBadge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+.statusBadge.green  { color: var(--c-green);  background: rgba(204,244,106,.12); }
+.statusBadge.yellow { color: var(--c-yellow); background: rgba(255,184,48,.12); }
+.statusBadge.red    { color: var(--c-red);    background: rgba(255,77,106,.12); }
+
+/* ── Valor principal ── */
+.mainVal {
+  font-family: var(--mono);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.mainVal.green  { color: var(--c-green); }
+.mainVal.yellow { color: var(--c-yellow); }
+.mainVal.red    { color: var(--c-red); }
+
+.mainSub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+
+/* ── Progress bar ── */
+.barSection { margin-bottom: 14px; }
+
+.barHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.barLabel {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .9px;
+  color: var(--muted);
+}
+.barVal {
+  font-size: 10px;
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--text1);
+}
+
+.barTrack {
+  background: var(--surface2);
+  border-radius: 999px;
+  height: 7px;
+  overflow: hidden;
+}
+.barFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width .8s cubic-bezier(.4,0,.2,1);
+}
+.barFill.green  { background: var(--c-green); }
+.barFill.yellow { background: var(--c-yellow); }
+.barFill.red    { background: var(--c-red); }
+.barFill.dim    { background: rgba(255,255,255,.12); }
+.barFill.blue   { background: var(--c-blue, #4f8ef7); }
+
+/* ── Grid de métricas ── */
+.metricas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  margin-top: 4px;
+}
+
+.metrica { display: flex; flex-direction: column; gap: 3px; }
+
+.mLabel {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .9px;
+  color: var(--muted);
+}
+
+.mVal {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.mVal.green  { color: var(--c-green); }
+.mVal.yellow { color: var(--c-yellow); }
+.mVal.red    { color: var(--c-red); }
+.mVal.muted  { color: var(--muted); }
+
+.mSuffix {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 2px;
+}

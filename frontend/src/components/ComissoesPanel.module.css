@@ -4,45 +4,214 @@
   gap: 20px;
 }
 
+/* ── Cards base ── */
 .formCard, .listaCard {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 0;
 }
 
-.title { font-size: 14px; font-weight: 600; }
+/* ── Títulos de seção ── */
+.title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 18px;
+}
 
+/* ── Seletor de mês ── */
+.mesLabel {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.mesGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.mesCard {
+  padding: 5px 13px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+  position: relative;
+  font-family: var(--mono);
+  letter-spacing: .03em;
+}
+.mesCard:hover {
+  border-color: var(--c-green);
+  color: var(--text);
+}
+.mesCardOn {
+  background: var(--c-green);
+  border-color: var(--c-green);
+  color: #05070d;
+}
+.mesCardOn:hover { background: var(--c-green); color: #05070d; }
+
+.mesCardExiste {
+  border-color: rgba(204,244,106,.3);
+  color: var(--text1);
+}
+.mesCardExiste.mesCardOn {
+  background: var(--c-green);
+  color: #05070d;
+}
+
+.dot {
+  position: absolute;
+  top: 3px; right: 3px;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--c-green);
+}
+.mesCardOn .dot { background: #05070d; }
+
+/* ── Painel de cálculo ── */
+.calcBox {
+  margin: 16px 0;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(204,244,106,.18);
+  background: rgba(204,244,106,.04);
+}
+.calcLoading {
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+}
+.calcTitle {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--c-green);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 14px;
+}
+.calcGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px 20px;
+}
+.calcItem { display: flex; flex-direction: column; gap: 3px; }
+.calcKey {
+  font-size: 9px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  font-weight: 700;
+}
+.calcVal      { font-size: 13px; font-weight: 700; color: var(--text); font-family: var(--mono); }
+.calcValRed   { font-size: 13px; font-weight: 700; color: var(--c-red);   font-family: var(--mono); }
+.calcValGreen { font-size: 13px; font-weight: 700; color: var(--c-green); font-family: var(--mono); }
+.calcNote {
+  margin-top: 12px;
+  font-size: 10px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ── Resumo total pago ── */
+.totalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(204,244,106,.06);
+  border: 1px solid rgba(204,244,106,.15);
+  border-radius: 10px;
+  margin: 16px 0 4px;
+}
+.totalLabel {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .9px;
+  color: var(--muted);
+}
+.totalVal {
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c-green);
+}
+
+/* ── Tabela histórico ── */
 .empty {
   color: var(--muted);
   font-size: 13px;
   text-align: center;
-  padding: 24px 0;
+  padding: 28px 0;
 }
 
-.tableWrap { overflow-x: auto; }
+.tableWrap { overflow-x: auto; margin-top: 4px; }
 
 .table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
 }
-
 .table th {
   text-align: left;
-  padding: 8px 10px;
-  font-size: 11px;
+  padding: 0 12px 10px;
+  font-size: 9px;
   color: var(--muted);
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .5px;
+  letter-spacing: 1px;
   border-bottom: 1px solid var(--border);
 }
-
 .table td {
-  padding: 10px;
+  padding: 11px 12px;
   border-bottom: 1px solid var(--border);
+  font-size: 13px;
 }
-
+.table tbody tr:hover td { background: rgba(255,255,255,.02); }
 .table tbody tr:last-child td { border-bottom: none; }
 
-.mono { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--mono); font-weight: 600; }
 .muted { color: var(--muted); font-size: 12px; }
+.green { color: var(--c-green); }
+.mesBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--mono);
+  background: rgba(204,244,106,.1);
+  color: var(--c-green);
+}
+
+/* ── Botão excluir pequeno ── */
+.btnDel {
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,77,106,.25);
+  background: rgba(255,77,106,.08);
+  color: var(--c-red);
+  cursor: pointer;
+  transition: all .15s;
+  font-family: var(--sans);
+  font-weight: 600;
+}
+.btnDel:hover {
+  background: rgba(255,77,106,.18);
+  border-color: var(--c-red);
+}
