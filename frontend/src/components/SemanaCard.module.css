@@ -1,0 +1,204 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 10px;
+  color: var(--c-green);
+  font-weight: 600;
+}
+
+/* ── Abas de semana ── */
+.weekTabs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.weekTab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 6px;
+  border-radius: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  transition: all .15s;
+}
+
+.weekTabActive {
+  background: rgba(79,142,247,.1);
+  border-color: rgba(79,142,247,.3);
+}
+
+.weekTabFut { opacity: .45; }
+
+.weekTabLabel {
+  font-size: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.weekTabPct {
+  font-family: var(--mono);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.weekTabVal {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+/* ── Detalhes semana atual ── */
+.currentWeek {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 14px;
+  background: rgba(255,255,255,.02);
+}
+
+.currentWeekHeader {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .9px;
+  margin-bottom: 10px;
+}
+
+.barTrack {
+  background: var(--surface2);
+  border-radius: 999px;
+  height: 7px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.barFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+
+.barPct {
+  font-size: 10px;
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.vendFalt {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+}
+
+.vfItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.vfItem:last-child { align-items: flex-end; }
+
+.vfDivider {
+  width: 1px;
+  background: var(--border);
+  margin: 0 14px;
+}
+
+.vfLabel {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .9px;
+  color: var(--muted);
+}
+
+.vfVal {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+/* ── Tabela compacta ── */
+.tableWrap {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.tableHead {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr 1fr;
+  padding: 0 8px 7px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr 1fr;
+  padding: 7px 8px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text1);
+  align-items: center;
+}
+
+.tableRowCur {
+  background: rgba(79,142,247,.07);
+  color: var(--text);
+  border: 1px solid rgba(79,142,247,.15);
+}
+
+.tableRowFut { opacity: .4; }
+
+.tableS {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 11px;
+}
+
+.tableRange {
+  font-size: 9px;
+  color: var(--muted);
+  font-weight: 400;
+  font-family: var(--sans);
+  margin-left: 3px;
+}
+
+.muted { color: var(--muted); }
+.green { color: var(--c-green); }
+.red   { color: var(--c-red); }
