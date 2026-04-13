@@ -53,6 +53,29 @@ def _como_lista(resp) -> list:
     return []
 
 
+# ── DEBUG (temporário) ───────────────────────────────────────────────────────
+
+@router.get("/debug")
+async def debug_nectar():
+    """Diagnóstico — mostra resposta bruta do Nectar sem lançar exceção."""
+    async with httpx.AsyncClient() as c:
+        results = {}
+        for endpoint in ["/pipelines/", "/oportunidades/", "/contatos/"]:
+            try:
+                r = await c.get(
+                    f"{NECTAR_BASE_URL}{endpoint}",
+                    headers=_headers(),
+                    timeout=10,
+                )
+                results[endpoint] = {"status": r.status_code, "body": r.text[:300]}
+            except Exception as e:
+                results[endpoint] = {"erro": str(e)}
+        return {
+            "token_extraido": NECTAR_API_KEY[:30] + "..." if NECTAR_API_KEY else "VAZIO",
+            "endpoints": results,
+        }
+
+
 # ── STATUS ───────────────────────────────────────────────────────────────────
 
 @router.get("/status")
