@@ -92,6 +92,7 @@ export default function TabelaVendas({ mes, onEditar }) {
                 <th>MRR</th>
                 <th>Adesão</th>
                 <th>Status</th>
+                <th>Origem</th>
                 <th></th>
               </tr>
             </thead>
@@ -108,6 +109,7 @@ export default function TabelaVendas({ mes, onEditar }) {
                   <td className={styles.mono}>{fmt(v.mrr)}</td>
                   <td className={styles.mono}>{fmt(v.adesao)}</td>
                   <td><Badge status={v.status} /></td>
+                  <td className={styles.muted}>{v.origem || '—'}</td>
                   <td>
                     <div className={styles.actions}>
                       <button

@@ -1,0 +1,23 @@
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* A transição fica no CSS — só o filter dinâmico fica como inline style */
+.gaugeArc {
+  transition: stroke-dasharray .6s ease;
+}
+
+.gaugePct {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.gaugeLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}

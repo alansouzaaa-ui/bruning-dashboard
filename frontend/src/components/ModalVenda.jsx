@@ -8,8 +8,13 @@ const EMPTY = {
   data: new Date().toISOString().slice(0, 10),
   cod: '', cliente: '', cnpj: '', segmento: '', plano: '',
   contrato: 'Mensal', mrr: '', adesao: '', churn_mrr: '',
-  status: 'Ativo', tipo: '', obs: '',
+  status: 'Ativo', tipo: '', origem: '', obs: '',
 }
+
+const ORIGENS = [
+  '', 'Indicação', 'Prospecção Ativa', 'LinkedIn', 'Evento', 'Cold Call',
+  'Parceiro', 'Site / Inbound', 'Rede Social', 'Outro',
+]
 
 export default function ModalVenda({ venda, onClose }) {
   const [form, setForm] = useState(EMPTY)
@@ -33,6 +38,7 @@ export default function ModalVenda({ venda, onClose }) {
         churn_mrr: venda.churn_mrr != null ? String(venda.churn_mrr) : '',
         status:    venda.status || 'Ativo',
         tipo:      venda.tipo || '',
+        origem:    venda.origem || '',
         obs:       venda.obs || '',
       })
       setShowChurn(venda.status === 'Cancelado')
@@ -107,6 +113,7 @@ export default function ModalVenda({ venda, onClose }) {
       churn_mrr: parseFloat(form.churn_mrr) || 0,
       status:    form.status || null,
       tipo:      form.tipo || null,
+      origem:    form.origem || null,
       obs:       form.obs || null,
     }
 
@@ -178,6 +185,12 @@ export default function ModalVenda({ venda, onClose }) {
             <div className="field">
               <label>Tipo</label>
               <input value={form.tipo} onChange={e => set('tipo', e.target.value)} placeholder="ex: Novo, Expansão" />
+            </div>
+            <div className="field">
+              <label>Origem</label>
+              <select value={form.origem} onChange={e => set('origem', e.target.value)}>
+                {ORIGENS.map(o => <option key={o} value={o}>{o || '— selecione —'}</option>)}
+              </select>
             </div>
 
             <div className="field">
