@@ -39,7 +39,7 @@ function KPICard({ icon, title, value, sub, trend, color = 'green' }) {
 }
 
 export default function KPICards({ mes }) {
-  const { data: kpis, isLoading } = useQuery({
+  const { data: kpis, isLoading, isError } = useQuery({
     queryKey: ['kpis', mes],
     queryFn: () => getKPIs(mes),
   })
@@ -56,11 +56,26 @@ export default function KPICards({ mes }) {
     enabled: !!mesPrev && !!mes,
   })
 
-  if (isLoading || !kpis) {
+  if (isLoading) {
     return (
       <div className={styles.grid}>
         {Array.from({ length: 7 }).map((_, i) => (
           <div key={i} className={styles.skeleton} />
+        ))}
+      </div>
+    )
+  }
+
+  if (isError || !kpis) {
+    return (
+      <div className={styles.grid}>
+        {Array.from({ length: 7 }).map((_, i) => (
+          <div key={i} className={`${styles.card} ${styles.green}`} style={{ opacity: .4 }}>
+            <div className={styles.inner}>
+              <span className={styles.title}>—</span>
+              <span className={styles.value}>—</span>
+            </div>
+          </div>
         ))}
       </div>
     )

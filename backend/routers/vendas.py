@@ -76,23 +76,32 @@ def kpis(
     mes: Optional[str] = Query(None),
     db: Session = Depends(get_db),
 ):
-    q = db.query(Venda)
+    # ── Portfólio atual (sem filtro de data) ──────────────
+    # MRR e carteira refletem o estado ATUAL do negócio,
+    # independente de quando o cliente foi cadastrado.
+    todos  = db.query(Venda).all()
+    ativos = [v for v in todos if v.status == "Ativo"]
+    anuais = [v for v in ativos if v.contrato == "Anual"]
+
+    total_mrr = sum(float(v.mrr or 0) for v in ativos)
+    ticket    = total_mrr / len(ativos) if ativos else 0
+
+    # ── Movimentações do período (com filtro de data) ─────
+    # Adesão e churns são métricas do período selecionado.
+    q_periodo = db.query(Venda)
     if mes:
         ano, m = mes.split("-")
-        q = q.filter(
+        q_periodo = q_periodo.filter(
             extract("year",  Venda.data) == int(ano),
             extract("month", Venda.data) == int(m),
         )
 
-    todas    = q.all()
-    ativos   = [v for v in todas if v.status == "Ativo"]
-    anuais   = [v for v in ativos if v.contrato == "Anual"]
-    churns   = [v for v in todas if v.status == "Cancelado"]
+    periodo      = q_periodo.all()
+    churns       = [v for v in periodo if v.status == "Cancelado"]
+    novas_vendas = [v for v in periodo if v.status != "Cancelado"]
 
-    total_mrr    = sum(float(v.mrr)    for v in ativos)
-    total_adesao = sum(float(v.adesao) for v in todas)
-    churn_mrr    = sum(float(v.churn_mrr) for v in churns)
-    ticket       = total_mrr / len(ativos) if ativos else 0
+    total_adesao = sum(float(v.adesao    or 0) for v in novas_vendas)
+    churn_mrr    = sum(float(v.churn_mrr or 0) for v in churns)
 
     return KPIOut(
         total_mrr    = Decimal(str(round(total_mrr, 2))),
