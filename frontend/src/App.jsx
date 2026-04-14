@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getMeses } from './api'
-import { mesAtual } from './utils/date'
 import { ToastProvider } from './components/Toast'
 import Header from './components/Header'
 import KPICards from './components/KPICards'
