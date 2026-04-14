@@ -76,32 +76,23 @@ def kpis(
     mes: Optional[str] = Query(None),
     db: Session = Depends(get_db),
 ):
-    # ── Portfólio atual (sem filtro de data) ──────────────
-    # MRR e carteira refletem o estado ATUAL do negócio,
-    # independente de quando o cliente foi cadastrado.
-    todos  = db.query(Venda).all()
-    ativos = [v for v in todos if v.status == "Ativo"]
-    anuais = [v for v in ativos if v.contrato == "Anual"]
-
-    total_mrr = sum(float(v.mrr or 0) for v in ativos)
-    ticket    = total_mrr / len(ativos) if ativos else 0
-
-    # ── Movimentações do período (com filtro de data) ─────
-    # Adesão e churns são métricas do período selecionado.
-    q_periodo = db.query(Venda)
+    q = db.query(Venda)
     if mes:
         ano, m = mes.split("-")
-        q_periodo = q_periodo.filter(
+        q = q.filter(
             extract("year",  Venda.data) == int(ano),
             extract("month", Venda.data) == int(m),
         )
 
-    periodo      = q_periodo.all()
-    churns       = [v for v in periodo if v.status == "Cancelado"]
-    novas_vendas = [v for v in periodo if v.status != "Cancelado"]
+    todas    = q.all()
+    ativos   = [v for v in todas if v.status == "Ativo"]
+    anuais   = [v for v in ativos if v.contrato == "Anual"]
+    churns   = [v for v in todas if v.status == "Cancelado"]
 
-    total_adesao = sum(float(v.adesao    or 0) for v in novas_vendas)
+    total_mrr    = sum(float(v.mrr    or 0) for v in ativos)
+    total_adesao = sum(float(v.adesao or 0) for v in todas)
     churn_mrr    = sum(float(v.churn_mrr or 0) for v in churns)
+    ticket       = total_mrr / len(ativos) if ativos else 0
 
     return KPIOut(
         total_mrr    = Decimal(str(round(total_mrr, 2))),
@@ -145,6 +136,33 @@ def comparativo(db: Session = Depends(get_db)):
             vendas = int(r.vendas),
         ))
     return resultado
+
+
+# ── DIAGNÓSTICO (temporário) ─────────────────────────────
+@router.get("/debug-kpis")
+def debug_kpis(db: Session = Depends(get_db)):
+    """Retorna contagem de registros agrupados por mês e status para diagnóstico."""
+    rows = (
+        db.query(
+            extract("year",  Venda.data).label("ano"),
+            extract("month", Venda.data).label("mes"),
+            Venda.status,
+            func.count(Venda.id).label("qtd"),
+            func.sum(Venda.mrr).label("mrr"),
+        )
+        .group_by("ano", "mes", Venda.status)
+        .order_by("ano", "mes")
+        .all()
+    )
+    return [
+        {
+            "mes":    f"{int(r.ano)}-{str(int(r.mes)).zfill(2)}",
+            "status": r.status,
+            "qtd":    int(r.qtd),
+            "mrr":    float(r.mrr or 0),
+        }
+        for r in rows
+    ]
 
 
 # ── MESES DISPONÍVEIS ────────────────────────────────────
