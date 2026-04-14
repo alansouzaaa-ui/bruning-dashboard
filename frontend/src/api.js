@@ -1,11 +1,16 @@
 import axios from 'axios'
 
 const BASE    = import.meta.env.VITE_API_URL || 'http://localhost:8000'
-const API_KEY = import.meta.env.VITE_API_KEY || 'bruning-dashboard-2026'
+const API_KEY = import.meta.env.VITE_API_KEY || ''
+
+if (!API_KEY && import.meta.env.PROD) {
+  console.error('[api.js] VITE_API_KEY não está configurado. Defina a variável de ambiente no Vercel.')
+}
 
 const api = axios.create({
   baseURL: BASE,
   headers: { Authorization: `Bearer ${API_KEY}` },
+  timeout: 20000,
 })
 
 // ── Vendas ──────────────────────────────────────────────

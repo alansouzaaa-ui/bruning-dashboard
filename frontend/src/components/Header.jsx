@@ -28,15 +28,18 @@ function MonthNav({ meses, mesFiltro, setMesFiltro }) {
 
   function navProximo() {
     if (isAll || ehUltimo) return
-    const proximo = sorted[idx + 1]
-    setMesFiltro(proximo.valor === ultimo ? '' : proximo.valor)
+    setMesFiltro(sorted[idx + 1].valor)
+  }
+
+  function irParaUltimo() {
+    if (ultimo) setMesFiltro(ultimo)
   }
 
   return (
     <div className={styles.monthNav}>
       <button
         className={`${styles.todosBtn} ${isAll ? styles.todosActive : ''}`}
-        onClick={() => setMesFiltro(isAll ? '' : 'all')}
+        onClick={() => setMesFiltro(isAll ? (ultimo || 'all') : 'all')}
         title={isAll ? 'Voltar ao mês atual' : 'Ver todos os meses'}
         type="button"
       >
@@ -53,9 +56,9 @@ function MonthNav({ meses, mesFiltro, setMesFiltro }) {
           ‹
         </button>
         <button
-          className={`${styles.mesLabel} ${!mesFiltro && !isAll ? styles.mesHoje : ''}`}
-          onClick={() => setMesFiltro('')}
-          title={mesFiltro && !isAll ? 'Clique para voltar ao mês atual' : 'Mês atual'}
+          className={`${styles.mesLabel} ${mesFiltro === ultimo && !isAll ? styles.mesHoje : ''}`}
+          onClick={irParaUltimo}
+          title="Ir para o mês mais recente"
           disabled={isAll}
           type="button"
         >

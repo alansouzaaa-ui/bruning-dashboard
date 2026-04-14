@@ -29,11 +29,9 @@ export default function App() {
     queryFn: getMeses,
   })
 
-  // 'all'    → todos os meses (sem filtro, passa null para as queries)
-  // ''       → último mês com dados no BD (alinhado com o que o MonthNav exibe)
-  // 'YYYY-MM' → mês específico
-  const ultimoMes = [...meses].sort((a, b) => a.valor.localeCompare(b.valor)).at(-1)?.valor
-  const mesResolvido = mesFiltro === 'all' ? null : (mesFiltro || ultimoMes || mesAtual())
+  // 'all'     → todos os meses — passa null para as queries (sem filtro)
+  // 'YYYY-MM' → mês específico — passa direto para as queries
+  const mesResolvido = mesFiltro === 'all' ? null : mesFiltro || null
 
   function abrirNovaVenda() {
     setVendaEditar(null)
