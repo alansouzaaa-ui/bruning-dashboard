@@ -18,7 +18,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 import './App.css'
 
 export default function App() {
-  const [mesFiltro, setMesFiltro] = useState('')
+  const [mesFiltro, setMesFiltro] = useState('all')
   const [aba, setAba]             = useState('dashboard')
 
   const [modalAberto, setModalAberto] = useState(false)

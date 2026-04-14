@@ -76,16 +76,8 @@ def kpis(
     mes: Optional[str] = Query(None),
     db: Session = Depends(get_db),
 ):
-    # MRR / carteira / ticket — portfólio atual completo (sem filtro de data).
-    # Um cliente que entrou em Nov/2024 e ainda está Ativo SEMPRE contribui
-    # para o MRR, independente do mês selecionado no filtro.
-    todos_ativos  = [v for v in db.query(Venda).all() if v.status == "Ativo"]
-    anuais        = [v for v in todos_ativos if v.contrato == "Anual"]
-    total_mrr     = sum(float(v.mrr or 0) for v in todos_ativos)
-    ticket        = total_mrr / len(todos_ativos) if todos_ativos else 0
-
-    # Adesão / churns — movimentações do período selecionado.
-    # Filtra pela data da venda para mostrar o que ACONTECEU naquele mês.
+    # Sem filtro  → Todos os meses  (aba "Todos")
+    # Com filtro  → Apenas o mês X  (aba individual)
     q = db.query(Venda)
     if mes:
         ano, m = mes.split("-")
@@ -93,17 +85,23 @@ def kpis(
             extract("year",  Venda.data) == int(ano),
             extract("month", Venda.data) == int(m),
         )
-    periodo      = q.all()
-    churns       = [v for v in periodo if v.status == "Cancelado"]
-    total_adesao = sum(float(v.adesao    or 0) for v in periodo if v.status != "Cancelado")
+
+    todas    = q.all()
+    ativos   = [v for v in todas if v.status == "Ativo"]
+    anuais   = [v for v in ativos if v.contrato == "Anual"]
+    churns   = [v for v in todas if v.status == "Cancelado"]
+
+    total_mrr    = sum(float(v.mrr       or 0) for v in ativos)
+    total_adesao = sum(float(v.adesao    or 0) for v in todas)
     churn_mrr    = sum(float(v.churn_mrr or 0) for v in churns)
+    ticket       = total_mrr / len(ativos) if ativos else 0
 
     return KPIOut(
         total_mrr    = Decimal(str(round(total_mrr, 2))),
         total_adesao = Decimal(str(round(total_adesao, 2))),
-        ativos       = len(todos_ativos),
+        ativos       = len(ativos),
         anuais       = len(anuais),
-        mensais      = len(todos_ativos) - len(anuais),
+        mensais      = len(ativos) - len(anuais),
         ticket_medio = Decimal(str(round(ticket, 2))),
         churns       = len(churns),
         churn_mrr    = Decimal(str(round(churn_mrr, 2))),
