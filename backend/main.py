@@ -1,10 +1,12 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import text
+from sqlalchemy import text, extract, func
 
-from database import engine, Base
+from database import engine, Base, get_db
 from routers import vendas, comissoes, configs, trimestral, crm
 from auth import verify_token
+from models import Venda
+from sqlalchemy.orm import Session
 
 # Cria as tabelas no banco ao iniciar
 Base.metadata.create_all(bind=engine)
@@ -55,3 +57,29 @@ def root():
 @app.get("/health")
 def health():
     return {"status": "healthy"}
+
+
+# Diagnóstico temporário — sem auth, para inspeção dos dados
+@app.get("/diag")
+def diag(db: Session = Depends(get_db)):
+    rows = (
+        db.query(
+            extract("year",  Venda.data).label("ano"),
+            extract("month", Venda.data).label("mes"),
+            Venda.status,
+            func.count(Venda.id).label("qtd"),
+            func.sum(Venda.mrr).label("mrr"),
+        )
+        .group_by("ano", "mes", Venda.status)
+        .order_by("ano", "mes")
+        .all()
+    )
+    return [
+        {
+            "mes":    f"{int(r.ano)}-{str(int(r.mes)).zfill(2)}",
+            "status": r.status,
+            "qtd":    int(r.qtd),
+            "mrr":    float(r.mrr or 0),
+        }
+        for r in rows
+    ]
