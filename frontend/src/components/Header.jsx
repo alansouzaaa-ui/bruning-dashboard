@@ -126,6 +126,12 @@ export default function Header({ aba, setAba, meses, mesFiltro, setMesFiltro, on
             CRM
             <span className={styles.crmTag}>Nectar</span>
           </button>
+          <button
+            className={`${aba === 'concorrentes' ? styles.active : ''} ${styles.concBtn}`}
+            onClick={() => setAba('concorrentes')}
+          >
+            Concorrentes
+          </button>
         </nav>
       </div>
 

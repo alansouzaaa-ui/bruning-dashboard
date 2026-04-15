@@ -1,0 +1,516 @@
+/* ── Panel wrapper ── */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.panelTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text1);
+  margin: 0 0 4px;
+  letter-spacing: -0.3px;
+}
+
+.panelSub {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.resumoBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.resumoBadge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+/* ── Tabs internas ── */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.tab {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 18px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+  white-space: nowrap;
+}
+.tab:hover { color: var(--text1); }
+.tabActive {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ── Aba content wrapper ── */
+.abaContent {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Filtros ── */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.filtroBtn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.filtroBtn:hover { border-color: var(--accent); color: var(--text1); }
+.filtroBtnActive {
+  border-color: var(--accent);
+  background: rgba(204, 244, 106, .12);
+  color: var(--accent);
+}
+
+/* ── Cards de concorrentes ── */
+.concGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.concCard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color .15s;
+}
+.concCard:hover { border-color: rgba(204, 244, 106, .3); }
+.concCardOpen  { border-color: rgba(204, 244, 106, .5); }
+
+.concCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  cursor: pointer;
+  gap: 12px;
+}
+
+.concCardHeaderLeft {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.concNome {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text1);
+  white-space: nowrap;
+}
+
+.grupoBadge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 20px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.concCardHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.precoBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.precoLabel {
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.expandIcon {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.concModelo {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+  padding: 0 16px 12px;
+  line-height: 1.5;
+}
+
+.concDetalhes {
+  border-top: 1px solid var(--border);
+  padding: 16px;
+  background: rgba(255,255,255,.02);
+}
+
+.detRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .detRow { grid-template-columns: 1fr; }
+}
+
+.detCol {}
+
+.detTitulo {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin: 0 0 8px;
+}
+
+.detList {
+  margin: 0;
+  padding: 0 0 0 14px;
+  list-style: disc;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.7;
+}
+.detList li { color: var(--text); }
+
+.nota {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0;
+  font-style: italic;
+}
+
+/* ── Aba 2: Bruning vs Mercado ── */
+.vsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text1);
+  margin: 0 0 16px;
+  letter-spacing: -0.2px;
+}
+
+/* SWOT */
+.swotWrapper {}
+
+.swotGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 2px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.swotQuad {
+  background: var(--card);
+  padding: 16px 18px;
+}
+.swotQuad h4 {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  margin: 0 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.swotQuad h4 span {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+}
+.swotQuad ul {
+  margin: 0;
+  padding: 0 0 0 14px;
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.swotF { border-bottom: 2px solid var(--border); }
+.swotW { border-bottom: 2px solid var(--border); border-left: 2px solid var(--border); }
+.swotO { }
+.swotT { border-left: 2px solid var(--border); }
+
+.swotF h4 { color: #4ade80; }
+.swotF h4 span { background: #4ade8022; color: #4ade80; }
+
+.swotW h4 { color: #fb7185; }
+.swotW h4 span { background: #fb718522; color: #fb7185; }
+
+.swotO h4 { color: #60a5fa; }
+.swotO h4 span { background: #60a5fa22; color: #60a5fa; }
+
+.swotT h4 { color: #f59e0b; }
+.swotT h4 span { background: #f59e0b22; color: #f59e0b; }
+
+/* Tabela atributos */
+.atribWrapper {}
+
+.atribTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.atribTable th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.atribTable td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: middle;
+}
+.atribTable tr:last-child td { border-bottom: none; }
+.atribTable tr:hover td { background: rgba(255,255,255,.02); }
+.atribTable td:first-child {
+  color: var(--text1);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ── Aba 3: Posicionamento ── */
+.arquSubtitle {
+  font-size: 13px;
+  color: var(--muted);
+  margin: -8px 0 20px;
+  line-height: 1.6;
+  max-width: 700px;
+}
+
+.arquGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.arquCard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  gap: 14px;
+  transition: border-color .2s, transform .15s;
+}
+.arquCard:hover { transform: translateY(-1px); }
+.arquCardBruning {
+  border-width: 2px;
+  background: rgba(204, 244, 106, .04);
+}
+
+.arquIconWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.arquIcon { font-size: 20px; }
+
+.arquBody {
+  flex: 1;
+  min-width: 0;
+}
+
+.arquTituloRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.arquTitulo {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+}
+.bruningTag {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(204,244,106,.15);
+  padding: 2px 7px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+.arquDesc {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 8px;
+  line-height: 1.5;
+}
+.arquExemplo {
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0;
+}
+.arquExemplo strong { color: var(--text); }
+
+/* ── Mapa 2x2 ── */
+.mapaWrapper {}
+
+.mapa2x2 {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  grid-template-rows: 1fr 28px;
+  gap: 4px;
+  height: 340px;
+}
+
+.mapaAxisY {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 8px 0;
+}
+
+.mapaAxisX {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 0 8px;
+}
+
+.mapaQuads {
+  grid-column: 2;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 2px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.mapaQuad {
+  background: var(--card);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mapaQuadDestaque {
+  background: rgba(204, 244, 106, .04);
+  border: 1px solid rgba(204, 244, 106, .2);
+}
+
+.mapaQuadLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+
+.mapaPlayers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mapaPlayer {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .swotGrid { grid-template-columns: 1fr; }
+  .swotW { border-left: none; border-top: 2px solid var(--border); }
+  .swotT { border-left: none; border-top: 2px solid var(--border); }
+  .mapa2x2 { height: auto; }
+  .mapaAxisY { display: none; }
+  .mapa2x2 { grid-template-columns: 1fr; }
+  .mapaQuads { grid-column: 1; }
+  .mapaAxisX { grid-column: 1; }
+  .panelHeader { flex-direction: column; }
+}

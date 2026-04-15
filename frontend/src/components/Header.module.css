@@ -167,3 +167,20 @@
   text-transform: uppercase;
   letter-spacing: .03em;
 }
+
+/* ── Botão Concorrentes ── */
+.concBtn {
+  position: relative;
+}
+.concBtn::after {
+  content: 'MAP';
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 7px;
+  font-weight: 800;
+  color: #f59e0b;
+  letter-spacing: .04em;
+  line-height: 1;
+  pointer-events: none;
+}

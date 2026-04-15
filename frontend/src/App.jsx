@@ -11,6 +11,7 @@ import ModalVenda from './components/ModalVenda'
 import ComissoesPanel from './components/ComissoesPanel'
 import AvaliacaoTrimestral from './components/AvaliacaoTrimestral'
 import CRMPanel from './components/CRMPanel'
+import ConcorrentesPanel from './components/ConcorrentesPanel'
 import SemanaCard from './components/SemanaCard'
 import RitmoDiarioCard from './components/RitmoDiarioCard'
 import ErrorBoundary from './components/ErrorBoundary'
@@ -113,6 +114,14 @@ export default function App() {
           <main className="main">
             <ErrorBoundary>
               <CRMPanel mes={mesResolvido} />
+            </ErrorBoundary>
+          </main>
+        )}
+
+        {aba === 'concorrentes' && (
+          <main className="main">
+            <ErrorBoundary>
+              <ConcorrentesPanel />
             </ErrorBoundary>
           </main>
         )}
