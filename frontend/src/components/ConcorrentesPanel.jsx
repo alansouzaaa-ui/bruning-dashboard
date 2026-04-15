@@ -2,268 +2,400 @@ import { useState } from 'react'
 import styles from './ConcorrentesPanel.module.css'
 
 /* ─────────────────────────────────────────────────
-   DADOS HARDCODED — atualizar conforme mercado muda
+   DADOS DO PDF "Análise de Concorrentes – Bruning Sistemas"
+   Comparativo de soluções SaaS para gestão de oficinas
    ───────────────────────────────────────────────── */
 
 const GRUPOS = {
-  core:        { label: 'Concorrência Direta', cor: '#ccf46a' },
-  baixo_custo: { label: 'Baixo Custo / Atacado', cor: '#60a5fa' },
-  simples:     { label: 'Simples / Regional', cor: '#f59e0b' },
-  erp:         { label: 'ERP / Soluções Digitais', cor: '#a78bfa' },
-  automotivo:  { label: 'Redes Automotivas', cor: '#fb7185' },
+  core:       { label: 'Concorrência Direta', cor: '#ccf46a' },
+  simples:    { label: 'Simplicidade + Mobile', cor: '#60a5fa' },
+  baixo_custo:{ label: 'Baixo Custo / Entrada', cor: '#f59e0b' },
+  erp:        { label: 'ERP Horizontal', cor: '#a78bfa' },
+  automotivo: { label: 'Automotivo Específico', cor: '#fb7185' },
 }
 
 const CONCORRENTES = [
   {
     id: 1,
-    nome: 'Rolamentos do Sul',
+    nome: 'Ultracar',
     grupo: 'core',
-    modelo: 'Distribuidor especializado',
-    posicionamento: 'Amplo portfólio, forte em rolamentos industriais e automotivos',
-    precoMin: 0.95,
-    precoMax: 1.05,
-    fortes: ['Portfólio amplo', 'Marca consolidada na região', 'Prazo de entrega competitivo'],
-    fracos: ['Atendimento impessoal', 'Pouco suporte técnico pós-venda', 'Sistema legado'],
-    bruningGanha: ['Relacionamento próximo', 'Consultoria técnica', 'Flexibilidade no crédito'],
+    modelo: 'SaaS (web)',
+    posicionamento: 'Oficinas em crescimento — foco exclusivo em gestão de oficinas',
+    precoTexto: 'R$180 – R$472/mês',
+    fortes: [
+      'Foco exclusivo em oficinas',
+      'CRM forte',
+      'Fiscal completo',
+      'Homologada por grandes redes',
+      'Teste grátis disponível',
+      'Reputação sólida no mercado',
+    ],
+    fracos: [
+      'Ticket de entrada mais alto',
+      'App limitado ao pós-venda',
+      'Integração WhatsApp pouco avançada',
+      'Não possui varejo integrado',
+    ],
+    bruningGanha: ['Apps mais completos (Eixo + Job + FV)', 'Integração varejo + oficina', 'Módulo fiscal mais profundo'],
   },
   {
     id: 2,
-    nome: 'SKF Distribuidora Oficial',
+    nome: 'Oficina Integrada',
     grupo: 'core',
-    modelo: 'Representante autorizado',
-    posicionamento: 'Premium — foco em qualidade SKF e suporte técnico especializado',
-    precoMin: 1.10,
-    precoMax: 1.30,
-    fortes: ['Marca SKF reconhecida', 'Suporte técnico forte', 'Garantia extendida'],
-    fracos: ['Preço elevado', 'Mínimo de pedido alto', 'Foco em grandes contas'],
-    bruningGanha: ['Preço mais competitivo', 'Atende pequenas demandas', 'Entrega local mais rápida'],
+    modelo: 'SaaS por usuário',
+    posicionamento: 'Custo-benefício para oficinas pequenas',
+    precoTexto: 'R$119 – R$345/mês',
+    fortes: [
+      'Muito barato',
+      'Fácil de usar',
+      'Emissão NF ilimitada',
+      'Simplicidade de uso',
+      'Site de OS para cliente',
+    ],
+    fracos: [
+      'UX antiga e desatualizada',
+      'Não tem app mobile',
+      'CRM fraco',
+      'Não atende empresas grandes',
+    ],
+    bruningGanha: ['Ganha em tudo (exceto preço)', 'App mobile completo', 'CRM e pós-venda', 'UX moderna'],
   },
   {
     id: 3,
-    nome: 'NSK / NTN Representante',
-    grupo: 'core',
-    modelo: 'Representante multi-marca',
-    posicionamento: 'Marcas japonesas premium com foco no segmento industrial',
-    precoMin: 1.08,
-    precoMax: 1.25,
-    fortes: ['Qualidade NSK/NTN', 'Estoque robusto', 'Rede de assistência técnica'],
-    fracos: ['Prazo de entrega de importados longo', 'Pouca personalização', 'Burocracia'],
-    bruningGanha: ['Agilidade', 'Relacionamento direto', 'Mix complementar com marcas nacionais'],
+    nome: 'Griffo Oficinas',
+    grupo: 'simples',
+    modelo: 'SaaS (web/móvel responsivo)',
+    posicionamento: 'Simplicidade e produtividade para o mecânico',
+    precoTexto: 'R$187 – R$427/mês',
+    fortes: [
+      'Simples e rápido de usar',
+      'Assistente LISA (WhatsApp)',
+      'Forte presença digital e SEO',
+      'Foco na experiência do mecânico',
+      'OS muito ágil',
+      'Trial imediato e autônomo (5 dias)',
+    ],
+    fracos: [
+      'Não possui app nativo',
+      'Fiscal limitado (sem módulo completo)',
+      'Não atende oficinas grandes',
+      'Foco excessivo no fundador (risco de marca pessoal)',
+    ],
+    bruningGanha: ['Robustez e operação', 'Fiscal completo (NF-e/NFS-e/NFC-e)', 'Atende oficinas médias e grandes', 'Módulo varejo (Job)'],
   },
   {
     id: 4,
-    nome: 'Maxima Peças & Rolamentos',
-    grupo: 'core',
-    modelo: 'Distribuidor regional',
-    posicionamento: 'Custo-benefício para frotas e oficinas da região',
-    precoMin: 0.90,
-    precoMax: 1.00,
-    fortes: ['Preço competitivo', 'Estoque local', 'Atendimento ágil'],
-    fracos: ['Portfólio limitado', 'Sem suporte técnico estruturado', 'Marca menos conhecida'],
-    bruningGanha: ['Portfólio mais completo', 'Credibilidade no mercado', 'Consultoria técnica'],
+    nome: 'Mecanie',
+    grupo: 'simples',
+    modelo: 'SaaS (web + app)',
+    posicionamento: 'Oficinas diversas e serviços automotivos',
+    precoTexto: 'R$129 – R$499/mês',
+    fortes: [
+      'Abrange muitas verticais automotivas',
+      'Bom equilíbrio preço/recursos',
+      'Módulos completos',
+    ],
+    fracos: [
+      'UX mediana',
+      'Tabela de preços confusa',
+      'Marca ainda pouco forte no Brasil',
+      'Presença digital agressiva que pressiona SEO',
+    ],
+    bruningGanha: ['+12 anos de credibilidade', 'Profundidade fiscal superior', 'Integração varejo + oficina única no mercado'],
   },
   {
     id: 5,
-    nome: 'Mercado Livre / Atacadão',
-    grupo: 'baixo_custo',
-    modelo: 'Marketplace / E-commerce',
-    posicionamento: 'Preço mínimo, sem serviço, volume alto',
-    precoMin: 0.60,
-    precoMax: 0.80,
-    fortes: ['Preço mais baixo do mercado', 'Disponibilidade imediata', 'Variedade'],
-    fracos: ['Sem garantia confiável', 'Produto possivelmente falsificado', 'Sem assistência técnica', 'Frete elevado para itens grandes'],
-    bruningGanha: ['Qualidade certificada', 'Suporte e garantia reais', 'Relacionamento', 'Nota fiscal garantida'],
+    nome: 'MotorSW',
+    grupo: 'simples',
+    modelo: 'SaaS (web + app MotorOK)',
+    posicionamento: 'Oficinas pequenas/médias — foco em agilidade',
+    precoTexto: 'R$127 – R$237/mês',
+    fortes: [
+      'OS em 30 segundos',
+      'App MotorOK forte',
+      'Módulo de remanufatura exclusivo',
+      'Preço baixo',
+      'Muito simples de operar',
+    ],
+    fracos: [
+      'Marca menos conhecida',
+      'Pouco marketing e visibilidade',
+      'Sem Google Meu Negócio',
+      'Plano básico muito limitado',
+    ],
+    bruningGanha: ['Módulo fiscal completo', 'Integração varejo (Job)', 'Escalabilidade para grandes operações'],
   },
   {
     id: 6,
-    nome: 'Importadora China Direta',
-    grupo: 'baixo_custo',
-    modelo: 'Importação direta / Atacado',
-    posicionamento: 'Volume + preço baixo, sem marca reconhecida',
-    precoMin: 0.50,
-    precoMax: 0.75,
-    fortes: ['Menor custo absoluto', 'Estoque em quantidade'],
-    fracos: ['Qualidade inconsistente', 'Sem suporte', 'Prazo longo de reposição', 'Risco cambial'],
-    bruningGanha: ['Confiabilidade', 'Homologação técnica', 'Entrega imediata', 'Pós-venda'],
+    nome: 'GestãoClick',
+    grupo: 'erp',
+    modelo: 'ERP SaaS generalista',
+    posicionamento: 'ERP geral para comércio e serviços — inclusive oficina',
+    precoTexto: 'R$168 – R$522/mês',
+    fortes: [
+      'Fiscal avançado',
+      'Muitas integrações disponíveis',
+      'Multiempresa',
+      'Dashboard forte',
+      'Reputação excelente no Reclame Aqui',
+    ],
+    fracos: [
+      'Não é especializado em oficina',
+      'App mobile limitado',
+      'Site pesado e complexo',
+      'Sem visão de pátio, checklist automotivo',
+    ],
+    bruningGanha: ['Operação automotiva especializada', 'Módulo de pátio e checklist', 'Histórico de veículo', 'Prova social no setor automotivo'],
   },
   {
     id: 7,
-    nome: 'Peças & Cia (Loja de Bairro)',
-    grupo: 'simples',
-    modelo: 'Varejo tradicional',
-    posicionamento: 'Conveniência local para manutenção corriqueira',
-    precoMin: 1.00,
-    precoMax: 1.15,
-    fortes: ['Proximidade física', 'Relacionamento informal', 'Venda no balcão'],
-    fracos: ['Estoque limitado', 'Sem sistema de gestão', 'Não atende grandes clientes'],
-    bruningGanha: ['Escala de fornecimento', 'Prazo e condições comerciais', 'Portfólio industrial'],
+    nome: 'Tecinco (MekanicWeb / Go)',
+    grupo: 'core',
+    modelo: 'SaaS automotivo',
+    posicionamento: 'Sistema profissional, multi-segmento, 31 anos de mercado',
+    precoTexto: 'Sob consulta',
+    fortes: [
+      'Ecossistema enorme de produtos',
+      'App MekanicGo',
+      'Módulos robustos e integrados',
+      'Muito forte no setor automotivo',
+      '31 anos de experiência',
+    ],
+    fracos: [
+      'Preços não divulgados',
+      'Complexo para iniciantes',
+      'Muitas soluções podem confundir',
+      'UX mais antiga',
+    ],
+    bruningGanha: ['Simplicidade e UX moderna', 'Onboarding mais ágil', 'Transparência no atendimento'],
   },
   {
     id: 8,
-    nome: 'Irmãos Borges Autopeças',
-    grupo: 'simples',
-    modelo: 'Distribuidor familiar',
-    posicionamento: 'Relacionamento pessoal, foco em clientes fidelizados locais',
-    precoMin: 0.92,
-    precoMax: 1.02,
-    fortes: ['Relacionamento pessoal forte', 'Flexibilidade de crédito informal', 'Agilidade'],
-    fracos: ['Sem portfólio técnico', 'Sem sistema ERP', 'Dependência de 1–2 fornecedores'],
-    bruningGanha: ['Profissionalismo', 'Suporte técnico', 'Maior variedade'],
+    nome: 'IS2 Automotive',
+    grupo: 'baixo_custo',
+    modelo: 'Licença + mensalidades',
+    posicionamento: 'Software econômico e simples para múltiplos segmentos',
+    precoTexto: 'A partir de R$112/mês',
+    fortes: [
+      'Muito barato',
+      'Simples de usar',
+      'Atende vários segmentos',
+      'Suporte acessível',
+    ],
+    fracos: [
+      'UX ultrapassada',
+      'Pouco marketing',
+      'Sem Google Meu Negócio',
+      'Pouca prova social',
+      'Site antigo',
+    ],
+    bruningGanha: ['UX moderna', 'Aplicativos mobile', 'Suporte consultivo', 'Escabilidade e robustez'],
   },
   {
     id: 9,
-    nome: 'TOTVS / Bling Distribuidores',
-    grupo: 'erp',
-    modelo: 'Distribuidor com ERP integrado',
-    posicionamento: 'Foco em eficiência operacional e integração com clientes via sistema',
-    precoMin: 1.00,
-    precoMax: 1.12,
-    fortes: ['Integração sistêmica', 'Relatórios e rastreamento', 'Processo faturamento ágil'],
-    fracos: ['Produto commodity, sem diferencial técnico', 'Custo de integração alto', 'Suporte genérico'],
-    bruningGanha: ['Conhecimento técnico do produto', 'Flexibilidade comercial', 'Atendimento humano'],
+    nome: 'Syscar',
+    grupo: 'core',
+    modelo: 'SaaS (web)',
+    posicionamento: 'Oficinas pequenas a grandes — solução modular escalonada',
+    precoTexto: 'R$149 – R$799/mês',
+    fortes: [
+      'Muito completo e modular',
+      'NF-e/NFS-e/NFC-e em todos os planos',
+      'E-commerce integrado',
+      'Módulos avançados (BI, assinatura eletrônica)',
+      'Trial de 7 dias',
+    ],
+    fracos: [
+      'Planos Ouro/Diamante muito caros',
+      'Muitos módulos extras confusos',
+      'Pode intimidar iniciantes',
+      'Pede CNPJ cedo no fluxo',
+    ],
+    bruningGanha: ['Atendimento consultivo sem fricção', 'Integração varejo + oficina', '3 apps nativos próprios', 'Onboarding mais simples'],
   },
   {
     id: 10,
-    nome: 'WEG / Distribuidores OEM',
-    grupo: 'erp',
-    modelo: 'Canal OEM / Indústria',
-    posicionamento: 'Venda para grandes indústrias via contrato de fornecimento',
-    precoMin: 0.88,
-    precoMax: 0.98,
-    fortes: ['Contratos de longo prazo', 'Volume garantido', 'Marca forte'],
-    fracos: ['Não atende varejo/oficinas', 'Processo licitatório burocrático', 'Foco em peças originais OEM'],
-    bruningGanha: ['Atendimento ao mercado de reposição', 'Agilidade', 'Flexibilidade de mix'],
+    nome: 'Onmotor',
+    grupo: 'automotivo',
+    modelo: 'SaaS (web + apps)',
+    posicionamento: 'Sistema moderno, simples e completo — expandindo para autopeças',
+    precoTexto: 'R$168 – R$479/mês',
+    fortes: [
+      'App do gestor + app do cliente',
+      'Multiunidades',
+      'Forte automação',
+      'Site moderno e bem posicionado no SEO',
+      'Excelente reputação no Google',
+      'Trial de 5 dias',
+    ],
+    fracos: [
+      'Preços não transparentes no atendimento',
+      'Pode ser complexo para micro-oficinas',
+      'Não verificada no Reclame Aqui',
+      'Atendimento com demora no retorno',
+    ],
+    bruningGanha: ['Profundidade fiscal completa', 'Integração varejo + oficina', '+12 anos de credibilidade', 'Módulo de pátio mais robusto'],
   },
   {
     id: 11,
-    nome: 'Euroauto / Rodobens',
-    grupo: 'automotivo',
-    modelo: 'Rede de autopeças automotiva',
-    posicionamento: 'Foco em veículos leves e frotas — alta capilaridade regional',
-    precoMin: 0.95,
-    precoMax: 1.08,
-    fortes: ['Marca reconhecida', 'Rede de pontos de venda', 'Catálogo automotivo completo'],
-    fracos: ['Fraco em industrial/agrícola', 'Atendimento padronizado', 'Sem consultoria técnica'],
-    bruningGanha: ['Especialização técnica', 'Mix industrial + automotivo', 'Atendimento consultivo'],
+    nome: 'Hiper',
+    grupo: 'erp',
+    modelo: 'ERP varejo',
+    posicionamento: 'ERP para pequeno varejo — NÃO atende oficina',
+    precoTexto: 'Sob consulta',
+    fortes: [
+      'Integração Stone (pagamentos)',
+      'Fiscal forte',
+      'PDV offline',
+      'Catálogo digital',
+      'Multilojas',
+    ],
+    fracos: [
+      'Não atende oficina mecânica',
+      'Sem Google Meu Negócio',
+      'Preços não expostos',
+      'Muitas reclamações técnicas',
+    ],
+    bruningGanha: ['Atende oficina + varejo simultaneamente', 'Especialização automotiva', 'Suporte específico do setor'],
   },
   {
     id: 12,
-    nome: 'Autoprime / AutoFácil',
+    nome: 'Autogestor',
     grupo: 'automotivo',
-    modelo: 'Rede franqueada de autopeças',
-    posicionamento: 'Conveniência e padronização — rede de franquias regionais',
-    precoMin: 1.00,
-    precoMax: 1.10,
-    fortes: ['Padronização de processos', 'Treinamento de equipe', 'Variedade automotiva'],
-    fracos: ['Modelo franquia inflexível', 'Pouco estoque de peças industriais', 'Royalties encarecem produto'],
-    bruningGanha: ['Especialização', 'Atendimento personalizado', 'Custo final competitivo'],
+    modelo: 'SaaS automotivo',
+    posicionamento: 'CRM + integrador para revendas de veículos',
+    precoTexto: 'Sob consulta',
+    fortes: [
+      'Melhor integrador de portais do mercado',
+      'CRM forte para revendas',
+      'IQE (Índice de Qualidade) exclusivo',
+      'Sites profissionais para revendas',
+    ],
+    fracos: [
+      'Não possui app',
+      'Não possui Google Meu Negócio',
+      'Não atende oficinas mecânicas',
+      'Preços opacos',
+    ],
+    bruningGanha: ['Atende oficina completa', 'Fiscal integrado', 'App mobile para operação', 'Gestão de estoque de peças'],
   },
   {
     id: 13,
-    nome: 'Agrosul Peças & Rolamentos',
+    nome: 'Revenda Mais',
     grupo: 'automotivo',
-    modelo: 'Distribuidor agro-automotivo',
-    posicionamento: 'Foco em máquinas agrícolas e frotas do agronegócio',
-    precoMin: 0.98,
-    precoMax: 1.12,
-    fortes: ['Relacionamento com cooperativas', 'Mix agro específico', 'Crédito rural'],
-    fracos: ['Sazonal (safra)', 'Pouca presença urbana', 'Estoque de rolamentos industriais limitado'],
-    bruningGanha: ['Estoque permanente', 'Atendimento industrial + agro', 'Regularidade de fornecimento'],
+    modelo: 'SaaS automotivo',
+    posicionamento: 'CRM e gestão de anúncios para lojas de veículos',
+    precoTexto: 'R$450/mês + módulos',
+    fortes: [
+      'CRM avançado para lojas',
+      'Avaliação Pro de veículos',
+      'Vistoria completa',
+      'Site PWA',
+      'Reputação 5.0',
+      'Parceiro Webmotors',
+    ],
+    fracos: [
+      'Sem app nativo',
+      'Preços não transparentes nos módulos',
+      'Integrador menor que Autogestor',
+      'Não atende oficina',
+    ],
+    bruningGanha: ['Gestão completa da oficina', 'Fiscal e financeiro integrados', 'Operação do pátio em tempo real'],
   },
 ]
 
 const SWOT = {
   forcas: [
-    'Consultoria técnica especializada em rolamentos e eixos',
-    'Relacionamento próximo e atendimento personalizado',
-    'Mix completo: automotivo + industrial + agrícola',
-    'Flexibilidade comercial (prazo, crédito, entrega)',
-    'Equipe técnica com alto conhecimento do produto',
-    'Histórico e credibilidade no mercado regional',
+    'Plataforma 360° única: gestão de oficina + varejo com profundidade real nos dois segmentos',
+    'Três apps oficiais (Eixo, Job, Força de Vendas BETA) + apps operacionais internos',
+    'Módulo fiscal extremamente completo (NF-e, NFC-e, NFS-e, integrações contábeis)',
+    'Prova social forte: depoimentos, vídeos reais de clientes, reputação Google 5,0',
+    'Atendimento consultivo e humanizado — diferencial percebido pelo mercado',
+    'Solução escalável: micro a grandes empreendimentos',
+    'Visão 360° operacional: pátio, checklist, fotos, assinatura digital, financeiro e estoque',
+    'Credibilidade institucional de +12 anos no setor automotivo',
+    'UX moderna em evolução (novo sistema Web)',
   ],
   fraquezas: [
-    'Escala menor que grandes distribuidoras nacionais',
-    'Sistema de gestão ainda em evolução',
-    'Presença digital limitada (sem e-commerce próprio)',
-    'Dependência de poucos fornecedores estratégicos',
-    'Menor poder de negociação em grandes volumes',
+    'Ausência de tabela pública de preços (gera atrito na pré-venda)',
+    'Falta de um plano "Start" para competir no segmento low-cost',
+    'Percepção de implantação complexa em micro-oficinas (mesmo que não seja realidade)',
+    'Presença digital e SEO menores que concorrentes agressivos (Onmotor, GestãoClick, Mecanie)',
+    'Menor volume de conteúdo em YouTube comparado a Ultracar e Griffo',
+    'Pouca comunicação sobre integração com WhatsApp avançada (embora exista)',
+    'Site não deixa clara a diferença entre Eixo/Job/Web — confunde novos leads',
+    'Concorrentes com teste grátis, enquanto Bruning usa abordagem consultiva',
   ],
   oportunidades: [
-    'Crescimento do agronegócio regional aumenta demanda por peças',
-    'Digitalização do processo de compras B2B',
-    'Fidelização de frotas com contratos de fornecimento',
-    'Expansão para novos segmentos industriais',
-    'Parcerias com assistências técnicas autorizadas',
-    'Mercado de reposição crescendo com frota velha',
+    'Mercado automotivo em digitalização acelerada: 70% das oficinas ainda sem sistema',
+    'Nenhum concorrente integra varejo + oficina com profundidade real → vantagem exclusiva',
+    'Demanda crescente por apps de operação: checklist, pátio, fotos, assinatura digital',
+    'Expansão nacional: Nordeste, Centro-Oeste e interior de SP com alta demanda e baixa concorrência',
+    'Lançar plano Start para capturar micro-oficinas (até 2 funcionários)',
+    'Mercado pedindo automação via WhatsApp + IA (revisões, lembretes, pendências inteligentes)',
+    'Diversificação: CRM avançado, orçamentadores, marketplace de peças, BI premium',
+    'Parcerias com fabricantes, distribuidores e ecossistemas automotivos',
   ],
   ameacas: [
-    'Concorrência de preço via marketplace (Mercado Livre)',
-    'Importação direta da China por clientes grandes',
-    'Consolidação do mercado por grandes distribuidoras',
-    'Volatilidade cambial afetando preço de importados',
-    'Entrada de novos players com capital de VC',
+    'Concorrentes de baixo custo crescendo rápido (Griffo, Oficina App, MotorSW)',
+    'Players agressivos em marketing e SEO (Onmotor, GestãoClick, Mecanie)',
+    'Pressão do mercado por preços transparentes',
+    'Concorrência lançando apps mais simples e rápidos (MotorSW e Griffo se destacam)',
+    'Risco de canibalização por soluções horizontais baratas (GestãoClick)',
+    'Percepção equivocada de complexidade por empresas muito pequenas',
+    'Competidores internacionais com forte UX (MechanicDesk, Shopmonkey)',
   ],
 }
 
 const ARQUETIPOS = [
   {
-    id: 'especialista',
-    icon: '🎯',
-    titulo: 'Especialista Técnico',
-    descricao: 'Posicionamento por conhecimento profundo do produto e consultoria ao cliente. Ganha pela competência, não pelo preço.',
-    exemplo: 'Bruning, NSK/NTN Rep.',
+    id: 'gestao_completa',
+    icon: '⚙️',
+    titulo: 'Gestão Completa + Robusta',
+    descricao: 'Controle total da operação — do pátio ao financeiro. Atende oficinas médias e grandes com fiscal, estoque e apps. Este é o mercado core da Bruning.',
+    exemplo: 'Bruning (Eixo/Job), Ultracar, Tecinco, Syscar',
     bruning: true,
     cor: '#ccf46a',
   },
   {
-    id: 'volume',
-    icon: '📦',
-    titulo: 'Volume & Preço',
-    descricao: 'Competição por custo mínimo e escala máxima. Modelo funciona em comodities onde o produto é idêntico.',
-    exemplo: 'Importadora China, Mercado Livre',
-    bruning: false,
-    cor: '#fb7185',
-  },
-  {
-    id: 'relacionamento',
-    icon: '🤝',
-    titulo: 'Relacionamento Local',
-    descricao: 'Fidelização por proximidade, confiança e histórico. Funciona em mercados onde o relacionamento supera o preço.',
-    exemplo: 'Irmãos Borges, Peças & Cia',
+    id: 'baixo_custo',
+    icon: '💰',
+    titulo: 'Baixo Custo / Entrada',
+    descricao: 'O mínimo necessário pelo menor preço. Foco em micro-oficinas e autônomos. Modelo freemium ou licença simples sem profundidade funcional.',
+    exemplo: 'IS2 Automotive, Oficina.app, Minha Oficina',
     bruning: false,
     cor: '#f59e0b',
   },
   {
-    id: 'marca',
-    icon: '⭐',
-    titulo: 'Marca Premium',
-    descricao: 'Vende a marca como garantia de qualidade. Margens maiores mas base de clientes mais restrita.',
-    exemplo: 'SKF Distribuidora Oficial',
+    id: 'simplicidade',
+    icon: '⚡',
+    titulo: 'Simplicidade + Agilidade Mobile',
+    descricao: 'Use o sistema com facilidade e faça tudo mais rápido. Foco na experiência do mecânico no dia a dia, com forte presença mobile e UX simples.',
+    exemplo: 'Griffo Oficinas, MotorSW, Mecanie',
+    bruning: false,
+    cor: '#60a5fa',
+  },
+  {
+    id: 'erp_horizontal',
+    icon: '🏢',
+    titulo: 'ERP Horizontal',
+    descricao: 'Um ERP completo para vários negócios — inclusive oficina. Forte em fiscal e integrações, mas sem especialização automotiva real.',
+    exemplo: 'GestãoClick, Hiper, IS2 Store',
     bruning: false,
     cor: '#a78bfa',
   },
   {
-    id: 'digital',
-    icon: '💻',
-    titulo: 'Eficiência Digital',
-    descricao: 'Diferencial via integração sistêmica, automação de pedidos e dados. Ganha em clientes que valorizam processo.',
-    exemplo: 'TOTVS / Bling Distribuidores',
+    id: 'automotivo_especifico',
+    icon: '🚗',
+    titulo: 'Automotivo Específico',
+    descricao: 'Sistemas para operações automotivas além da oficina: revendas, concessionárias e lojas multimarcas. Focados em CRM e anúncios de veículos.',
+    exemplo: 'Onmotor, Autogestor, Revenda Mais',
     bruning: false,
-    cor: '#60a5fa',
+    cor: '#fb7185',
   },
 ]
 
 /* ─────────── helpers ─────────── */
-function PrecoIndex({ min, max }) {
-  const avg = ((min + max) / 2)
-  const cor = avg < 0.85 ? '#fb7185' : avg > 1.1 ? '#a78bfa' : '#ccf46a'
-  return (
-    <span style={{ color: cor, fontFamily: 'var(--font-mono, monospace)', fontWeight: 700, fontSize: 13 }}>
-      {(min * 100).toFixed(0)}–{(max * 100).toFixed(0)}%
-    </span>
-  )
-}
-
 function GrupoBadge({ grupo }) {
   const g = GRUPOS[grupo]
   return (
@@ -324,8 +456,8 @@ function TabelaGeral() {
               </div>
               <div className={styles.concCardHeaderRight}>
                 <div className={styles.precoBadge}>
-                  <span className={styles.precoLabel}>Índice de preço</span>
-                  <PrecoIndex min={c.precoMin} max={c.precoMax} />
+                  <span className={styles.precoLabel}>Preço mensal</span>
+                  <span className={styles.precoValor}>{c.precoTexto}</span>
                 </div>
                 <span className={styles.expandIcon}>{expandido === c.id ? '▲' : '▼'}</span>
               </div>
@@ -349,7 +481,7 @@ function TabelaGeral() {
                     </ul>
                   </div>
                   <div className={styles.detCol}>
-                    <h4 className={styles.detTitulo} style={{ color: '#ccf46a' }}>★ Bruning ganha quando</h4>
+                    <h4 className={styles.detTitulo} style={{ color: '#ccf46a' }}>★ Bruning ganha em</h4>
                     <ul className={styles.detList}>
                       {c.bruningGanha.map((f, i) => <li key={i}>{f}</li>)}
                     </ul>
@@ -362,7 +494,7 @@ function TabelaGeral() {
       </div>
 
       <p className={styles.nota}>
-        * Índice de preço relativo ao preço praticado pela Bruning (100% = mesmo preço). Dados estimados com base em pesquisa de mercado — atualizar periodicamente.
+        * Preços mensais conforme tabela pública ou pesquisa de mercado (2025). Bruning opera com precificação sob consulta. Fonte: sites oficiais dos concorrentes.
       </p>
     </div>
   )
@@ -376,7 +508,7 @@ function BruningVsMercado() {
 
         {/* SWOT */}
         <div className={styles.swotWrapper}>
-          <h3 className={styles.sectionTitle}>Análise SWOT — Bruning</h3>
+          <h3 className={styles.sectionTitle}>SWOT Consolidada — Bruning Sistemas</h3>
           <div className={styles.swotGrid}>
             <div className={`${styles.swotQuad} ${styles.swotF}`}>
               <h4>Forças <span>S</span></h4>
@@ -395,41 +527,64 @@ function BruningVsMercado() {
               <ul>{SWOT.ameacas.map((f, i) => <li key={i}>{f}</li>)}</ul>
             </div>
           </div>
+          <div className={styles.swotResumo}>
+            <strong>Resultado macro:</strong> Bruning é percebida como uma das soluções mais completas e profissionais do nicho automotivo. Para manter posição competitiva, precisa escalar marketing, clarear preços e simplificar a jornada do lead.
+          </div>
         </div>
 
-        {/* Tabela comparativa de atributos */}
+        {/* Onde Bruning ganha */}
         <div className={styles.atribWrapper}>
-          <h3 className={styles.sectionTitle}>Diferenciais Competitivos</h3>
+          <h3 className={styles.sectionTitle}>Onde Bruning ganha dos concorrentes</h3>
           <table className={styles.atribTable}>
             <thead>
               <tr>
-                <th>Atributo</th>
-                <th style={{ color: '#ccf46a' }}>Bruning</th>
-                <th>Concorrentes Diretos</th>
-                <th>Baixo Custo</th>
+                <th>Concorrente</th>
+                <th style={{ color: '#ccf46a' }}>Bruning ganha em</th>
               </tr>
             </thead>
             <tbody>
               {[
-                { attr: 'Consultoria técnica',    bruning: '✅ Alta',       direto: '⚡ Média',     baixo: '❌ Nenhuma' },
-                { attr: 'Variedade de mix',       bruning: '✅ Completo',   direto: '⚡ Parcial',   baixo: '⚡ Limitado' },
-                { attr: 'Preço (índice)',         bruning: '⚡ Competitivo',direto: '⚡ Similar',   baixo: '✅ Menor' },
-                { attr: 'Prazo de entrega',       bruning: '✅ Rápido',     direto: '⚡ Variável',  baixo: '❌ Lento' },
-                { attr: 'Pós-venda / garantia',  bruning: '✅ Incluso',    direto: '⚡ Parcial',   baixo: '❌ Sem' },
-                { attr: 'Flexibilidade crédito', bruning: '✅ Alta',       direto: '⚡ Média',     baixo: '❌ À vista' },
-                { attr: 'Relacionamento',        bruning: '✅ Próximo',    direto: '⚡ Formal',    baixo: '❌ Nenhum' },
-                { attr: 'Qualidade certificada', bruning: '✅ Garantida',  direto: '✅ Sim',       baixo: '⚠️ Variável' },
-                { attr: 'Integração digital',    bruning: '⚡ Em evolução',direto: '⚡ Parcial',   baixo: '✅ Marketplace' },
+                { nome: 'Ultracar',          vantagem: 'Apps completos e integração varejo + oficina' },
+                { nome: 'Tecinco',            vantagem: 'Simplicidade, UX moderna e onboarding ágil' },
+                { nome: 'Onmotor',            vantagem: 'Profundidade fiscal e módulo varejo (Job)' },
+                { nome: 'Griffo',             vantagem: 'Robustez operacional e fiscal completo' },
+                { nome: 'Oficina Integrada',  vantagem: 'Ganha em tudo — exceto preço' },
+                { nome: 'MotorSW',            vantagem: 'Módulo fiscal e integração com varejo' },
+                { nome: 'GestãoClick',        vantagem: 'Operação automotiva especializada (pátio, OS, veículo)' },
+                { nome: 'Syscar',             vantagem: 'Atendimento sem fricção, 3 apps nativos, integração varejo' },
+                { nome: 'IS2 Automotive',     vantagem: 'UX moderna, apps mobile, suporte consultivo' },
+                { nome: 'Mecanie',            vantagem: 'Credibilidade (+12 anos) e profundidade fiscal' },
               ].map((row, i) => (
                 <tr key={i}>
-                  <td>{row.attr}</td>
-                  <td style={{ color: '#ccf46a' }}>{row.bruning}</td>
-                  <td>{row.direto}</td>
-                  <td>{row.baixo}</td>
+                  <td>{row.nome}</td>
+                  <td style={{ color: '#ccf46a' }}>{row.vantagem}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Onde Bruning precisa reforçar */}
+        <div className={styles.atribWrapper}>
+          <h3 className={styles.sectionTitle}>Onde Bruning precisa reforçar</h3>
+          <div className={styles.reforcarGrid}>
+            {[
+              { titulo: 'Preço não visível', desc: 'Ausência de tabela pública perde cliques e gera atrito na pré-venda', urgente: true },
+              { titulo: 'Conteúdo digital', desc: 'Falta de conteúdo agressivo (YouTube, Reels) comparado a Ultracar e Griffo', urgente: true },
+              { titulo: 'SEO orgânico', desc: 'Precisa crescer para aumentar tráfego orgânico frente a Onmotor e Mecanie', urgente: false },
+              { titulo: 'Clareza dos produtos', desc: 'Lead não entende de primeira: "o que é Job, Eixo, Web?" — comunicação precisa melhorar', urgente: true },
+              { titulo: 'Automações e integrações', desc: 'Pouco destaque para WhatsApp avançado e integrações (embora existam)', urgente: false },
+              { titulo: 'Plano Start', desc: 'Falta plano de entrada para capturar micro-oficinas que hoje vão para Griffo e MotorSW', urgente: false },
+            ].map((item, i) => (
+              <div key={i} className={`${styles.reforcarCard} ${item.urgente ? styles.reforcarUrgente : ''}`}>
+                <div className={styles.reforcarTitulo}>
+                  {item.urgente && <span className={styles.urgenteBadge}>Prioritário</span>}
+                  <strong>{item.titulo}</strong>
+                </div>
+                <p>{item.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
       </div>
@@ -441,9 +596,9 @@ function BruningVsMercado() {
 function Posicionamento() {
   return (
     <div className={styles.abaContent}>
-      <h3 className={styles.sectionTitle}>Os 5 Arquétipos de Mercado</h3>
+      <h3 className={styles.sectionTitle}>Os 5 Arquétipos de Posicionamento</h3>
       <p className={styles.arquSubtitle}>
-        Cada player no mercado de distribuição compete com uma estratégia central. Identificar o arquétipo de cada concorrente ajuda a direcionar argumentos de venda e defender margens.
+        As empresas do mercado de software para oficinas se distribuem em 5 grandes arquétipos, definidos por nível de complexidade, profundidade funcional, preço, segmento atendido e maturidade do negócio.
       </p>
 
       <div className={styles.arquGrid}>
@@ -462,7 +617,7 @@ function Posicionamento() {
                 {a.bruning && <span className={styles.bruningTag}>← Bruning</span>}
               </div>
               <p className={styles.arquDesc}>{a.descricao}</p>
-              <p className={styles.arquExemplo}><strong>Exemplos:</strong> {a.exemplo}</p>
+              <p className={styles.arquExemplo}><strong>Players:</strong> {a.exemplo}</p>
             </div>
           </div>
         ))}
@@ -470,49 +625,50 @@ function Posicionamento() {
 
       {/* Mapa de posicionamento 2x2 */}
       <div className={styles.mapaWrapper}>
-        <h3 className={styles.sectionTitle} style={{ marginTop: 32 }}>Mapa Preço × Valor Técnico</h3>
+        <h3 className={styles.sectionTitle} style={{ marginTop: 32 }}>Mapa Preço × Profundidade Funcional</h3>
         <div className={styles.mapa2x2}>
           <div className={styles.mapaAxisY}>
-            <span>Alto valor técnico</span>
-            <span>Baixo valor técnico</span>
+            <span>Alta profundidade</span>
+            <span>Baixa profundidade</span>
           </div>
           <div className={styles.mapaQuads}>
-            {/* Q1: Alto preço + alto técnico */}
+            {/* Q1: Alto preço + alta profundidade */}
             <div className={styles.mapaQuad}>
-              <span className={styles.mapaQuadLabel}>Premium Técnico</span>
+              <span className={styles.mapaQuadLabel}>Premium Especialista</span>
               <div className={styles.mapaPlayers}>
-                <span className={styles.mapaPlayer} style={{ background: '#a78bfa33', borderColor: '#a78bfa66', color: '#a78bfa' }}>SKF Oficial</span>
-                <span className={styles.mapaPlayer} style={{ background: '#a78bfa33', borderColor: '#a78bfa66', color: '#a78bfa' }}>NSK/NTN</span>
+                <span className={styles.mapaPlayer} style={{ background: '#a78bfa33', borderColor: '#a78bfa66', color: '#a78bfa' }}>Tecinco</span>
+                <span className={styles.mapaPlayer} style={{ background: '#a78bfa33', borderColor: '#a78bfa66', color: '#a78bfa' }}>Syscar</span>
               </div>
             </div>
-            {/* Q2: Baixo preço + alto técnico */}
+            {/* Q2: Baixo/médio preço + alta profundidade */}
             <div className={`${styles.mapaQuad} ${styles.mapaQuadDestaque}`}>
-              <span className={styles.mapaQuadLabel}>Zona de Oportunidade</span>
+              <span className={styles.mapaQuadLabel}>Zona de Oportunidade ★</span>
               <div className={styles.mapaPlayers}>
                 <span className={styles.mapaPlayer} style={{ background: '#ccf46a33', borderColor: '#ccf46a', color: '#ccf46a', fontWeight: 700 }}>★ Bruning</span>
-                <span className={styles.mapaPlayer} style={{ background: '#60a5fa22', borderColor: '#60a5fa55', color: '#60a5fa' }}>Rolamentos do Sul</span>
+                <span className={styles.mapaPlayer} style={{ background: '#60a5fa22', borderColor: '#60a5fa55', color: '#60a5fa' }}>Ultracar</span>
               </div>
             </div>
-            {/* Q3: Alto preço + baixo técnico */}
+            {/* Q3: Alto preço + baixa profundidade */}
             <div className={styles.mapaQuad}>
-              <span className={styles.mapaQuadLabel}>Marca sem Serviço</span>
+              <span className={styles.mapaQuadLabel}>Caro sem Especialização</span>
               <div className={styles.mapaPlayers}>
-                <span className={styles.mapaPlayer} style={{ background: '#f59e0b22', borderColor: '#f59e0b55', color: '#f59e0b' }}>Autoprime</span>
-                <span className={styles.mapaPlayer} style={{ background: '#f59e0b22', borderColor: '#f59e0b55', color: '#f59e0b' }}>Euroauto</span>
+                <span className={styles.mapaPlayer} style={{ background: '#f59e0b22', borderColor: '#f59e0b55', color: '#f59e0b' }}>GestãoClick</span>
+                <span className={styles.mapaPlayer} style={{ background: '#f59e0b22', borderColor: '#f59e0b55', color: '#f59e0b' }}>Hiper</span>
               </div>
             </div>
-            {/* Q4: Baixo preço + baixo técnico */}
+            {/* Q4: Baixo preço + baixa profundidade */}
             <div className={styles.mapaQuad}>
-              <span className={styles.mapaQuadLabel}>Commodity Puro</span>
+              <span className={styles.mapaQuadLabel}>Entrada / Simples</span>
               <div className={styles.mapaPlayers}>
-                <span className={styles.mapaPlayer} style={{ background: '#fb718522', borderColor: '#fb718555', color: '#fb7185' }}>ML/Atacadão</span>
-                <span className={styles.mapaPlayer} style={{ background: '#fb718522', borderColor: '#fb718555', color: '#fb7185' }}>China Direta</span>
+                <span className={styles.mapaPlayer} style={{ background: '#fb718522', borderColor: '#fb718555', color: '#fb7185' }}>Griffo</span>
+                <span className={styles.mapaPlayer} style={{ background: '#fb718522', borderColor: '#fb718555', color: '#fb7185' }}>MotorSW</span>
+                <span className={styles.mapaPlayer} style={{ background: '#fb718522', borderColor: '#fb718555', color: '#fb7185' }}>IS2</span>
               </div>
             </div>
           </div>
           <div className={styles.mapaAxisX}>
             <span>Preço alto</span>
-            <span>Preço baixo / competitivo</span>
+            <span>Preço baixo / acessível</span>
           </div>
         </div>
       </div>
@@ -525,8 +681,8 @@ export default function ConcorrentesPanel() {
   const [aba, setAba] = useState('tabela')
 
   const ABAS = [
-    { id: 'tabela',      label: 'Tabela Geral' },
-    { id: 'comparativo', label: 'Bruning vs Mercado' },
+    { id: 'tabela',         label: 'Tabela Geral' },
+    { id: 'comparativo',   label: 'Bruning vs Mercado' },
     { id: 'posicionamento', label: 'Posicionamento' },
   ]
 
@@ -537,7 +693,7 @@ export default function ConcorrentesPanel() {
         <div>
           <h2 className={styles.panelTitle}>Mapa de Concorrência</h2>
           <p className={styles.panelSub}>
-            {CONCORRENTES.length} concorrentes mapeados em {Object.keys(GRUPOS).length} segmentos
+            {CONCORRENTES.length} concorrentes mapeados — Softwares SaaS para gestão de oficinas
           </p>
         </div>
         <div className={styles.resumoBadges}>
@@ -563,9 +719,9 @@ export default function ConcorrentesPanel() {
       </div>
 
       {/* Conteúdo */}
-      {aba === 'tabela'         && <TabelaGeral />}
-      {aba === 'comparativo'    && <BruningVsMercado />}
-      {aba === 'posicionamento' && <Posicionamento />}
+      {aba === 'tabela'          && <TabelaGeral />}
+      {aba === 'comparativo'     && <BruningVsMercado />}
+      {aba === 'posicionamento'  && <Posicionamento />}
     </div>
   )
 }

@@ -173,6 +173,13 @@
   white-space: nowrap;
 }
 
+.precoValor {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text1);
+  white-space: nowrap;
+}
+
 .expandIcon {
   font-size: 11px;
   color: var(--muted);
@@ -285,6 +292,19 @@
   line-height: 1.7;
 }
 
+/* SWOT resumo */
+.swotResumo {
+  margin-top: 12px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.6;
+}
+.swotResumo strong { color: var(--text1); }
+
 .swotF { border-bottom: 2px solid var(--border); }
 .swotW { border-bottom: 2px solid var(--border); border-left: 2px solid var(--border); }
 .swotO { }
@@ -301,6 +321,53 @@
 
 .swotT h4 { color: #f59e0b; }
 .swotT h4 span { background: #f59e0b22; color: #f59e0b; }
+
+/* Onde Bruning precisa reforçar */
+.reforcarGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.reforcarCard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.reforcarCard p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.reforcarUrgente {
+  border-color: rgba(251, 113, 133, .35);
+  background: rgba(251, 113, 133, .04);
+}
+
+.reforcarTitulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text1);
+}
+
+.urgenteBadge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(251, 113, 133, .18);
+  color: #fb7185;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
 
 /* Tabela atributos */
 .atribWrapper {}
