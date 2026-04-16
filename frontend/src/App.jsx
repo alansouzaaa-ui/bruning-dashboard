@@ -14,6 +14,8 @@ import CRMPanel from './components/CRMPanel'
 import ConcorrentesPanel from './components/ConcorrentesPanel'
 import SemanaCard from './components/SemanaCard'
 import RitmoDiarioCard from './components/RitmoDiarioCard'
+import ComissaoRealtimeCard from './components/ComissaoRealtimeCard'
+import VendasMesCard from './components/VendasMesCard'
 import ErrorBoundary from './components/ErrorBoundary'
 import './App.css'
 
@@ -74,14 +76,20 @@ export default function App() {
                 <ComparativoChart />
               </ErrorBoundary>
             </div>
-            <div className="row-2">
+            <div className="row-3">
               <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar ritmo diário.</div>}>
                 <RitmoDiarioCard mes={mesResolvido} />
               </ErrorBoundary>
               <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar meta semanal.</div>}>
                 <SemanaCard mes={mesResolvido} />
               </ErrorBoundary>
+              <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar comissão.</div>}>
+                <ComissaoRealtimeCard />
+              </ErrorBoundary>
             </div>
+            <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar vendas do mês.</div>}>
+              <VendasMesCard />
+            </ErrorBoundary>
           </main>
         )}
 

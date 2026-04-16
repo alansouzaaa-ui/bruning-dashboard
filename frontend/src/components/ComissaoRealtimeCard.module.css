@@ -1,0 +1,201 @@
+/* ── Card wrapper ── */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Título ── */
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+  margin: 0;
+}
+
+.liveBadge {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  background: rgba(204, 244, 106, .12);
+  color: var(--accent);
+  border: 1px solid rgba(204, 244, 106, .25);
+  border-radius: 20px;
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.liveDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .35; }
+}
+
+/* ── Valor principal ── */
+.valorWrap {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.valorLabel {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+
+.valor {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+/* ── Grid de métricas ── */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.metricCell {
+  background: var(--card);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.metricLabel {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .9px;
+  color: var(--muted);
+}
+
+.metricVal {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text1);
+  font-family: var(--mono);
+}
+
+/* ── Barra de progresso ── */
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.metaLabel {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.metaPct {
+  font-size: 11px;
+  font-weight: 700;
+  font-family: var(--mono);
+}
+
+.barTrack {
+  background: var(--border);
+  border-radius: 999px;
+  height: 6px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.barFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width .7s cubic-bezier(.4, 0, .2, 1);
+}
+
+.green  { color: var(--c-green, #4ade80); }
+.yellow { color: var(--c-yellow, #fbbf24); }
+.red    { color: var(--c-red, #f87171); }
+
+/* ── Detalhe comissão MRR + Adesão ── */
+.splitRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.splitItem {
+  flex: 1;
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.splitLabel {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+
+.splitVal {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text1);
+  font-family: var(--mono);
+}
+
+/* ── Skeleton ── */
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skBlock {
+  background: var(--border);
+  border-radius: 6px;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: .45; }
+  50%       { opacity: .9; }
+}
