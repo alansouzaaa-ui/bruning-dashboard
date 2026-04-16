@@ -11,8 +11,7 @@ const fmt = (v) =>
 const fmtPct = (v) =>
   `${(Number(v) * 100).toFixed(0)}%`
 
-/* Mês atual fixo (não segue mesFiltro do header — sempre "agora") */
-const MES_ATUAL = new Date().toISOString().slice(0, 7)
+const MES_CORRENTE = new Date().toISOString().slice(0, 7)
 
 function barColor(atingimento) {
   if (atingimento >= 1)    return { bar: '#ccf46a', cls: styles.green  }
@@ -20,10 +19,14 @@ function barColor(atingimento) {
   return                          { bar: '#f87171', cls: styles.red    }
 }
 
-export default function ComissaoRealtimeCard() {
+export default function ComissaoRealtimeCard({ mes }) {
+  /* Se mesFiltro = 'all' (null), usa o mês corrente; caso contrário usa o selecionado */
+  const mesEfetivo = mes || MES_CORRENTE
+  const isAoVivo   = mesEfetivo === MES_CORRENTE
+
   const { data: kpi, isLoading: loadingKpi } = useQuery({
-    queryKey: ['kpis', MES_ATUAL],
-    queryFn:  () => getKPIs(MES_ATUAL),
+    queryKey: ['kpis', mesEfetivo],
+    queryFn:  () => getKPIs(mesEfetivo),
     staleTime: 60_000,
   })
 
@@ -39,10 +42,10 @@ export default function ComissaoRealtimeCard() {
     const ades    = parseFloat(kpi.total_adesao || 0)
     const churn3m = parseFloat(kpi.churn_mrr    || 0)
     const anuais  = parseInt(kpi.anuais          || 0)
-    const metaConfig = metasMensais.find(m => m.mes === MES_ATUAL)
-    const meta = metaConfig?.meta_mrr || METAS_FIXAS[MES_ATUAL] || META_PADRAO
+    const metaConfig = metasMensais.find(m => m.mes === mesEfetivo)
+    const meta = metaConfig?.meta_mrr || METAS_FIXAS[mesEfetivo] || META_PADRAO
     return { mrr, ades, churn3m, anuais, meta, ...calcularComissao({ mrr, ades, churn3m, anuais, meta }) }
-  }, [kpi, metasMensais])
+  }, [kpi, metasMensais, mesEfetivo])
 
   const isLoading = loadingKpi || loadingMeta
 
@@ -76,11 +79,17 @@ export default function ComissaoRealtimeCard() {
       <div className={styles.card}>
         {/* Título */}
         <div className={styles.titleRow}>
-          <p className={styles.title}>Comissão do Mês</p>
-          <span className={styles.liveBadge}>
-            <span className={styles.liveDot} />
-            Tempo Real
-          </span>
+          <p className={styles.title}>Comissão — {mesEfetivo}</p>
+          {isAoVivo ? (
+            <span className={styles.liveBadge}>
+              <span className={styles.liveDot} />
+              Tempo Real
+            </span>
+          ) : (
+            <span className={styles.liveBadge} style={{ background: 'rgba(255,255,255,.06)', color: 'var(--muted)', borderColor: 'var(--border)' }}>
+              Histórico
+            </span>
+          )}
         </div>
 
         {/* Valor principal */}

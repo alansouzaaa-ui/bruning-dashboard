@@ -84,11 +84,11 @@ export default function App() {
                 <SemanaCard mes={mesResolvido} />
               </ErrorBoundary>
               <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar comissão.</div>}>
-                <ComissaoRealtimeCard />
+                <ComissaoRealtimeCard mes={mesResolvido} />
               </ErrorBoundary>
             </div>
             <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar vendas do mês.</div>}>
-              <VendasMesCard />
+              <VendasMesCard mes={mesResolvido} />
             </ErrorBoundary>
           </main>
         )}

@@ -5,8 +5,7 @@ import styles from './VendasMesCard.module.css'
 const fmt = (v) =>
   Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
-/* Mês atual fixo (não segue mesFiltro do header — sempre "agora") */
-const MES_ATUAL = new Date().toISOString().slice(0, 7)
+const MES_CORRENTE = new Date().toISOString().slice(0, 7)
 
 const MESES_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
 function fmtData(str) {
@@ -26,10 +25,13 @@ function StatusBadge({ status }) {
   return <span className={`${styles.badge} ${cls}`}>{status || '—'}</span>
 }
 
-export default function VendasMesCard() {
+export default function VendasMesCard({ mes }) {
+  /* Se mesFiltro = 'all' (null), usa o mês corrente; caso contrário usa o selecionado */
+  const mesEfetivo = mes || MES_CORRENTE
+
   const { data: vendas = [], isLoading } = useQuery({
-    queryKey: ['vendas', MES_ATUAL],
-    queryFn:  () => getVendas({ mes: MES_ATUAL }),
+    queryKey: ['vendas', mesEfetivo],
+    queryFn:  () => getVendas({ mes: mesEfetivo }),
     staleTime: 60_000,
   })
 
@@ -66,7 +68,7 @@ export default function VendasMesCard() {
         {/* Cabeçalho */}
         <div className={styles.titleRow}>
           <div className={styles.titleLeft}>
-            <p className={styles.title}>Vendas do Mês</p>
+            <p className={styles.title}>Vendas — {mesEfetivo}</p>
             {vendas.length > 0 && (
               <span className={styles.countBadge}>{vendas.length} {vendas.length === 1 ? 'venda' : 'vendas'}</span>
             )}
