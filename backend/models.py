@@ -44,6 +44,7 @@ class Venda(Base):
     tipo       = Column(String(30), nullable=True)   # 'CLIENTE NOVO' | 'CHURN' | etc
     origem     = Column(String(50), nullable=True)   # 'Indicação' | 'Prospecção' | 'LinkedIn' | etc
     obs        = Column(Text, nullable=True)
+    data_crm   = Column(Date, nullable=True)         # Data de entrada do lead no CRM
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 

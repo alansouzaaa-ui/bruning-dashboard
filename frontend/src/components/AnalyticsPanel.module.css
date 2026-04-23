@@ -1,0 +1,180 @@
+/* ── Wrapper de cada card ── */
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+  margin: 0;
+}
+
+/* ── Card de Tempo Médio ── */
+.tempoWrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  gap: 12px;
+}
+
+.tempoValor {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.tempoDias {
+  font-size: 42px;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.tempoUnidade {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.tempoDesc {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.tempoMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tempoMetaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tempoMetaLabel {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.tempoMetaVal {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text1);
+  font-family: var(--mono);
+}
+
+.semDados {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 8px;
+  padding: 24px 0;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.semDadosIcon {
+  font-size: 28px;
+  opacity: .4;
+}
+
+/* ── Gráficos de pizza ── */
+.pieWrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chartArea {
+  flex: 1;
+  min-height: 180px;
+}
+
+/* Legenda customizada */
+.legenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 12px;
+}
+
+.legendaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text);
+  cursor: default;
+}
+
+.legendaDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legendaPct {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* Tooltip */
+.tooltip {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+.tooltipLabel {
+  font-weight: 700;
+  color: var(--text1);
+  margin: 0 0 4px;
+}
+
+.tooltipRow {
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ── Skeleton ── */
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  justify-content: center;
+}
+
+.skBlock {
+  background: var(--border);
+  border-radius: 6px;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: .45; }
+  50%       { opacity: .9; }
+}

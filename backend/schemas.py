@@ -21,6 +21,7 @@ class VendaBase(BaseModel):
     tipo:      Optional[str] = None
     origem:    Optional[str] = None
     obs:       Optional[str] = None
+    data_crm:  Optional[date] = None
 
 
 class VendaCreate(VendaBase):

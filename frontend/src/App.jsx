@@ -16,6 +16,7 @@ import SemanaCard from './components/SemanaCard'
 import RitmoDiarioCard from './components/RitmoDiarioCard'
 import ComissaoRealtimeCard from './components/ComissaoRealtimeCard'
 import VendasMesCard from './components/VendasMesCard'
+import AnalyticsPanel from './components/AnalyticsPanel'
 import ErrorBoundary from './components/ErrorBoundary'
 import './App.css'
 
@@ -85,6 +86,11 @@ export default function App() {
               </ErrorBoundary>
               <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar comissão.</div>}>
                 <ComissaoRealtimeCard mes={mesResolvido} />
+              </ErrorBoundary>
+            </div>
+            <div className="row-3">
+              <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar analytics.</div>}>
+                <AnalyticsPanel mes={mesResolvido} />
               </ErrorBoundary>
             </div>
             <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar vendas do mês.</div>}>

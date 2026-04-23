@@ -6,6 +6,7 @@ import styles from './ModalVenda.module.css'
 
 const EMPTY = {
   data: new Date().toISOString().slice(0, 10),
+  data_crm: '',
   cod: '', cliente: '', cnpj: '', segmento: '', plano: '',
   contrato: 'Mensal', mrr: '', adesao: '', churn_mrr: '',
   status: 'Ativo', tipo: '', origem: '', obs: '',
@@ -39,6 +40,7 @@ export default function ModalVenda({ venda, onClose }) {
     if (venda) {
       setForm({
         data:      venda.data || EMPTY.data,
+        data_crm:  venda.data_crm || '',
         cod:       venda.cod || '',
         cliente:   venda.cliente || '',
         cnpj:      venda.cnpj || '',
@@ -114,6 +116,7 @@ export default function ModalVenda({ venda, onClose }) {
 
     const body = {
       data:      form.data,
+      data_crm:  form.data_crm || null,
       cod:       form.cod || null,
       cliente:   form.cliente.trim(),
       cnpj:      form.cnpj || null,
@@ -145,8 +148,12 @@ export default function ModalVenda({ venda, onClose }) {
         <form onSubmit={handleSubmit}>
           <div className="form-grid">
             <div className="field">
-              <label>Data</label>
+              <label>Data de Fechamento</label>
               <input type="date" value={form.data} onChange={e => set('data', e.target.value)} required />
+            </div>
+            <div className="field">
+              <label>Data de Entrada no CRM</label>
+              <input type="date" value={form.data_crm} onChange={e => set('data_crm', e.target.value)} />
             </div>
             <div className="field">
               <label>Cód. Cliente</label>

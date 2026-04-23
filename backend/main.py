@@ -17,6 +17,9 @@ def run_migrations():
         conn.execute(text(
             "ALTER TABLE vendas ADD COLUMN IF NOT EXISTS origem VARCHAR(50)"
         ))
+        conn.execute(text(
+            "ALTER TABLE vendas ADD COLUMN IF NOT EXISTS data_crm DATE"
+        ))
         conn.commit()
 
 run_migrations()
