@@ -11,9 +11,21 @@ const EMPTY = {
   status: 'Ativo', tipo: '', origem: '', obs: '',
 }
 
+const SEGMENTOS = [
+  '', 'Oficina Mecânica', 'Auto Peças', 'Auto Elétrica',
+  'Auto Center', 'Estética Automotiva',
+  'Oficina Mecânica Motos', 'Oficina Mecânica Pesada',
+]
+
+const PLANOS = [
+  '', 'Plano Pro Desktop', 'Fiscalize', 'Acelera',
+  'Turbo', 'Performance', 'Full Drive',
+]
+
 const ORIGENS = [
-  '', 'Indicação', 'Prospecção Ativa', 'LinkedIn', 'Evento', 'Cold Call',
-  'Parceiro', 'Site / Inbound', 'Rede Social', 'Outro',
+  '', 'Prospecção', 'Indicação', 'Inbound Orgânico',
+  'Tráfego Pago', 'Já é Cliente', 'Remarketing',
+  'Outros', 'Instagram',
 ]
 
 export default function ModalVenda({ venda, onClose }) {
@@ -87,7 +99,7 @@ export default function ModalVenda({ venda, onClose }) {
     try {
       const data = await buscarCNPJ(raw)
       set('cliente', data.razao_social || data.nome_fantasia || form.cliente)
-      set('segmento', data.cnae_fiscal_descricao || form.segmento)
+      // segmento não é mais auto-preenchido — agora é select com opções fixas
     } catch {
       // silencioso — CNPJ não encontrado
     } finally {
@@ -168,11 +180,25 @@ export default function ModalVenda({ venda, onClose }) {
 
             <div className="field">
               <label>Segmento</label>
-              <input value={form.segmento} onChange={e => set('segmento', e.target.value)} placeholder="ex: Varejo" />
+              <select value={form.segmento} onChange={e => set('segmento', e.target.value)}>
+                {form.segmento && !SEGMENTOS.includes(form.segmento) && (
+                  <option value={form.segmento}>(legado) {form.segmento}</option>
+                )}
+                {SEGMENTOS.map(s => (
+                  <option key={s} value={s}>{s || '— selecione —'}</option>
+                ))}
+              </select>
             </div>
             <div className="field">
               <label>Plano</label>
-              <input value={form.plano} onChange={e => set('plano', e.target.value)} placeholder="ex: Pro" />
+              <select value={form.plano} onChange={e => set('plano', e.target.value)}>
+                {form.plano && !PLANOS.includes(form.plano) && (
+                  <option value={form.plano}>(legado) {form.plano}</option>
+                )}
+                {PLANOS.map(p => (
+                  <option key={p} value={p}>{p || '— selecione —'}</option>
+                ))}
+              </select>
             </div>
 
             <div className="field">
@@ -189,7 +215,12 @@ export default function ModalVenda({ venda, onClose }) {
             <div className="field">
               <label>Origem</label>
               <select value={form.origem} onChange={e => set('origem', e.target.value)}>
-                {ORIGENS.map(o => <option key={o} value={o}>{o || '— selecione —'}</option>)}
+                {form.origem && !ORIGENS.includes(form.origem) && (
+                  <option value={form.origem}>(legado) {form.origem}</option>
+                )}
+                {ORIGENS.map(o => (
+                  <option key={o} value={o}>{o || '— selecione —'}</option>
+                ))}
               </select>
             </div>
 
