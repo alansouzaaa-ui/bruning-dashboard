@@ -58,3 +58,12 @@ class ComissaoPaga(Base):
     total_pago = Column(Numeric(10, 2), default=0)
     obs        = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class Oportunidade(Base):
+    __tablename__ = "oportunidades"
+
+    mes      = Column(String(7), primary_key=True)   # '2026-04'
+    criadas  = Column(Integer, default=0)
+    ganhas   = Column(Integer, default=0)
+    perdidas = Column(Integer, default=0)

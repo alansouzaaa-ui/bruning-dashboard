@@ -18,6 +18,7 @@ import ComissaoRealtimeCard from './components/ComissaoRealtimeCard'
 import VendasMesCard from './components/VendasMesCard'
 import AnalyticsPanel from './components/AnalyticsPanel'
 import InsightsPanel from './components/InsightsPanel'
+import SalesOpportunityTracker from './components/SalesOpportunityTracker'
 import ErrorBoundary from './components/ErrorBoundary'
 import './App.css'
 
@@ -97,6 +98,9 @@ export default function App() {
                 <AnalyticsPanel mes={mesResolvido} />
               </ErrorBoundary>
             </div>
+            <ErrorBoundary fallback={null}>
+              <SalesOpportunityTracker mes={mesResolvido} />
+            </ErrorBoundary>
             <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar vendas do mês.</div>}>
               <VendasMesCard mes={mesResolvido} />
             </ErrorBoundary>

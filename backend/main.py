@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text, extract, func
 
 from database import engine, Base, get_db
-from routers import vendas, comissoes, configs, trimestral, crm
+from routers import vendas, comissoes, configs, trimestral, crm, oportunidades
 from auth import verify_token
 from models import Venda
 from sqlalchemy.orm import Session
@@ -49,7 +49,8 @@ app.include_router(vendas.router,      dependencies=[Depends(verify_token)])
 app.include_router(comissoes.router,   dependencies=[Depends(verify_token)])
 app.include_router(configs.router,     dependencies=[Depends(verify_token)])
 app.include_router(trimestral.router,  dependencies=[Depends(verify_token)])
-app.include_router(crm.router,         dependencies=[Depends(verify_token)])
+app.include_router(crm.router,           dependencies=[Depends(verify_token)])
+app.include_router(oportunidades.router, dependencies=[Depends(verify_token)])
 
 
 @app.get("/")

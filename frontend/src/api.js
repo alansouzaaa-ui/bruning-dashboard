@@ -84,6 +84,13 @@ export const getCRMFunil = (mes) =>
 export const getCRMKpis = (mes) =>
   api.get('/crm/kpis', { params: mes ? { mes } : {} }).then(r => r.data)
 
+// ── Oportunidades ────────────────────────────────────────
+export const getOportunidade = (mes) =>
+  api.get(`/oportunidades/${mes}`).then(r => r.data)
+
+export const upsertOportunidade = (mes, body) =>
+  api.put(`/oportunidades/${mes}`, body).then(r => r.data)
+
 // ── BrasilAPI ────────────────────────────────────────────
 export const buscarCNPJ = (cnpj) => {
   const limpo = cnpj.replace(/\D/g, '')
