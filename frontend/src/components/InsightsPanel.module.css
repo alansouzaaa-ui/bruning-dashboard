@@ -1,0 +1,211 @@
+/* ── Seção container ─────────────────────────────────────────────────────── */
+.section {
+  background: var(--surface);
+  border: 1px solid rgba(204, 244, 106, 0.14);
+  border-radius: 16px;
+  padding: 28px 28px 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* gradiente de fundo sutil que reforça a identidade de IA */
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 35% at 10% 0%,   rgba(204,244,106,0.05) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 90% 100%,  rgba(167,139,250,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  gap: 16px;
+  position: relative;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.aiIcon {
+  font-size: 26px;
+  color: var(--accent);
+  line-height: 1;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 8px rgba(204,244,106,0.4));
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--fg);
+  margin: 0 0 3px;
+}
+
+.subtitle {
+  font-size: 0.77rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.alertCount {
+  font-weight: 600;
+}
+
+.liveBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.71rem;
+  color: var(--muted);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 5px 12px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.liveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1;   transform: scale(1);    }
+  50%       { opacity: 0.3; transform: scale(0.85); }
+}
+
+/* ── Grade de cards ───────────────────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
+  position: relative;
+}
+
+/* ── Card individual ─────────────────────────────────────────────────────── */
+.card {
+  background: rgba(255, 255, 255, 0.022);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-left: 3px solid var(--border-cor, rgba(255,255,255,0.12));
+  border-radius: 10px;
+  padding: 16px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  transition: background 0.15s ease, transform 0.12s ease;
+  cursor: default;
+}
+
+.card:hover {
+  background: rgba(255,255,255,0.04);
+  transform: translateY(-1px);
+}
+
+/* ── Linha superior: categoria + prioridade ───────────────────────────────── */
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.catTag {
+  font-size: 0.67rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 4px;
+  line-height: 1.6;
+}
+
+.priTag {
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-left: auto;
+}
+
+/* ── Conteúdo do card ─────────────────────────────────────────────────────── */
+.cardTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--fg);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.cardDesc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Bloco de impacto ─────────────────────────────────────────────────────── */
+.impacto {
+  background: rgba(255,255,255,0.03);
+  border-radius: 6px;
+  padding: 7px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.impactoLabel {
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.impactoText {
+  font-size: 0.79rem;
+  color: var(--fg);
+  line-height: 1.45;
+}
+
+/* ── Linha de recomendação ────────────────────────────────────────────────── */
+.rec {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding-top: 2px;
+}
+
+.recArrow {
+  font-weight: 700;
+  font-size: 0.88rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+  line-height: 1.45;
+}
+
+.recText {
+  font-size: 0.79rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ── Responsivo ───────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .section      { padding: 20px 16px 24px; }
+  .grid         { grid-template-columns: 1fr; }
+  .header       { flex-direction: column; }
+  .liveBadge    { align-self: flex-start; }
+}

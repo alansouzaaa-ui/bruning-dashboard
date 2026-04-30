@@ -17,6 +17,7 @@ import RitmoDiarioCard from './components/RitmoDiarioCard'
 import ComissaoRealtimeCard from './components/ComissaoRealtimeCard'
 import VendasMesCard from './components/VendasMesCard'
 import AnalyticsPanel from './components/AnalyticsPanel'
+import InsightsPanel from './components/InsightsPanel'
 import ErrorBoundary from './components/ErrorBoundary'
 import './App.css'
 
@@ -68,6 +69,9 @@ export default function App() {
           <main className="main">
             <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar KPIs.</div>}>
               <KPICards mes={mesResolvido} />
+            </ErrorBoundary>
+            <ErrorBoundary fallback={null}>
+              <InsightsPanel mes={mesResolvido} />
             </ErrorBoundary>
             <div className="row-2">
               <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar acelerômetro.</div>}>
