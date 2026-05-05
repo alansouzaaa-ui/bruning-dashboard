@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bruning Dashboard — Redesign Preview v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #05070d;
+    --surface:   #0e1420;
+    --surface2:  #141c2e;
+    --border:    rgba(255,255,255,0.07);
+    --border2:   rgba(255,255,255,0.12);
+    --accent:    #ccf46a;
+    --accent-dim: rgba(204,244,106,0.12);
+    --amber:     #f59e0b;
+    --amber-dim: rgba(245,158,11,0.12);
+    --red:       #f87171;
+    --green:     #34d399;
+    --blue:      #60a5fa;
+    --text:      #f0f4ff;
+    --muted:     rgba(240,244,255,0.40);
+    --muted2:    rgba(240,244,255,0.20);
+    --mono:      'JetBrains Mono', monospace;
+    --sans:      'Inter', sans-serif;
+    --r:         12px;
+    --r-lg:      16px;
+  }
+
+  html { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; -webkit-font-smoothing: antialiased; }
+  body { min-height: 100vh; }
+
+  /* ── Header ── */
+  .header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(5,7,13,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 56px;
+  }
+  .header-left { display: flex; align-items: center; gap: 32px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; }
+  .logo-icon { width: 28px; height: 28px; flex-shrink: 0; }
+  .logo span { color: var(--muted); font-weight: 400; }
+
+  .nav { display: flex; gap: 2px; }
+  .nav-btn {
+    background: none; border: none; color: var(--muted);
+    font-family: var(--sans); font-size: 13px; font-weight: 500;
+    padding: 6px 12px; border-radius: 8px; cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+  }
+  .nav-btn:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+  .nav-btn.active { color: var(--text); background: rgba(255,255,255,0.08); }
+  .nav-tag {
+    display: inline-block; margin-left: 5px;
+    background: rgba(204,244,106,.15); color: var(--accent);
+    font-size: 9px; font-weight: 700; letter-spacing: .04em;
+    padding: 1px 5px; border-radius: 4px; vertical-align: middle;
+  }
+
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .month-nav { display: flex; align-items: center; gap: 4px; }
+  .month-btn {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); font-size: 13px; padding: 5px 10px;
+    border-radius: 8px; cursor: pointer; font-family: var(--sans); font-weight: 500;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .month-btn:hover { color: var(--text); }
+  .month-btn.active { color: var(--text); border-color: var(--border2); }
+  .month-btn.arrow { padding: 5px 8px; }
+  .month-label { font-size: 13px; font-weight: 600; color: var(--text); padding: 5px 14px; background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px; }
+
+  /* ── Layout ── */
+  .main {
+    max-width: 1400px; margin: 0 auto;
+    padding: 32px 24px 64px;
+    display: flex; flex-direction: column; gap: 48px;
+  }
+
+  /* ── Cards base ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: 24px;
+  }
+  .card-title {
+    font-size: 10px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 4px;
+  }
+
+  /* ── KPI Hero ── */
+  .kpi-section { display: flex; flex-direction: column; gap: 16px; }
+
+  .kpi-hero {
+    background: var(--surface2);
+    border: 1px solid rgba(204,244,106,0.18);
+    border-radius: var(--r-lg);
+    padding: 28px 32px;
+    display: grid; grid-template-columns: 1fr auto;
+    align-items: center; gap: 32px;
+    position: relative; overflow: hidden;
+  }
+  .kpi-hero::before {
+    content: ''; position: absolute; inset: 0; border-radius: inherit;
+    background: radial-gradient(ellipse 60% 120% at 100% 50%, rgba(204,244,106,0.05), transparent);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-dim); border: 1px solid rgba(204,244,106,0.22);
+    border-radius: 6px; padding: 3px 10px;
+    font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--accent); width: fit-content; margin-bottom: 10px;
+  }
+  .hero-badge .dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .hero-badge.amber { background: var(--amber-dim); border-color: rgba(245,158,11,0.3); color: var(--amber); }
+  .hero-badge.amber .dot { background: var(--amber); }
+
+  .hero-label { font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .hero-value {
+    font-family: var(--mono); font-size: 3.8rem; font-weight: 700;
+    letter-spacing: -.04em; line-height: 1; margin-bottom: 8px;
+  }
+  .hero-value.green  { color: var(--accent); }
+  .hero-value.amber  { color: var(--amber);  }
+  .hero-value.red    { color: var(--red);    }
+  .hero-sub { font-size: 13px; color: var(--muted); }
+
+  .hero-bar-wrap { margin-top: 18px; max-width: 480px; }
+  .hero-bar-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 11px; color: var(--muted); }
+  .hero-bar-track { height: 8px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; }
+  .hero-bar-fill { height: 100%; border-radius: 99px; transition: width 0.8s cubic-bezier(.4,0,.2,1); }
+
+  .hero-right { display: flex; flex-direction: column; gap: 20px; min-width: 200px; }
+  .hero-metrics-row { display: flex; align-items: center; gap: 20px; }
+  .hero-divider { width: 1px; height: 36px; background: var(--border); }
+  .hero-metric { display: flex; flex-direction: column; gap: 3px; }
+  .hero-metric-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+  .hero-metric-val { font-family: var(--mono); font-size: 1.2rem; font-weight: 700; color: var(--text); }
+
+  /* ── KPI Secondary Grid ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .kpi-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r); padding: 18px 20px;
+    display: flex; flex-direction: column; gap: 3px;
+    transition: border-color 0.15s;
+  }
+  .kpi-card:hover { border-color: var(--border2); }
+  .kpi-card.negative { border-color: rgba(248,113,113,0.15); }
+  .kpi-card-label { font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+  .kpi-card-value { font-family: var(--mono); font-size: 1.35rem; font-weight: 700; color: var(--text); letter-spacing: -.02em; line-height: 1.2; margin-top: 3px; }
+  .kpi-card.negative .kpi-card-value { color: var(--red); }
+  .kpi-card-sub { font-size: 11px; color: var(--muted); }
+  .kpi-trend { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; font-weight: 700; margin-top: 7px; }
+  .trend-up   { color: var(--green); }
+  .trend-down { color: var(--red); }
+
+  /* ── Row 2 ── */
+  .row-2 { display: grid; grid-template-columns: 360px 1fr; gap: 16px; align-items: start; }
+
+  .ritmo-title-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+  .ritmo-title { font-size: 13px; font-weight: 700; color: var(--text); }
+  .ritmo-sub   { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .edit-btn {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    color: var(--muted); font-size: 11px; padding: 4px 10px; border-radius: 6px;
+    cursor: pointer; font-family: var(--sans); font-weight: 600;
+  }
+
+  .metric-block { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .metric-block:last-child { margin-bottom: 0; }
+  .metric-header { display: flex; justify-content: space-between; align-items: center; }
+  .metric-name { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+  .metric-pct  { font-size: 12px; font-weight: 700; }
+  .pct-green { color: var(--accent); }
+  .pct-amber { color: var(--amber); }
+  .pct-red   { color: var(--red);   }
+  .metric-vals { display: flex; align-items: baseline; gap: 6px; }
+  .metric-sold { font-family: var(--mono); font-size: 1.4rem; font-weight: 700; color: var(--text); }
+  .metric-goal { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .bar-track { height: 8px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; }
+  .bar-fill  { height: 100%; border-radius: 99px; transition: width 0.6s cubic-bezier(.4,0,.2,1); }
+  .metric-footer { display: flex; justify-content: space-between; font-size: 11px; }
+  .metric-status { font-weight: 600; }
+  .status-green { color: var(--accent); }
+  .status-amber { color: var(--amber); }
+  .status-red   { color: var(--red);   }
+  .pordia { color: var(--muted); }
+
+  .chart-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .chart-card-title  { font-size: 13px; font-weight: 700; color: var(--text); }
+
+  /* ── Row 3 ── */
+  .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  /* Ritmo diário */
+  .mini-bars { display: flex; flex-direction: column; gap: 9px; margin-top: 14px; }
+  .mini-bar-row { display: grid; grid-template-columns: 28px 1fr 64px; gap: 8px; align-items: center; }
+  .mini-bar-day { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+  .mini-bar-track { height: 5px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; }
+  .mini-bar-fill  { height: 100%; border-radius: 99px; }
+  .mini-bar-val   { font-family: var(--mono); font-size: 11px; text-align: right; }
+
+  /* Semana */
+  .week-tabs { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 12px; }
+  .week-tab {
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 4px; text-align: center;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .week-tab.cur { background: var(--surface2); border-color: var(--border2); }
+  .week-tab-label { font-size: 9px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .week-tab-pct   { font-size: 12px; font-weight: 700; }
+  .week-tab-val   { font-size: 10px; color: var(--muted); font-family: var(--mono); }
+  .cwb-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 11px; color: var(--muted); margin-top: 14px; }
+  .vf-row { display: flex; gap: 10px; margin-top: 12px; }
+  .vf-item { flex: 1; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+  .vf-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+  .vf-val   { font-family: var(--mono); font-size: 1rem; font-weight: 700; margin-top: 2px; }
+  .vf-green { color: var(--accent); }
+  .vf-red   { color: var(--red); }
+
+  /* Comissão */
+  .comis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .comis-cell { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; }
+  .comis-cell-label { font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+  .comis-cell-val   { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--text); margin-top: 3px; }
+  .live-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(52,211,153,0.10); border: 1px solid rgba(52,211,153,0.25);
+    color: var(--green); font-size: 10px; font-weight: 700; letter-spacing: .04em;
+    padding: 3px 8px; border-radius: 5px;
+  }
+  .live-dot { width: 5px; height: 5px; background: var(--green); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+  .comis-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .comis-split-label { font-size: 10px; color: var(--muted); }
+  .comis-split-val   { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--text); margin-top: 2px; }
+
+  /* ── Analytics ── */
+  .analytics-row { display: grid; grid-template-columns: 220px 1fr; gap: 16px; align-items: start; }
+  .analytics-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .tempo-hero-wrap { display: flex; align-items: flex-end; gap: 6px; margin: 10px 0 4px; }
+  .tempo-val  { font-family: var(--mono); font-size: 3rem; font-weight: 700; color: var(--text); line-height: 1; }
+  .tempo-unit { font-size: 14px; color: var(--muted); font-weight: 600; margin-bottom: 5px; }
+  .tempo-desc { font-size: 11px; color: var(--muted); margin-bottom: 14px; }
+  .tempo-footer { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; display: flex; justify-content: space-between; }
+  .tempo-footer-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+  .tempo-footer-val   { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--text); margin-top: 2px; }
+
+  .hbar-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+  .hbar-row  { display: flex; flex-direction: column; gap: 5px; }
+  .hbar-meta { display: flex; justify-content: space-between; align-items: center; }
+  .hbar-name  { font-size: 12px; color: var(--text); font-weight: 500; }
+  .hbar-right { display: flex; align-items: center; gap: 8px; }
+  .hbar-count { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--muted); }
+  .hbar-pct   { font-size: 11px; font-weight: 700; color: var(--muted); min-width: 30px; text-align: right; }
+  .hbar-track { height: 5px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; }
+  .hbar-fill  { height: 100%; border-radius: 99px; transition: width 0.7s cubic-bezier(.4,0,.2,1); }
+
+  /* ── Tabela ── */
+  .vendas-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .vendas-title  { font-size: 13px; font-weight: 700; color: var(--text); }
+  .vendas-count  { font-size: 11px; color: var(--muted); }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+    color: var(--muted); padding: 0 12px 10px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.025); }
+  tbody td { padding: 12px; font-size: 12px; color: var(--muted); vertical-align: middle; }
+  tbody td.tc { color: var(--text); font-weight: 600; font-size: 13px; }
+  tbody td.tm { font-family: var(--mono); font-weight: 600; color: var(--text); }
+  .sbadge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 700; letter-spacing: .04em; }
+  .s-ativo      { background: rgba(204,244,106,0.10); color: var(--accent); }
+  .s-negociacao { background: rgba(245,158,11,0.10);  color: var(--amber);  }
+  .s-cancelado  { background: rgba(248,113,113,0.10); color: var(--red);    }
+
+  @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 900px) {
+    .kpi-hero { grid-template-columns: 1fr; }
+    .row-2, .row-3, .analytics-row, .analytics-charts { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 28 28" fill="none">
+        <rect width="28" height="28" rx="8" fill="#ccf46a" fill-opacity=".12"/>
+        <rect x="4"  y="14" width="5" height="10" rx="2" fill="#ccf46a"/>
+        <rect x="12" y="9"  width="5" height="15" rx="2" fill="#ccf46a"/>
+        <rect x="20" y="4"  width="4" height="20" rx="2" fill="#ccf46a"/>
+      </svg>
+      Alan A. Souza — <span>Bruning Eixo</span>
+    </div>
+    <nav class="nav">
+      <button class="nav-btn active">Dashboard</button>
+      <button class="nav-btn">Vendas</button>
+      <button class="nav-btn">Comissões</button>
+      <button class="nav-btn">Avaliação</button>
+      <button class="nav-btn">CRM <span class="nav-tag">Nectar</span></button>
+      <button class="nav-btn">Concorrentes</button>
+    </nav>
+  </div>
+  <div class="header-right">
+    <div class="month-nav">
+      <button class="month-btn active">Todos</button>
+      <button class="month-btn arrow">‹</button>
+      <div class="month-label">Abr / 2026</div>
+      <button class="month-btn arrow">›</button>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- 1. KPIs ──────────────────────────────────────── -->
+  <div class="kpi-section">
+
+    <div class="kpi-hero">
+      <div>
+        <div class="hero-badge amber"><span class="dot"></span>Atingimento de Meta</div>
+        <div class="hero-value amber">78,4%</div>
+        <div class="hero-sub">Meta: R$ 8.500 &nbsp;·&nbsp; Vendido: R$ 6.660 &nbsp;·&nbsp; Faltam R$ 1.840</div>
+        <div class="hero-bar-wrap">
+          <div class="hero-bar-header">
+            <span>Progresso MRR</span>
+            <span>6 dias úteis restantes · R$ 307/dia</span>
+          </div>
+          <div class="hero-bar-track">
+            <div class="hero-bar-fill" style="width:78.4%; background:var(--amber)"></div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-metrics-row">
+          <div class="hero-metric">
+            <div class="hero-metric-label">MRR Ativo</div>
+            <div class="hero-metric-val">R$ 6.660</div>
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-metric">
+            <div class="hero-metric-label">Adesão</div>
+            <div class="hero-metric-val">R$ 2.100</div>
+          </div>
+        </div>
+        <div class="hero-metrics-row">
+          <div class="hero-metric">
+            <div class="hero-metric-label">Clientes Ativos</div>
+            <div class="hero-metric-val">47</div>
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-metric">
+            <div class="hero-metric-label">Ticket Médio</div>
+            <div class="hero-metric-val">R$ 141</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-card-label">Carteira</div>
+        <div class="kpi-card-value">47</div>
+        <div class="kpi-card-sub">32 anuais · 15 mensais</div>
+        <div class="kpi-trend trend-up">▲ 6%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-card-label">Ticket Médio</div>
+        <div class="kpi-card-value">R$ 141</div>
+        <div class="kpi-card-sub">por cliente ativo</div>
+        <div class="kpi-trend trend-up">▲ 3%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-card-label">Total Adesão</div>
+        <div class="kpi-card-value">R$ 2.100</div>
+        <div class="kpi-card-sub">total no período</div>
+        <div class="kpi-trend trend-up">▲ 12%</div>
+      </div>
+      <div class="kpi-card negative">
+        <div class="kpi-card-label">Churns</div>
+        <div class="kpi-card-value">2</div>
+        <div class="kpi-card-sub">R$ 280 MRR perdido</div>
+      </div>
+      <div class="kpi-card negative">
+        <div class="kpi-card-label">Taxa de Churn</div>
+        <div class="kpi-card-value">4,1%</div>
+        <div class="kpi-card-sub">2 contratos cancelados</div>
+        <div class="kpi-trend trend-down">▼ 0,8pp</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-card-label">Novas Vendas</div>
+        <div class="kpi-card-value">8</div>
+        <div class="kpi-card-sub">este mês</div>
+        <div class="kpi-trend trend-up">▲ 14%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Ritmo + Comparativo ────────────────────────── -->
+  <div class="row-2">
+    <div class="card">
+      <div class="ritmo-title-row">
+        <div>
+          <div class="ritmo-title">Ritmo do Mês</div>
+          <div class="ritmo-sub">Meta de Abr / 2026</div>
+        </div>
+        <button class="edit-btn">⚙ Meta</button>
+      </div>
+
+      <div class="metric-block">
+        <div class="metric-header">
+          <span class="metric-name">MRR</span>
+          <span class="metric-pct pct-amber">78,4%</span>
+        </div>
+        <div class="metric-vals">
+          <span class="metric-sold">R$ 6.660</span>
+          <span class="metric-goal">/ R$ 8.500</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:78.4%;background:var(--amber)"></div></div>
+        <div class="metric-footer">
+          <span class="metric-status status-amber">Falta R$ 1.840</span>
+          <span class="pordia">R$ 307/dia · 6d restantes</span>
+        </div>
+      </div>
+
+      <div class="metric-block">
+        <div class="metric-header">
+          <span class="metric-name">Adesão</span>
+          <span class="metric-pct pct-green">105,0%</span>
+        </div>
+        <div class="metric-vals">
+          <span class="metric-sold">R$ 2.100</span>
+          <span class="metric-goal">/ R$ 2.000</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--accent)"></div></div>
+        <div class="metric-footer">
+          <span class="metric-status status-green">✓ Meta atingida!</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="chart-card-header">
+        <div class="chart-card-title">MRR Comparativo — Últimos 6 Meses</div>
+      </div>
+      <div style="position:relative;height:200px;">
+        <canvas id="chartComparativo"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Ritmo Diário + Semana + Comissão ──────────── -->
+  <div class="row-3">
+
+    <div class="card">
+      <div class="card-title">Ritmo Diário</div>
+      <div class="mini-bars">
+        <div class="mini-bar-row">
+          <span class="mini-bar-day">Seg</span>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:100%;background:var(--accent)"></div></div>
+          <span class="mini-bar-val" style="color:var(--accent)">R$ 850</span>
+        </div>
+        <div class="mini-bar-row">
+          <span class="mini-bar-day">Ter</span>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:58%;background:var(--amber)"></div></div>
+          <span class="mini-bar-val" style="color:var(--amber)">R$ 420</span>
+        </div>
+        <div class="mini-bar-row">
+          <span class="mini-bar-day">Qua</span>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:82%;background:var(--accent)"></div></div>
+          <span class="mini-bar-val" style="color:var(--accent)">R$ 590</span>
+        </div>
+        <div class="mini-bar-row">
+          <span class="mini-bar-day">Qui</span>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:38%;background:var(--red)"></div></div>
+          <span class="mini-bar-val" style="color:var(--red)">R$ 280</span>
+        </div>
+        <div class="mini-bar-row">
+          <span class="mini-bar-day">Sex</span>
+          <div class="mini-bar-track"><div class="mini-bar-fill" style="width:97%;background:var(--accent)"></div></div>
+          <span class="mini-bar-val" style="color:var(--accent)">R$ 700</span>
+        </div>
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:700;">Meta hoje</span>
+          <span style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--amber)">R$ 307</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div style="font-size:13px;font-weight:700;color:var(--text)">Ritmo Semanal</div>
+        <div style="font-size:10px;color:var(--muted);text-align:right;line-height:1.5;">Meta base<br>R$ 2.125/sem</div>
+      </div>
+      <div class="week-tabs">
+        <div class="week-tab">
+          <div class="week-tab-label">SEM 1</div>
+          <div class="week-tab-pct" style="color:var(--accent)">118%</div>
+          <div class="week-tab-val">R$2.500</div>
+        </div>
+        <div class="week-tab">
+          <div class="week-tab-label">SEM 2</div>
+          <div class="week-tab-pct" style="color:var(--red)">72%</div>
+          <div class="week-tab-val">R$1.530</div>
+        </div>
+        <div class="week-tab cur">
+          <div class="week-tab-label">SEM 3</div>
+          <div class="week-tab-pct" style="color:var(--amber)">68%</div>
+          <div class="week-tab-val">R$1.840</div>
+        </div>
+        <div class="week-tab">
+          <div class="week-tab-label">SEM 4</div>
+          <div class="week-tab-pct" style="color:var(--muted)">—</div>
+          <div class="week-tab-val">R$2.735</div>
+        </div>
+        <div class="week-tab">
+          <div class="week-tab-label">SEM 5</div>
+          <div class="week-tab-pct" style="color:var(--muted)">—</div>
+          <div class="week-tab-val">R$500</div>
+        </div>
+      </div>
+      <div class="cwb-header">
+        <span>Semana 3 — Meta R$ 2.735</span>
+        <span style="color:var(--amber);font-weight:700;">68,4%</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:68.4%;background:var(--amber)"></div></div>
+      <div class="vf-row">
+        <div class="vf-item">
+          <div class="vf-label">Vendido</div>
+          <div class="vf-val vf-green">R$ 1.840</div>
+        </div>
+        <div class="vf-item">
+          <div class="vf-label">Faltam</div>
+          <div class="vf-val vf-red">R$ 895</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="display:flex;flex-direction:column;gap:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:13px;font-weight:700;color:var(--text)">Comissão — Abr/26</div>
+        <div class="live-badge"><span class="live-dot"></span>Tempo Real</div>
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;font-weight:600;margin-bottom:3px;">Total estimado</div>
+        <div style="font-family:var(--mono);font-size:2rem;font-weight:700;color:var(--text);letter-spacing:-.02em;">R$ 1.248</div>
+      </div>
+      <div class="comis-grid">
+        <div class="comis-cell"><div class="comis-cell-label">MRR vendido</div><div class="comis-cell-val">R$ 6.660</div></div>
+        <div class="comis-cell"><div class="comis-cell-label">Meta MRR</div><div class="comis-cell-val">R$ 8.500</div></div>
+        <div class="comis-cell"><div class="comis-cell-label">Churn 3m</div><div class="comis-cell-val">R$ 280</div></div>
+        <div class="comis-cell"><div class="comis-cell-label">Anuais</div><div class="comis-cell-val">3 contratos</div></div>
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:8px;">
+          <span>Atingimento meta</span>
+          <span style="color:var(--amber);font-weight:700;">78,4%</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:78.4%;background:var(--amber)"></div></div>
+      </div>
+      <div class="comis-split">
+        <div><div class="comis-split-label">Comis. MRR</div><div class="comis-split-val">R$ 798</div></div>
+        <div><div class="comis-split-label">Comis. Adesão</div><div class="comis-split-val">R$ 450</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 4. Analytics ─────────────────────────────────── -->
+  <div class="analytics-row">
+    <div class="card">
+      <div class="card-title">Tempo Médio de Fechamento</div>
+      <div class="tempo-hero-wrap">
+        <div class="tempo-val">14</div>
+        <div class="tempo-unit">dias</div>
+      </div>
+      <div class="tempo-desc">do lead entrar no CRM até fechar</div>
+      <div class="tempo-footer">
+        <div>
+          <div class="tempo-footer-label">Calculadas</div>
+          <div class="tempo-footer-val">23</div>
+        </div>
+        <div>
+          <div class="tempo-footer-label">Sem CRM</div>
+          <div class="tempo-footer-val" style="color:var(--muted)">4</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="analytics-charts">
+      <div class="card">
+        <div class="card-title">Distribuição por Segmento</div>
+        <div class="hbar-list" id="segmentoList"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Distribuição por Origem</div>
+        <div class="hbar-list" id="origemList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Vendas ─────────────────────────────────────── -->
+  <div class="card">
+    <div class="vendas-header">
+      <div class="vendas-title">Vendas do Mês</div>
+      <div class="vendas-count">Abr / 2026 · 8 vendas</div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Cliente</th><th>Plano</th><th>Segmento</th><th>Origem</th>
+          <th style="text-align:right">MRR</th><th style="text-align:right">Adesão</th>
+          <th>Status</th><th>Data</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td class="tc">Auto Peças Rondônia</td><td>Plano Pro Desktop</td><td>Auto Peças</td><td>Prospecção</td>
+            <td class="tm" style="text-align:right">R$ 189</td><td class="tm" style="text-align:right">R$ 350</td>
+            <td><span class="sbadge s-ativo">Ativo</span></td><td>02/04/2026</td>
+          </tr>
+          <tr>
+            <td class="tc">Mecânica do Zé</td><td>Fiscalize</td><td>Oficina Mecânica</td><td>Indicação</td>
+            <td class="tm" style="text-align:right">R$ 129</td><td class="tm" style="text-align:right">R$ 250</td>
+            <td><span class="sbadge s-ativo">Ativo</span></td><td>05/04/2026</td>
+          </tr>
+          <tr>
+            <td class="tc">Distribuidora Boa Vista</td><td>Turbo</td><td>Distribuidora</td><td>Tráfego Pago</td>
+            <td class="tm" style="text-align:right">R$ 289</td><td class="tm" style="text-align:right">R$ 500</td>
+            <td><span class="sbadge s-negociacao">Negociação</span></td><td>08/04/2026</td>
+          </tr>
+          <tr>
+            <td class="tc">TechParts Ltda</td><td>Performance</td><td>Auto Peças</td><td>Inbound Orgânico</td>
+            <td class="tm" style="text-align:right">R$ 349</td><td class="tm" style="text-align:right">R$ 600</td>
+            <td><span class="sbadge s-ativo">Ativo</span></td><td>10/04/2026</td>
+          </tr>
+          <tr>
+            <td class="tc">Posto Guarani</td><td>Acelera</td><td>Posto de Combustível</td><td>Remarketing</td>
+            <td class="tm" style="text-align:right">R$ 159</td><td class="tm" style="text-align:right">R$ 200</td>
+            <td><span class="sbadge s-cancelado">Cancelado</span></td><td>14/04/2026</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<script>
+Chart.defaults.color = 'rgba(240,244,255,0.40)';
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.font.size = 11;
+
+// Comparativo
+(function(){
+  const ctx = document.getElementById('chartComparativo').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Nov/25','Dez/25','Jan/26','Fev/26','Mar/26','Abr/26'],
+      datasets: [
+        {
+          label: 'MRR Vendido',
+          data: [5200,6100,5800,7200,6900,6660],
+          backgroundColor: 'rgba(204,244,106,0.18)',
+          borderColor: '#ccf46a',
+          borderWidth: 1.5,
+          borderRadius: 6,
+          borderSkipped: false,
+        },
+        {
+          label: 'Meta',
+          data: [8500,8500,8500,8500,8500,8500],
+          type: 'line',
+          borderColor: 'rgba(245,158,11,0.55)',
+          borderWidth: 1.5,
+          borderDash: [4,3],
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0e1420', borderColor: 'rgba(255,255,255,0.12)', borderWidth: 1,
+          titleColor: '#f0f4ff', bodyColor: 'rgba(240,244,255,0.6)', padding: 10,
+          callbacks: { label: c => ' ' + c.parsed.y.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}) }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: {
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { callback: v => 'R$ ' + (v/1000).toFixed(0) + 'k' }
+        }
+      }
+    }
+  });
+})();
+
+// Horizontal bars
+const CORES = ['#ccf46a','#60a5fa','#f59e0b','#a78bfa','#fb7185','#34d399','#f97316','#6b7280'];
+function hbars(id, data) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const total = data.reduce((s,d) => s+d.v, 0);
+  const max   = Math.max(...data.map(d=>d.v));
+  el.innerHTML = data.map((d,i) => {
+    const pct = total > 0 ? ((d.v/total)*100).toFixed(0) : 0;
+    const w   = max  > 0 ? ((d.v/max)*100).toFixed(1)   : 0;
+    return `<div class="hbar-row">
+      <div class="hbar-meta">
+        <span class="hbar-name">${d.n}</span>
+        <div class="hbar-right"><span class="hbar-count">${d.v}</span><span class="hbar-pct">${pct}%</span></div>
+      </div>
+      <div class="hbar-track"><div class="hbar-fill" style="width:${w}%;background:${CORES[i%CORES.length]}"></div></div>
+    </div>`;
+  }).join('');
+}
+hbars('segmentoList',[
+  {n:'Oficina Mecânica',v:12},{n:'Auto Peças',v:8},{n:'Distribuidora',v:5},
+  {n:'Transportadora',v:4},{n:'Posto de Combustível',v:3},{n:'Outros',v:2},
+]);
+hbars('origemList',[
+  {n:'Prospecção',v:11},{n:'Indicação',v:9},{n:'Tráfego Pago',v:7},
+  {n:'Inbound Orgânico',v:4},{n:'Remarketing',v:2},{n:'Já é Cliente',v:1},
+]);
+</script>
+</body>
+</html>
