@@ -23,6 +23,12 @@ def run_migrations():
         conn.execute(text(
             "ALTER TABLE vendas ADD COLUMN IF NOT EXISTS payment_status VARCHAR(10) DEFAULT 'pending'"
         ))
+        # Migração de dados: vendas anteriores a maio/2025 marcadas como pagas
+        conn.execute(text(
+            "UPDATE vendas SET payment_status = 'paid' "
+            "WHERE (payment_status IS NULL OR payment_status = 'pending') "
+            "AND data < '2025-05-01'"
+        ))
         conn.commit()
 
 run_migrations()
