@@ -74,10 +74,14 @@ class KPIOut(BaseModel):
     ticket_medio:    Decimal
     churns:          int
     churn_mrr:       Decimal
-    # Payment breakdown
-    adesao_recebida: Decimal
-    adesao_pendente: Decimal
-    vendas_pagas:    int
+    # Payment breakdown — Adesão
+    adesao_recebida:  Decimal
+    adesao_pendente:  Decimal
+    # Payment breakdown — MRR (apenas contratos Ativos)
+    mrr_recebido:     Decimal
+    mrr_pendente:     Decimal
+    # Contadores
+    vendas_pagas:     int
     vendas_pendentes: int
 
 

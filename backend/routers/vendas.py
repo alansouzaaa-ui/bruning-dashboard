@@ -100,8 +100,12 @@ def kpis(
     ticket       = total_mrr / len(ativos) if ativos else 0
 
     # Payment breakdown (registros nulos tratados como 'pending')
-    pagas    = [v for v in todas if (v.payment_status or 'pending') == 'paid']
+    pagas     = [v for v in todas if (v.payment_status or 'pending') == 'paid']
     pendentes = [v for v in todas if (v.payment_status or 'pending') == 'pending']
+
+    # MRR split: apenas contratos Ativos com payment_status
+    ativos_pagos     = [v for v in ativos if (v.payment_status or 'pending') == 'paid']
+    ativos_pendentes = [v for v in ativos if (v.payment_status or 'pending') == 'pending']
 
     return KPIOut(
         total_mrr        = Decimal(str(round(total_mrr, 2))),
@@ -114,6 +118,8 @@ def kpis(
         churn_mrr        = Decimal(str(round(churn_mrr, 2))),
         adesao_recebida  = Decimal(str(round(sum(float(v.adesao or 0) for v in pagas), 2))),
         adesao_pendente  = Decimal(str(round(sum(float(v.adesao or 0) for v in pendentes), 2))),
+        mrr_recebido     = Decimal(str(round(sum(float(v.mrr or 0) for v in ativos_pagos), 2))),
+        mrr_pendente     = Decimal(str(round(sum(float(v.mrr or 0) for v in ativos_pendentes), 2))),
         vendas_pagas     = len(pagas),
         vendas_pendentes = len(pendentes),
     )
