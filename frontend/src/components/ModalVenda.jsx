@@ -10,6 +10,7 @@ const EMPTY = {
   cod: '', cliente: '', cnpj: '', segmento: '', plano: '',
   contrato: 'Mensal', mrr: '', adesao: '', churn_mrr: '',
   status: 'Ativo', tipo: '', origem: '', obs: '',
+  payment_status: 'pending',
 }
 
 const SEGMENTOS = [
@@ -50,10 +51,11 @@ export default function ModalVenda({ venda, onClose }) {
         mrr:       venda.mrr != null ? String(venda.mrr) : '',
         adesao:    venda.adesao != null ? String(venda.adesao) : '',
         churn_mrr: venda.churn_mrr != null ? String(venda.churn_mrr) : '',
-        status:    venda.status || 'Ativo',
-        tipo:      venda.tipo || '',
-        origem:    venda.origem || '',
-        obs:       venda.obs || '',
+        status:         venda.status || 'Ativo',
+        tipo:           venda.tipo || '',
+        origem:         venda.origem || '',
+        obs:            venda.obs || '',
+        payment_status: venda.payment_status || 'pending',
       })
       setShowChurn(venda.status === 'Cancelado')
     }
@@ -126,10 +128,11 @@ export default function ModalVenda({ venda, onClose }) {
       mrr:       parseFloat(form.mrr) || 0,
       adesao:    parseFloat(form.adesao) || 0,
       churn_mrr: parseFloat(form.churn_mrr) || 0,
-      status:    form.status || null,
-      tipo:      form.tipo || null,
-      origem:    form.origem || null,
-      obs:       form.obs || null,
+      status:         form.status || null,
+      tipo:           form.tipo || null,
+      origem:         form.origem || null,
+      obs:            form.obs || null,
+      payment_status: form.payment_status || 'pending',
     }
 
     if (venda) {
@@ -177,6 +180,20 @@ export default function ModalVenda({ venda, onClose }) {
                 <option>Cancelado</option>
                 <option>Trial</option>
                 <option>Pausado</option>
+              </select>
+            </div>
+            <div className="field">
+              <label>Status do Pagamento</label>
+              <select
+                value={form.payment_status}
+                onChange={e => set('payment_status', e.target.value)}
+                style={{
+                  color: form.payment_status === 'paid' ? '#22c55e' : '#f59e0b',
+                  fontWeight: 600,
+                }}
+              >
+                <option value="pending">⏳ Aguardando Pagamento</option>
+                <option value="paid">✓ Pago</option>
               </select>
             </div>
 

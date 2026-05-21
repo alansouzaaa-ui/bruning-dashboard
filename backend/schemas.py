@@ -20,8 +20,9 @@ class VendaBase(BaseModel):
     status:    Optional[str] = None
     tipo:      Optional[str] = None
     origem:    Optional[str] = None
-    obs:       Optional[str] = None
-    data_crm:  Optional[date] = None
+    obs:            Optional[str] = None
+    data_crm:       Optional[date] = None
+    payment_status: Optional[str] = 'pending'   # 'paid' | 'pending'
 
 
 class VendaCreate(VendaBase):
@@ -65,14 +66,19 @@ class ComissaoPagaOut(ComissaoPagaBase):
 # ── KPIs (resposta calculada) ────────────────────────────
 
 class KPIOut(BaseModel):
-    total_mrr:    Decimal
-    total_adesao: Decimal
-    ativos:       int
-    anuais:       int
-    mensais:      int
-    ticket_medio: Decimal
-    churns:       int
-    churn_mrr:    Decimal
+    total_mrr:       Decimal
+    total_adesao:    Decimal
+    ativos:          int
+    anuais:          int
+    mensais:         int
+    ticket_medio:    Decimal
+    churns:          int
+    churn_mrr:       Decimal
+    # Payment breakdown
+    adesao_recebida: Decimal
+    adesao_pendente: Decimal
+    vendas_pagas:    int
+    vendas_pendentes: int
 
 
 class ComparativoMes(BaseModel):

@@ -17,15 +17,41 @@ function Badge({ status }) {
   return <span className={`badge ${map[status] || ''}`}>{status}</span>
 }
 
+function PaymentBadge({ status }) {
+  const isPaid = (status || 'pending') === 'paid'
+  return (
+    <span
+      className="badge"
+      style={{
+        background: isPaid ? 'rgba(34,197,94,0.12)' : 'rgba(245,158,11,0.12)',
+        color:      isPaid ? '#22c55e' : '#f59e0b',
+        border:     `1px solid ${isPaid ? 'rgba(34,197,94,0.3)' : 'rgba(245,158,11,0.3)'}`,
+        fontWeight: 600,
+        fontSize:   '0.7rem',
+        padding:    '2px 8px',
+        borderRadius: '4px',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {isPaid ? '✓ Pago' : '⏳ Aguardando'}
+    </span>
+  )
+}
+
 export default function TabelaVendas({ mes, onEditar }) {
   const [busca, setBusca] = useState('')
   const [statusFiltro, setStatusFiltro] = useState('')
+  const [paymentFiltro, setPaymentFiltro] = useState('')
   const qc = useQueryClient()
   const toast = useToast()
 
   const { data: vendas = [], isLoading } = useQuery({
-    queryKey: ['vendas', mes, statusFiltro],
-    queryFn: () => getVendas({ mes: mes || undefined, status: statusFiltro || undefined }),
+    queryKey: ['vendas', mes, statusFiltro, paymentFiltro],
+    queryFn: () => getVendas({
+      mes:            mes || undefined,
+      status:         statusFiltro    || undefined,
+      payment_status: paymentFiltro   || undefined,
+    }),
   })
 
   const deletar = useMutation({
@@ -73,6 +99,15 @@ export default function TabelaVendas({ mes, onEditar }) {
             <option>Trial</option>
             <option>Pausado</option>
           </select>
+          <select
+            className={styles.select}
+            value={paymentFiltro}
+            onChange={e => setPaymentFiltro(e.target.value)}
+          >
+            <option value="">Todos pagamentos</option>
+            <option value="paid">✓ Pago</option>
+            <option value="pending">⏳ Aguardando</option>
+          </select>
         </div>
       </div>
 
@@ -92,6 +127,7 @@ export default function TabelaVendas({ mes, onEditar }) {
                 <th>MRR</th>
                 <th>Adesão</th>
                 <th>Status</th>
+                <th>Pagamento</th>
                 <th>Origem</th>
                 <th></th>
               </tr>
@@ -109,6 +145,7 @@ export default function TabelaVendas({ mes, onEditar }) {
                   <td className={styles.mono}>{fmt(v.mrr)}</td>
                   <td className={styles.mono}>{fmt(v.adesao)}</td>
                   <td><Badge status={v.status} /></td>
+                  <td><PaymentBadge status={v.payment_status} /></td>
                   <td className={styles.muted}>{v.origem || '—'}</td>
                   <td>
                     <div className={styles.actions}>

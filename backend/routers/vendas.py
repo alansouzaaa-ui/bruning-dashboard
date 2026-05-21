@@ -23,6 +23,7 @@ MESES_PT = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","D
 def listar_vendas(
     mes: Optional[str] = Query(None, description="Formato: 2026-03"),
     status: Optional[str] = None,
+    payment_status: Optional[str] = None,
     db: Session = Depends(get_db),
 ):
     q = db.query(Venda)
@@ -34,6 +35,8 @@ def listar_vendas(
         )
     if status:
         q = q.filter(Venda.status == status)
+    if payment_status:
+        q = q.filter(Venda.payment_status == payment_status)
     return q.order_by(Venda.data.desc()).all()
 
 
@@ -96,15 +99,23 @@ def kpis(
     churn_mrr    = sum(float(v.churn_mrr or 0) for v in churns)
     ticket       = total_mrr / len(ativos) if ativos else 0
 
+    # Payment breakdown (registros nulos tratados como 'pending')
+    pagas    = [v for v in todas if (v.payment_status or 'pending') == 'paid']
+    pendentes = [v for v in todas if (v.payment_status or 'pending') == 'pending']
+
     return KPIOut(
-        total_mrr    = Decimal(str(round(total_mrr, 2))),
-        total_adesao = Decimal(str(round(total_adesao, 2))),
-        ativos       = len(ativos),
-        anuais       = len(anuais),
-        mensais      = len(ativos) - len(anuais),
-        ticket_medio = Decimal(str(round(ticket, 2))),
-        churns       = len(churns),
-        churn_mrr    = Decimal(str(round(churn_mrr, 2))),
+        total_mrr        = Decimal(str(round(total_mrr, 2))),
+        total_adesao     = Decimal(str(round(total_adesao, 2))),
+        ativos           = len(ativos),
+        anuais           = len(anuais),
+        mensais          = len(ativos) - len(anuais),
+        ticket_medio     = Decimal(str(round(ticket, 2))),
+        churns           = len(churns),
+        churn_mrr        = Decimal(str(round(churn_mrr, 2))),
+        adesao_recebida  = Decimal(str(round(sum(float(v.adesao or 0) for v in pagas), 2))),
+        adesao_pendente  = Decimal(str(round(sum(float(v.adesao or 0) for v in pendentes), 2))),
+        vendas_pagas     = len(pagas),
+        vendas_pendentes = len(pendentes),
     )
 
 
