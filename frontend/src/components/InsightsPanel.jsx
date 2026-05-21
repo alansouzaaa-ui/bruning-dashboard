@@ -37,7 +37,9 @@ export default function InsightsPanel({ mes }) {
 
   if (!kpis || !metas) return null
 
+  const PRIORIDADE_ORDEM = { critico: 0, alto: 1, medio: 2, info: 3 }
   const insights = dashboardInsightSpecialist({ kpis, kpisPrev, comparativo, metas, trimestral, mes })
+    .sort((a, b) => (PRIORIDADE_ORDEM[a.prioridade] ?? 99) - (PRIORIDADE_ORDEM[b.prioridade] ?? 99))
 
   if (insights.length === 0) return null
 
@@ -51,7 +53,7 @@ export default function InsightsPanel({ mes }) {
         <div className={styles.headerLeft}>
           <span className={styles.aiIcon}>✦</span>
           <div>
-            <h2 className={styles.title}>AI Strategic Insights</h2>
+            <h2 className={styles.title}>Insights Estratégicos com IA</h2>
             <p className={styles.subtitle}>
               {insights.length} insight{insights.length > 1 ? 's' : ''} detectado{insights.length > 1 ? 's' : ''}
               {criticos > 0 && <span className={styles.alertCount} style={{ color: '#f87171' }}> · {criticos} crítico{criticos > 1 ? 's' : ''}</span>}

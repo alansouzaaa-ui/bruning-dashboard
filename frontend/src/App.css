@@ -31,3 +31,23 @@
   .row-2 { grid-template-columns: 1fr; }
   .row-3 { grid-template-columns: 1fr; }
 }
+
+/* ── Section labels ── */
+.section-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.6px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}

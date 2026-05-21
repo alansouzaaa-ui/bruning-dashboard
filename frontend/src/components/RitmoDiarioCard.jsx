@@ -16,6 +16,7 @@ export default function RitmoDiarioCard({ mes }) {
   const calcDecorridos = diasUteisDecorridos(ano, mesNum)
   const [diasTotal,      setDiasTotal]      = useState('')
   const [diasDecorridos, setDiasDecorridos] = useState('')
+  const [ajustando, setAjustando] = useState(false)
 
   const total      = parseInt(diasTotal)      || calcTotal
   const decorridos = parseInt(diasDecorridos) || calcDecorridos
@@ -47,32 +48,41 @@ export default function RitmoDiarioCard({ mes }) {
     <div className={`card ${styles.card}`}>
       <div className={styles.titleRow}>
         <h3 className={styles.title}>Ritmo Diário</h3>
-        <span className={styles.configNote}>Configure os dias úteis</span>
+        <button
+          className={styles.configNote}
+          onClick={() => setAjustando(v => !v)}
+          title={ajustando ? 'Fechar ajuste de dias' : 'Ajustar dias úteis manualmente'}
+          style={{ cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
+        >
+          ⚙ {ajustando ? 'Fechar' : 'Ajustar dias'}
+        </button>
       </div>
 
-      {/* Inputs de dias */}
-      <div className={styles.diasInputs}>
-        <div className={styles.diasField}>
-          <label className={styles.diasLabel}>Dias Úteis Total</label>
-          <input
-            className={styles.diasInput}
-            type="number" min="1" max="31"
-            value={diasTotal}
-            onChange={e => setDiasTotal(e.target.value)}
-            placeholder={String(calcTotal)}
-          />
+      {/* Inputs de dias — ocultos por padrão */}
+      {ajustando && (
+        <div className={styles.diasInputs}>
+          <div className={styles.diasField}>
+            <label className={styles.diasLabel}>Dias Úteis Total</label>
+            <input
+              className={styles.diasInput}
+              type="number" min="1" max="31"
+              value={diasTotal}
+              onChange={e => setDiasTotal(e.target.value)}
+              placeholder={String(calcTotal)}
+            />
+          </div>
+          <div className={styles.diasField}>
+            <label className={styles.diasLabel}>Dias Passados</label>
+            <input
+              className={styles.diasInput}
+              type="number" min="0" max="31"
+              value={diasDecorridos}
+              onChange={e => setDiasDecorridos(e.target.value)}
+              placeholder={String(calcDecorridos)}
+            />
+          </div>
         </div>
-        <div className={styles.diasField}>
-          <label className={styles.diasLabel}>Dias Passados</label>
-          <input
-            className={styles.diasInput}
-            type="number" min="0" max="31"
-            value={diasDecorridos}
-            onChange={e => setDiasDecorridos(e.target.value)}
-            placeholder={String(calcDecorridos)}
-          />
-        </div>
-      </div>
+      )}
 
       {/* Grid de métricas 2x2 */}
       <div className={styles.metricsGrid}>

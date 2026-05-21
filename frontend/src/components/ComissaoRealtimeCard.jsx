@@ -80,14 +80,10 @@ export default function ComissaoRealtimeCard({ mes }) {
         {/* Título */}
         <div className={styles.titleRow}>
           <p className={styles.title}>Comissão — {mesEfetivo}</p>
-          {isAoVivo ? (
+          {isAoVivo && (
             <span className={styles.liveBadge}>
               <span className={styles.liveDot} />
               Tempo Real
-            </span>
-          ) : (
-            <span className={styles.liveBadge} style={{ background: 'rgba(255,255,255,.06)', color: 'var(--muted)', borderColor: 'var(--border)' }}>
-              Histórico
             </span>
           )}
         </div>

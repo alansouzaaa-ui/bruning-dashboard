@@ -249,7 +249,6 @@ function KPIInputCard({ label, value, onChange, color, readOnly = false, suffix 
           style={{ color }}
         />
       )}
-      {!readOnly && <span className={styles.kpiHint}>clique para editar</span>}
     </div>
   )
 }
@@ -303,14 +302,14 @@ export default function SalesOpportunityTracker({ mes }) {
         <div className={styles.headerLeft}>
           <span className={styles.headerIcon}>◈</span>
           <div>
-            <h2 className={styles.headerTitle}>Commercial Opportunity Performance</h2>
+            <h2 className={styles.headerTitle}>Desempenho de Oportunidades Comerciais</h2>
             <p className={styles.headerSub}>
               Funil comercial · {labelMes(mesEfetivo)}
               {mutation.isPending && <span className={styles.saving}> · salvando…</span>}
             </p>
           </div>
         </div>
-        <div className={styles.headerBadge}>Sales Opportunity Tracker</div>
+        <div className={styles.headerBadge}>Rastreador de Oportunidades</div>
       </div>
 
       {/* ── Body ── */}
@@ -357,7 +356,7 @@ export default function SalesOpportunityTracker({ mes }) {
         <div className={styles.right}>
           <div className={styles.insightsHeader}>
             <span className={styles.insightsIcon}>✦</span>
-            <span className={styles.insightsTitle}>AI Sales Insights</span>
+            <span className={styles.insightsTitle}>Análise com IA — Funil</span>
           </div>
 
           {insights.length === 0 ? (

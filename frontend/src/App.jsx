@@ -69,15 +69,22 @@ export default function App() {
         {/* ── Dashboard: todos os indicadores ── */}
         {aba === 'dashboard' && (
           <main className="main">
+            {/* ── Métricas Principais ── */}
             <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar KPIs.</div>}>
               <KPICards mes={mesResolvido} />
             </ErrorBoundary>
             <ErrorBoundary fallback={null}>
               <PaymentKPIRow mes={mesResolvido} />
             </ErrorBoundary>
+
+            {/* ── Análise & Insights ── */}
+            <div className="section-label">Análise &amp; Insights</div>
             <ErrorBoundary fallback={null}>
               <InsightsPanel mes={mesResolvido} />
             </ErrorBoundary>
+
+            {/* ── Ritmo & Metas ── */}
+            <div className="section-label">Ritmo &amp; Metas</div>
             <div className="row-2">
               <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar acelerômetro.</div>}>
                 <RitmoCard mes={mesResolvido} />
@@ -97,14 +104,23 @@ export default function App() {
                 <ComissaoRealtimeCard mes={mesResolvido} />
               </ErrorBoundary>
             </div>
+
+            {/* ── Análise de Carteira ── */}
+            <div className="section-label">Análise de Carteira</div>
             <div className="row-3">
               <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar analytics.</div>}>
                 <AnalyticsPanel mes={mesResolvido} />
               </ErrorBoundary>
             </div>
+
+            {/* ── Funil Comercial ── */}
+            <div className="section-label">Funil Comercial</div>
             <ErrorBoundary fallback={null}>
               <SalesOpportunityTracker mes={mesResolvido} />
             </ErrorBoundary>
+
+            {/* ── Vendas do Período ── */}
+            <div className="section-label">Vendas do Período</div>
             <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar vendas do mês.</div>}>
               <VendasMesCard mes={mesResolvido} />
             </ErrorBoundary>

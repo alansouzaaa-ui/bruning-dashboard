@@ -25,6 +25,20 @@ function StatusBadge({ status }) {
   return <span className={`${styles.badge} ${cls}`}>{status || '—'}</span>
 }
 
+function PaymentBadge({ status }) {
+  const isPaid = (status || 'pending') === 'paid'
+  return (
+    <span style={{
+      fontSize: 10,
+      fontWeight: 700,
+      color: isPaid ? '#22c55e' : '#f59e0b',
+      whiteSpace: 'nowrap',
+    }}>
+      {isPaid ? '✓ Pago' : '⏳'}
+    </span>
+  )
+}
+
 export default function VendasMesCard({ mes }) {
   /* Se mesFiltro = 'all' (null), usa o mês corrente; caso contrário usa o selecionado */
   const mesEfetivo = mes || MES_CORRENTE
@@ -102,6 +116,7 @@ export default function VendasMesCard({ mes }) {
                   <th>Plano</th>
                   <th>MRR</th>
                   <th>Status</th>
+                  <th>Pgto</th>
                 </tr>
               </thead>
               <tbody>
@@ -114,6 +129,7 @@ export default function VendasMesCard({ mes }) {
                     <td style={{ color: 'var(--text)', whiteSpace: 'nowrap' }}>{v.plano || '—'}</td>
                     <td className={styles.mrr}>{fmt(v.mrr)}</td>
                     <td><StatusBadge status={v.status} /></td>
+                    <td><PaymentBadge status={v.payment_status} /></td>
                   </tr>
                 ))}
               </tbody>
