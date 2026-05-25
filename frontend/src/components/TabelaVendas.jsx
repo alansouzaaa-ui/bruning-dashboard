@@ -128,6 +128,7 @@ export default function TabelaVendas({ mes, onEditar }) {
                 <th>Adesão</th>
                 <th>Status</th>
                 <th>Pagamento</th>
+                <th>Zendesk</th>
                 <th>Origem</th>
                 <th></th>
               </tr>
@@ -146,6 +147,17 @@ export default function TabelaVendas({ mes, onEditar }) {
                   <td className={styles.mono}>{fmt(v.adesao)}</td>
                   <td><Badge status={v.status} /></td>
                   <td><PaymentBadge status={v.payment_status} /></td>
+                  <td style={{
+                    color: v.zendesk === 'Sim' ? '#22c55e'
+                         : v.zendesk === 'Não' ? '#f59e0b'
+                         : 'var(--muted)',
+                    fontSize: 11,
+                    fontWeight: v.zendesk ? 600 : 400,
+                  }}>
+                    {v.zendesk === 'Sim' ? '✓ Sim'
+                   : v.zendesk === 'Não' ? '✗ Não'
+                   : '—'}
+                  </td>
                   <td className={styles.muted}>{v.origem || '—'}</td>
                   <td>
                     <div className={styles.actions}>

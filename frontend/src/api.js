@@ -74,23 +74,6 @@ export const salvarMetasMensais = (metas) =>
 export const deletarMetaMensal = (mes) =>
   api.delete(`/trimestral/metas-mensais/${mes}`)
 
-// ── CRM / Nectar ─────────────────────────────────────────
-export const getCRMStatus = () =>
-  api.get('/crm/status').then(r => r.data)
-
-export const getCRMFunil = (mes) =>
-  api.get('/crm/funil', { params: mes ? { mes } : {} }).then(r => r.data)
-
-export const getCRMKpis = (mes) =>
-  api.get('/crm/kpis', { params: mes ? { mes } : {} }).then(r => r.data)
-
-// ── Oportunidades ────────────────────────────────────────
-export const getOportunidade = (mes) =>
-  api.get(`/oportunidades/${mes}`).then(r => r.data)
-
-export const upsertOportunidade = (mes, body) =>
-  api.put(`/oportunidades/${mes}`, body).then(r => r.data)
-
 // ── BrasilAPI ────────────────────────────────────────────
 export const buscarCNPJ = (cnpj) => {
   const limpo = cnpj.replace(/\D/g, '')

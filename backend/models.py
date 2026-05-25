@@ -46,6 +46,7 @@ class Venda(Base):
     obs            = Column(Text, nullable=True)
     data_crm       = Column(Date, nullable=True)         # Data de entrada do lead no CRM
     payment_status = Column(String(10), default='pending')  # 'paid' | 'pending'
+    zendesk        = Column(String(3), nullable=True)    # 'Sim' | 'Não'
     created_at     = Column(DateTime(timezone=True), server_default=func.now())
 
 
@@ -61,10 +62,3 @@ class ComissaoPaga(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
-class Oportunidade(Base):
-    __tablename__ = "oportunidades"
-
-    mes      = Column(String(7), primary_key=True)   # '2026-04'
-    criadas  = Column(Integer, default=0)
-    ganhas   = Column(Integer, default=0)
-    perdidas = Column(Integer, default=0)

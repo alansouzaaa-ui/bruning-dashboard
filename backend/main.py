@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text, extract, func
 
 from database import engine, Base, get_db
-from routers import vendas, comissoes, configs, trimestral, crm, oportunidades
+from routers import vendas, comissoes, configs, trimestral
 from auth import verify_token
 from models import Venda
 from sqlalchemy.orm import Session
@@ -22,6 +22,9 @@ def run_migrations():
         ))
         conn.execute(text(
             "ALTER TABLE vendas ADD COLUMN IF NOT EXISTS payment_status VARCHAR(10) DEFAULT 'pending'"
+        ))
+        conn.execute(text(
+            "ALTER TABLE vendas ADD COLUMN IF NOT EXISTS zendesk VARCHAR(3)"
         ))
         # Migração de dados: vendas anteriores a maio/2025 marcadas como pagas
         conn.execute(text(
@@ -54,12 +57,10 @@ app.add_middleware(
 )
 
 # Todos os routers exigem token
-app.include_router(vendas.router,      dependencies=[Depends(verify_token)])
-app.include_router(comissoes.router,   dependencies=[Depends(verify_token)])
-app.include_router(configs.router,     dependencies=[Depends(verify_token)])
-app.include_router(trimestral.router,  dependencies=[Depends(verify_token)])
-app.include_router(crm.router,           dependencies=[Depends(verify_token)])
-app.include_router(oportunidades.router, dependencies=[Depends(verify_token)])
+app.include_router(vendas.router,    dependencies=[Depends(verify_token)])
+app.include_router(comissoes.router, dependencies=[Depends(verify_token)])
+app.include_router(configs.router,   dependencies=[Depends(verify_token)])
+app.include_router(trimestral.router, dependencies=[Depends(verify_token)])
 
 
 @app.get("/")

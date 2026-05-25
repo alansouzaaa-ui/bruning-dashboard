@@ -120,13 +120,6 @@ export default function Header({ aba, setAba, meses, mesFiltro, setMesFiltro, on
             Avaliação
           </button>
           <button
-            className={`${aba === 'crm' ? styles.active : ''} ${styles.crmBtn}`}
-            onClick={() => setAba('crm')}
-          >
-            CRM
-            <span className={styles.crmTag}>Nectar</span>
-          </button>
-          <button
             className={`${aba === 'concorrentes' ? styles.active : ''} ${styles.concBtn}`}
             onClick={() => setAba('concorrentes')}
           >

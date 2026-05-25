@@ -11,6 +11,7 @@ const EMPTY = {
   contrato: 'Mensal', mrr: '', adesao: '', churn_mrr: '',
   status: 'Ativo', tipo: '', origem: '', obs: '',
   payment_status: 'pending',
+  zendesk: '',
 }
 
 const SEGMENTOS = [
@@ -56,6 +57,7 @@ export default function ModalVenda({ venda, onClose }) {
         origem:         venda.origem || '',
         obs:            venda.obs || '',
         payment_status: venda.payment_status || 'pending',
+        zendesk:        venda.zendesk || '',
       })
       setShowChurn(venda.status === 'Cancelado')
     }
@@ -133,6 +135,7 @@ export default function ModalVenda({ venda, onClose }) {
       origem:         form.origem || null,
       obs:            form.obs || null,
       payment_status: form.payment_status || 'pending',
+      zendesk:        form.zendesk || null,
     }
 
     if (venda) {
@@ -194,6 +197,24 @@ export default function ModalVenda({ venda, onClose }) {
               >
                 <option value="pending">⏳ Aguardando Pagamento</option>
                 <option value="paid">✓ Pago</option>
+              </select>
+            </div>
+
+            <div className="field">
+              <label>Subiu a ficha para Zendesk?</label>
+              <select
+                value={form.zendesk}
+                onChange={e => set('zendesk', e.target.value)}
+                style={{
+                  color: form.zendesk === 'Sim' ? '#22c55e'
+                       : form.zendesk === 'Não' ? '#f59e0b'
+                       : undefined,
+                  fontWeight: form.zendesk ? 600 : undefined,
+                }}
+              >
+                <option value="">— não informado —</option>
+                <option value="Sim">✓ Sim</option>
+                <option value="Não">✗ Não</option>
               </select>
             </div>
 

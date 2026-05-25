@@ -10,7 +10,6 @@ import TabelaVendas from './components/TabelaVendas'
 import ModalVenda from './components/ModalVenda'
 import ComissoesPanel from './components/ComissoesPanel'
 import AvaliacaoTrimestral from './components/AvaliacaoTrimestral'
-import CRMPanel from './components/CRMPanel'
 import ConcorrentesPanel from './components/ConcorrentesPanel'
 import SemanaCard from './components/SemanaCard'
 import RitmoDiarioCard from './components/RitmoDiarioCard'
@@ -18,7 +17,6 @@ import ComissaoRealtimeCard from './components/ComissaoRealtimeCard'
 import VendasMesCard from './components/VendasMesCard'
 import AnalyticsPanel from './components/AnalyticsPanel'
 import InsightsPanel from './components/InsightsPanel'
-import SalesOpportunityTracker from './components/SalesOpportunityTracker'
 import PaymentKPIRow from './components/PaymentKPIRow'
 import ErrorBoundary from './components/ErrorBoundary'
 import './App.css'
@@ -113,12 +111,6 @@ export default function App() {
               </ErrorBoundary>
             </div>
 
-            {/* ── Funil Comercial ── */}
-            <div className="section-label">Funil Comercial</div>
-            <ErrorBoundary fallback={null}>
-              <SalesOpportunityTracker mes={mesResolvido} />
-            </ErrorBoundary>
-
             {/* ── Vendas do Período ── */}
             <div className="section-label">Vendas do Período</div>
             <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar vendas do mês.</div>}>
@@ -148,14 +140,6 @@ export default function App() {
           <main className="main">
             <ErrorBoundary>
               <AvaliacaoTrimestral />
-            </ErrorBoundary>
-          </main>
-        )}
-
-        {aba === 'crm' && (
-          <main className="main">
-            <ErrorBoundary>
-              <CRMPanel mes={mesResolvido} />
             </ErrorBoundary>
           </main>
         )}

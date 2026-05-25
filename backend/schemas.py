@@ -23,6 +23,7 @@ class VendaBase(BaseModel):
     obs:            Optional[str] = None
     data_crm:       Optional[date] = None
     payment_status: Optional[str] = 'pending'   # 'paid' | 'pending'
+    zendesk:        Optional[str] = None         # 'Sim' | 'Não'
 
 
 class VendaCreate(VendaBase):
