@@ -18,6 +18,8 @@ import VendasMesCard from './components/VendasMesCard'
 import AnalyticsPanel from './components/AnalyticsPanel'
 import InsightsPanel from './components/InsightsPanel'
 import PaymentKPIRow from './components/PaymentKPIRow'
+import MetaAlertBanner from './components/MetaAlertBanner'
+import AtingimentoHistoricoCard from './components/AtingimentoHistoricoCard'
 import ErrorBoundary from './components/ErrorBoundary'
 import './App.css'
 
@@ -72,6 +74,9 @@ export default function App() {
               <KPICards mes={mesResolvido} />
             </ErrorBoundary>
             <ErrorBoundary fallback={null}>
+              <MetaAlertBanner mes={mesResolvido} />
+            </ErrorBoundary>
+            <ErrorBoundary fallback={null}>
               <PaymentKPIRow mes={mesResolvido} />
             </ErrorBoundary>
 
@@ -102,9 +107,11 @@ export default function App() {
                 <ComissaoRealtimeCard mes={mesResolvido} />
               </ErrorBoundary>
             </div>
-
             {/* ── Análise de Carteira ── */}
             <div className="section-label">Análise de Carteira</div>
+            <ErrorBoundary fallback={null}>
+              <AtingimentoHistoricoCard />
+            </ErrorBoundary>
             <div className="row-3">
               <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar analytics.</div>}>
                 <AnalyticsPanel mes={mesResolvido} />
