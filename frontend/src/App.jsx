@@ -20,6 +20,7 @@ import InsightsPanel from './components/InsightsPanel'
 import PaymentKPIRow from './components/PaymentKPIRow'
 import MetaAlertBanner from './components/MetaAlertBanner'
 import AtingimentoHistoricoCard from './components/AtingimentoHistoricoCard'
+import LTVCard from './components/LTVCard'
 import ErrorBoundary from './components/ErrorBoundary'
 import './App.css'
 
@@ -111,6 +112,9 @@ export default function App() {
             <div className="section-label">Análise de Carteira</div>
             <ErrorBoundary fallback={null}>
               <AtingimentoHistoricoCard />
+            </ErrorBoundary>
+            <ErrorBoundary fallback={null}>
+              <LTVCard />
             </ErrorBoundary>
             <div className="row-3">
               <ErrorBoundary fallback={<div className="card" style={{ color: 'var(--muted)', fontSize: 13 }}>Erro ao carregar analytics.</div>}>

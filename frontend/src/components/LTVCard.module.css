@@ -1,0 +1,154 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.title {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.metodo {
+  font-size: 9px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ── KPI row ── */
+.kpiRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  overflow: hidden;
+}
+
+.kpi {
+  background: var(--surface2);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.kpiLabel {
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+}
+
+.kpiValue {
+  font-family: var(--mono);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.15;
+}
+
+.kpiSub {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* ── Breakdown ── */
+.breakdown {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.bCol {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bTitle {
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+  margin: 0 0 4px;
+}
+
+/* ── Breakdown row ── */
+.bRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.bLabel {
+  font-size: 11px;
+  color: var(--text1);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bBar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bFill {
+  height: 100%;
+  background: rgba(204, 244, 106, 0.4);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+.bMRR {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.bCount {
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+  min-width: 20px;
+  text-align: right;
+}
+
+/* ── Nota ── */
+.nota {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Responsive ── */
+@media (max-width: 760px) {
+  .kpiRow   { grid-template-columns: 1fr; }
+  .breakdown { grid-template-columns: 1fr; }
+}
