@@ -5,6 +5,7 @@ import {
   salvarMetaTrimestral, getMetasMensais, salvarMetasMensais, deletarMetaMensal,
 } from '../api'
 import { useToast } from './Toast'
+import { fmt } from '../utils/fmt'
 import styles from './AvaliacaoTrimestral.module.css'
 
 

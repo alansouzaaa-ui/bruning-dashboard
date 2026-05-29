@@ -7,9 +7,6 @@ import { getComparativo } from '../api'
 import { fmt } from '../utils/fmt'
 import styles from './ComparativoChart.module.css'
 
-const fmt = (v) =>
-  Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
-
 const COLOR_MRR  = '#ccf46a'
 const COLOR_ADES = '#00d4ff'
 
