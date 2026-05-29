@@ -1,9 +1,10 @@
-import { useQuery } from '@tanstack/react-query'
+﻿import { useQuery } from '@tanstack/react-query'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell,
 } from 'recharts'
 import { getComparativo } from '../api'
+import { fmt } from '../utils/fmt'
 import styles from './ComparativoChart.module.css'
 
 const fmt = (v) =>
@@ -110,3 +111,4 @@ export default function ComparativoChart() {
     </div>
   )
 }
+

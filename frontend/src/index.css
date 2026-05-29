@@ -35,8 +35,8 @@
   --yellow:    #ffb830;
   --red:       #ff4d6a;
 
-  --radius:    16px;
-  --shadow:    0 4px 24px rgba(0,0,0,.45);
+  --radius:    10px;
+  --shadow:    0 2px 16px rgba(0,0,0,.35);
 
   --mono: 'JetBrains Mono', monospace;
   --sans: 'Inter', sans-serif;
@@ -73,7 +73,7 @@ input, select, textarea {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 22px;
+  padding: 16px 18px;
   box-shadow: var(--shadow);
 }
 
@@ -126,14 +126,14 @@ input, select, textarea {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 28px;
+  padding: 22px;
   width: 100%;
   max-width: 540px;
-  max-height: 90vh;
+  max-height: 92vh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  box-shadow: 0 16px 48px rgba(0,0,0,.5);
 }
-.modal h2 { font-size: 18px; margin-bottom: 20px; }
+.modal h2 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
 
 /* Form */
 .form-grid {

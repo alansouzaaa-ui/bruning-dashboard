@@ -1,9 +1,8 @@
-import { useQuery } from '@tanstack/react-query'
+﻿import { useQuery } from '@tanstack/react-query'
 import { getVendas } from '../api'
+import { fmt } from '../utils/fmt'
 import styles from './VendasMesCard.module.css'
 
-const fmt = (v) =>
-  Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
 const MES_CORRENTE = new Date().toISOString().slice(0, 7)
 
@@ -140,3 +139,4 @@ export default function VendasMesCard({ mes }) {
     </div>
   )
 }
+

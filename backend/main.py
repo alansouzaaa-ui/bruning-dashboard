@@ -74,7 +74,7 @@ def health():
 
 
 # Diagnóstico temporário — sem auth, para inspeção dos dados
-@app.get("/diag")
+@app.get("/diag", dependencies=[Depends(verify_token)])
 def diag(db: Session = Depends(get_db)):
     rows = (
         db.query(

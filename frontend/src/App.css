@@ -6,25 +6,25 @@
 
 .main {
   flex: 1;
-  max-width: 1400px;
+  max-width: 1440px;
   width: 100%;
   margin: 0 auto;
-  padding: 24px 20px 40px;
+  padding: 16px 20px 32px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
 }
 
 .row-2 {
   display: grid;
   grid-template-columns: 1fr 2fr;
-  gap: 20px;
+  gap: 12px;
 }
 
 .row-3 {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 20px;
+  gap: 12px;
 }
 
 @media (max-width: 900px) {

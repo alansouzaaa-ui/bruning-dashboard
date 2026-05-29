@@ -1,11 +1,10 @@
-import { useMemo, useState } from 'react'
+﻿import { useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getKPIs, getMetas } from '../api'
 import { mesAtual, diasUteisNoMes, diasUteisDecorridos } from '../utils/date'
+import { fmt } from '../utils/fmt'
 import styles from './RitmoDiarioCard.module.css'
 
-const fmt = (v) =>
-  Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
 export default function RitmoDiarioCard({ mes }) {
   const mesRef = (!mes || mes === 'all') ? mesAtual() : mes
@@ -132,3 +131,4 @@ export default function RitmoDiarioCard({ mes }) {
     </div>
   )
 }
+

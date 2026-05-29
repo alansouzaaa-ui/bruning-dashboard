@@ -157,7 +157,7 @@ def comparativo(db: Session = Depends(get_db)):
     return resultado
 
 
-# ── DIAGNÓSTICO (temporário) ─────────────────────────────
+# ── DIAGNÓSTICO (protegido pelo token via router) ────────
 @router.get("/debug-kpis")
 def debug_kpis(db: Session = Depends(get_db)):
     """Retorna contagem de registros agrupados por mês e status para diagnóstico."""

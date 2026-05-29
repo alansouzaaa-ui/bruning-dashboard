@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   getAvaliacaoAtual, getHistoricoTrimestral, getPerformanceGeral,
@@ -7,8 +7,6 @@ import {
 import { useToast } from './Toast'
 import styles from './AvaliacaoTrimestral.module.css'
 
-const fmt = (v) =>
-  Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
 const fmtPct = (v) => `${Number(v).toFixed(1)}%`
 
@@ -423,3 +421,4 @@ export default function AvaliacaoTrimestral() {
     </div>
   )
 }
+

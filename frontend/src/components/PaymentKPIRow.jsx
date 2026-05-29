@@ -1,9 +1,8 @@
-import { useQuery } from '@tanstack/react-query'
+﻿import { useQuery } from '@tanstack/react-query'
 import { getKPIs } from '../api'
+import { fmt } from '../utils/fmt'
 import styles from './PaymentKPIRow.module.css'
 
-const fmt = (v) =>
-  Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
 function SplitSection({ label, total, recebido, pendente, pagas, pendentes }) {
   const pct = total > 0 ? (recebido / total) * 100 : 0
@@ -121,3 +120,4 @@ export default function PaymentKPIRow({ mes }) {
     </div>
   )
 }
+

@@ -1,12 +1,11 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getKPIs, getMetas, updateMetas } from '../api'
 import { useToast } from './Toast'
 import { diasUteisRestantes, mesAtual } from '../utils/date'
+import { fmt } from '../utils/fmt'
 import styles from './RitmoCard.module.css'
 
-const fmt = (v) =>
-  Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
 function ProgressBar({ pct, color }) {
   const bg = color === 'green'  ? 'var(--c-green)'
@@ -140,3 +139,4 @@ export default function RitmoCard({ mes }) {
     </div>
   )
 }
+

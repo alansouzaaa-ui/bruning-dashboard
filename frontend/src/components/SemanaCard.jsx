@@ -1,11 +1,10 @@
-import { useMemo } from 'react'
+﻿import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getVendas, getMetas } from '../api'
 import { mesAtual } from '../utils/date'
+import { fmt } from '../utils/fmt'
 import styles from './SemanaCard.module.css'
 
-const fmt = (v) =>
-  Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
 function semanasDomes(ano, mes) {
   const daysInMonth = new Date(ano, mes, 0).getDate()
@@ -28,7 +27,7 @@ export default function SemanaCard({ mes }) {
   const ehMesAtual    = mesRef === mesAtual()
 
   const { data: vendas = [], isLoading: loadingVendas } = useQuery({
-    queryKey: ['vendas', mesRef, ''],
+    queryKey: ['vendas', mesRef],
     queryFn:  () => getVendas({ mes: mesRef }),
   })
 
@@ -170,3 +169,4 @@ export default function SemanaCard({ mes }) {
     </div>
   )
 }
+

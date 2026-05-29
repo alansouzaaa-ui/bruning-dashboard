@@ -1,15 +1,11 @@
-import { useMemo } from 'react'
+﻿import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { getKPIs, getMetasMensais } from '../api'
 import { calcularComissao } from '../business/comissoes.calc'
 import { METAS_FIXAS, META_PADRAO } from '../business/comissoes.constants'
+import { fmt, fmtPct } from '../utils/fmt'
 import styles from './ComissaoRealtimeCard.module.css'
 
-const fmt = (v) =>
-  Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-
-const fmtPct = (v) =>
-  `${(Number(v) * 100).toFixed(0)}%`
 
 const MES_CORRENTE = new Date().toISOString().slice(0, 7)
 
@@ -141,3 +137,4 @@ export default function ComissaoRealtimeCard({ mes }) {
     </div>
   )
 }
+

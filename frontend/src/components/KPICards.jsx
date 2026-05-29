@@ -1,11 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { getKPIs, getMeses, getMetas } from '../api'
+import { fmt, fmtPct } from '../utils/fmt'
 import styles from './KPICards.module.css'
-
-const fmt = (v) =>
-  Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-
-const fmtPct = (v) => `${Number(v).toFixed(1)}%`
 
 function TrendBadge({ curr, prev, prefix = '', reversed = false }) {
   if (prev == null || prev === 0) return null

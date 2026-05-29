@@ -2,10 +2,8 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getVendas, excluirVenda } from '../api'
 import { useToast } from './Toast'
+import { fmt, exportarCSV } from '../utils/fmt'
 import styles from './TabelaVendas.module.css'
-
-const fmt = (v) =>
-  Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 
 function Badge({ status }) {
   const map = {
@@ -42,6 +40,7 @@ export default function TabelaVendas({ mes, onEditar }) {
   const [busca, setBusca] = useState('')
   const [statusFiltro, setStatusFiltro] = useState('')
   const [paymentFiltro, setPaymentFiltro] = useState('')
+  const [zendeskFiltro, setZendeskFiltro] = useState('')
   const qc = useQueryClient()
   const toast = useToast()
 
@@ -71,11 +70,13 @@ export default function TabelaVendas({ mes, onEditar }) {
     deletar.mutate(id)
   }
 
-  const filtradas = vendas.filter(v =>
-    v.cliente.toLowerCase().includes(busca.toLowerCase()) ||
-    (v.cnpj || '').includes(busca) ||
-    (v.cod || '').toLowerCase().includes(busca.toLowerCase())
-  )
+  const filtradas = vendas.filter(v => {
+    const matchBusca = v.cliente.toLowerCase().includes(busca.toLowerCase()) ||
+      (v.cnpj || '').includes(busca) ||
+      (v.cod || '').toLowerCase().includes(busca.toLowerCase())
+    const matchZendesk = !zendeskFiltro || (v.zendesk || '') === zendeskFiltro
+    return matchBusca && matchZendesk
+  })
 
   return (
     <div className={`card ${styles.card}`}>
@@ -88,26 +89,31 @@ export default function TabelaVendas({ mes, onEditar }) {
             value={busca}
             onChange={e => setBusca(e.target.value)}
           />
-          <select
-            className={styles.select}
-            value={statusFiltro}
-            onChange={e => setStatusFiltro(e.target.value)}
-          >
+          <select className={styles.select} value={statusFiltro} onChange={e => setStatusFiltro(e.target.value)}>
             <option value="">Todos status</option>
             <option>Ativo</option>
             <option>Cancelado</option>
             <option>Trial</option>
             <option>Pausado</option>
           </select>
-          <select
-            className={styles.select}
-            value={paymentFiltro}
-            onChange={e => setPaymentFiltro(e.target.value)}
-          >
+          <select className={styles.select} value={paymentFiltro} onChange={e => setPaymentFiltro(e.target.value)}>
             <option value="">Todos pagamentos</option>
             <option value="paid">✓ Pago</option>
             <option value="pending">⏳ Aguardando</option>
           </select>
+          <select className={styles.select} value={zendeskFiltro} onChange={e => setZendeskFiltro(e.target.value)}>
+            <option value="">Zendesk — todos</option>
+            <option value="Sim">✓ Sim</option>
+            <option value="Não">✗ Não</option>
+          </select>
+          <button
+            className="btn btn-secondary"
+            onClick={() => exportarCSV(filtradas, mes)}
+            title={`Exportar ${filtradas.length} registro(s) como CSV`}
+            style={{ fontSize: 12, padding: '6px 12px', whiteSpace: 'nowrap' }}
+          >
+            ↓ CSV
+          </button>
         </div>
       </div>
 
