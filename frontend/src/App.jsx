@@ -81,12 +81,6 @@ export default function App() {
               <PaymentKPIRow mes={mesResolvido} />
             </ErrorBoundary>
 
-            {/* ── Análise & Insights ── */}
-            <div className="section-label">Análise &amp; Insights</div>
-            <ErrorBoundary fallback={null}>
-              <InsightsPanel mes={mesResolvido} />
-            </ErrorBoundary>
-
             {/* ── Ritmo & Metas ── */}
             <div className="section-label">Ritmo &amp; Metas</div>
             <div className="row-2">
@@ -108,6 +102,7 @@ export default function App() {
                 <ComissaoRealtimeCard mes={mesResolvido} />
               </ErrorBoundary>
             </div>
+
             {/* ── Análise de Carteira ── */}
             <div className="section-label">Análise de Carteira</div>
             <ErrorBoundary fallback={null}>
@@ -121,6 +116,12 @@ export default function App() {
                 <AnalyticsPanel mes={mesResolvido} />
               </ErrorBoundary>
             </div>
+
+            {/* ── Análise & Insights ── */}
+            <div className="section-label">Análise &amp; Insights</div>
+            <ErrorBoundary fallback={null}>
+              <InsightsPanel mes={mesResolvido} />
+            </ErrorBoundary>
 
             {/* ── Vendas do Período ── */}
             <div className="section-label">Vendas do Período</div>
