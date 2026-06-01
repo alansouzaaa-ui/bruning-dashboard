@@ -81,6 +81,7 @@ export default function TabelaVendas({ mes, onEditar }) {
   })
 
   return (
+    <>
     <div className={`card ${styles.card}`}>
       <div className={styles.toolbar}>
         <h3 className={styles.title}>Vendas</h3>
@@ -206,5 +207,6 @@ export default function TabelaVendas({ mes, onEditar }) {
     {categoriasOpen && (
       <CategoriasModal onClose={() => setCategoriasOpen(false)} />
     )}
+    </>
   )
 }
