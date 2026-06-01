@@ -196,10 +196,23 @@ def meses_disponiveis(db: Session = Depends(get_db)):
         .order_by("ano", "mes")
         .all()
     )
-    return [
+
+    meses = [
         {
             "valor": f"{int(r.ano)}-{str(int(r.mes)).zfill(2)}",
             "label": f"{MESES_PT[int(r.mes) - 1]}/{str(int(r.ano))[2:]}",
         }
         for r in rows
     ]
+
+    # Garante que o mês corrente está SEMPRE presente na lista,
+    # mesmo sem nenhuma venda registrada — o dashboard já funciona do dia 1.
+    hoje           = date.today()
+    mes_atual_str  = f"{hoje.year}-{str(hoje.month).zfill(2)}"
+    mes_atual_label = f"{MESES_PT[hoje.month - 1]}/{str(hoje.year)[2:]}"
+
+    if not any(m["valor"] == mes_atual_str for m in meses):
+        meses.append({"valor": mes_atual_str, "label": mes_atual_label})
+        meses.sort(key=lambda m: m["valor"])
+
+    return meses

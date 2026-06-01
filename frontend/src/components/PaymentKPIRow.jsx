@@ -85,7 +85,8 @@ export default function PaymentKPIRow({ mes }) {
   const mrrTotal    = mrrRecebido + mrrPendente
   const adesaoTotal = adesaoRecebida + adesaoPendente
 
-  if (mrrTotal === 0 && adesaoTotal === 0) return null
+  // Com mês sem vendas ainda, omite este bloco — o alerta de meta já cobre a situação
+  if (mrrTotal === 0 && adesaoTotal === 0 && pagas === 0 && pendentes === 0) return null
 
   return (
     <div className={styles.row}>

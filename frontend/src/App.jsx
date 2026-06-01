@@ -24,8 +24,11 @@ import LTVCard from './components/LTVCard'
 import ErrorBoundary from './components/ErrorBoundary'
 import './App.css'
 
+const MES_CORRENTE = new Date().toISOString().slice(0, 7)
+
 export default function App() {
-  const [mesFiltro, setMesFiltro] = useState('all')
+  // Inicia no mês corrente em vez de "Todos" — dashboard ativo do dia 1
+  const [mesFiltro, setMesFiltro] = useState(MES_CORRENTE)
   const [aba, setAba]             = useState('dashboard')
 
   const [modalAberto, setModalAberto] = useState(false)
