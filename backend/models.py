@@ -62,6 +62,16 @@ class ComissaoPaga(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
+class CategoriaOpcao(Base):
+    """Opções customizáveis de plano, segmento e origem para o cadastro de vendas."""
+    __tablename__ = "categorias_opcoes"
+
+    id    = Column(Integer, primary_key=True, index=True)
+    tipo  = Column(String(20), nullable=False, index=True)  # 'plano' | 'segmento' | 'origem'
+    valor = Column(String(100), nullable=False)
+    ordem = Column(Integer, default=0)
+
+
 class Script(Base):
     __tablename__ = "scripts"
 

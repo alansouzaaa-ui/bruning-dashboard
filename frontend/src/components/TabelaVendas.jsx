@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getVendas, excluirVenda } from '../api'
 import { useToast } from './Toast'
 import { fmt, exportarCSV } from '../utils/fmt'
+import CategoriasModal from './CategoriasModal'
 import styles from './TabelaVendas.module.css'
 
 function Badge({ status }) {
@@ -41,6 +42,7 @@ export default function TabelaVendas({ mes, onEditar }) {
   const [statusFiltro, setStatusFiltro] = useState('')
   const [paymentFiltro, setPaymentFiltro] = useState('')
   const [zendeskFiltro, setZendeskFiltro] = useState('')
+  const [categoriasOpen, setCategoriasOpen] = useState(false)
   const qc = useQueryClient()
   const toast = useToast()
 
@@ -106,6 +108,14 @@ export default function TabelaVendas({ mes, onEditar }) {
             <option value="Sim">✓ Sim</option>
             <option value="Não">✗ Não</option>
           </select>
+          <button
+            className="btn btn-secondary"
+            onClick={() => setCategoriasOpen(true)}
+            title="Gerenciar planos, segmentos e origens"
+            style={{ fontSize: 12, padding: '6px 12px', whiteSpace: 'nowrap' }}
+          >
+            ⚙ Categorias
+          </button>
           <button
             className="btn btn-secondary"
             onClick={() => exportarCSV(filtradas, mes)}
@@ -192,5 +202,9 @@ export default function TabelaVendas({ mes, onEditar }) {
         </div>
       )}
     </div>
+
+    {categoriasOpen && (
+      <CategoriasModal onClose={() => setCategoriasOpen(false)} />
+    )}
   )
 }

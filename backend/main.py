@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text, extract, func
 
 from database import engine, Base, get_db
-from routers import vendas, comissoes, configs, trimestral, scripts
+from routers import vendas, comissoes, configs, trimestral, scripts, categorias
 from auth import verify_token
 from models import Venda
 from sqlalchemy.orm import Session
@@ -34,6 +34,45 @@ def run_migrations():
         ))
         conn.commit()
 
+    # Seed categorias padrão se a tabela estiver vazia para cada tipo
+    _seed_categorias()
+
+
+_CATEGORIAS_PADRAO = {
+    'plano': [
+        'Plano Pro Desktop', 'Fiscalize', 'Acelera',
+        'Turbo', 'Performance', 'Full Drive',
+    ],
+    'segmento': [
+        'Oficina Mecânica', 'Auto Peças', 'Auto Elétrica',
+        'Auto Center', 'Estética Automotiva',
+        'Oficina Mecânica Motos', 'Oficina Mecânica Pesada',
+    ],
+    'origem': [
+        'Prospecção', 'Indicação', 'Inbound Orgânico',
+        'Tráfego Pago', 'Já é Cliente', 'Remarketing',
+        'Outros', 'Instagram',
+    ],
+}
+
+
+def _seed_categorias():
+    """Insere as categorias padrão apenas se o tipo ainda não tiver registros."""
+    with engine.connect() as conn:
+        for tipo, valores in _CATEGORIAS_PADRAO.items():
+            row = conn.execute(
+                text("SELECT COUNT(*) FROM categorias_opcoes WHERE tipo = :t"),
+                {"t": tipo},
+            ).scalar()
+            if row == 0:
+                for ordem, valor in enumerate(valores):
+                    conn.execute(
+                        text("INSERT INTO categorias_opcoes (tipo, valor, ordem) VALUES (:t, :v, :o)"),
+                        {"t": tipo, "v": valor, "o": ordem},
+                    )
+        conn.commit()
+
+
 run_migrations()
 
 app = FastAPI(
@@ -61,7 +100,8 @@ app.include_router(vendas.router,     dependencies=[Depends(verify_token)])
 app.include_router(comissoes.router,  dependencies=[Depends(verify_token)])
 app.include_router(configs.router,    dependencies=[Depends(verify_token)])
 app.include_router(trimestral.router, dependencies=[Depends(verify_token)])
-app.include_router(scripts.router,    dependencies=[Depends(verify_token)])
+app.include_router(scripts.router,     dependencies=[Depends(verify_token)])
+app.include_router(categorias.router,  dependencies=[Depends(verify_token)])
 
 
 @app.get("/")

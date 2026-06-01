@@ -74,6 +74,16 @@ export const salvarMetasMensais = (metas) =>
 export const deletarMetaMensal = (mes) =>
   api.delete(`/trimestral/metas-mensais/${mes}`)
 
+// ── Categorias ───────────────────────────────────────────
+export const getCategorias = (tipo) =>
+  api.get('/categorias/', { params: tipo ? { tipo } : {} }).then(r => r.data)
+
+export const criarCategoria = (body) =>
+  api.post('/categorias/', body).then(r => r.data)
+
+export const excluirCategoria = (id) =>
+  api.delete(`/categorias/${id}`)
+
 // ── Scripts ──────────────────────────────────────────────
 export const getScripts = (params = {}) =>
   api.get('/scripts/', { params }).then(r => r.data)

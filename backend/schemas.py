@@ -106,6 +106,23 @@ class MetasIn(BaseModel):
     meta_ades: float
 
 
+# ── Categorias ──────────────────────────────────────────
+
+class CategoriaOpcaoOut(BaseModel):
+    id:    int
+    tipo:  str
+    valor: str
+    ordem: int = 0
+
+    class Config:
+        from_attributes = True
+
+class CategoriaOpcaoCreate(BaseModel):
+    tipo:  str
+    valor: str
+    ordem: int = 0
+
+
 # ── Scripts ─────────────────────────────────────────────
 
 class ScriptBase(BaseModel):

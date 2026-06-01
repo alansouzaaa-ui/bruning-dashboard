@@ -1,0 +1,151 @@
+.modal {
+  max-width: 760px;
+  width: 100%;
+}
+
+.modalHeader { margin-bottom: 20px; }
+
+.modalHeader h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.modalSub {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Grid de 3 colunas ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 640px) {
+  .grid { grid-template-columns: 1fr; }
+}
+
+/* ── Seção de cada tipo ── */
+.tipoSection {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tipoHeader {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.tipoEmoji { font-size: 15px; line-height: 1; }
+
+.tipoTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  flex: 1;
+}
+
+.tipoCount {
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(255,255,255,0.07);
+  color: var(--muted);
+  border-radius: 10px;
+  padding: 1px 7px;
+}
+
+/* ── Lista de itens ── */
+.tipoList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 60px;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.loading, .empty {
+  font-size: 11px;
+  color: var(--muted);
+  padding: 8px 0;
+  font-style: italic;
+}
+
+.tipoItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 5px 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  transition: background 0.1s;
+}
+.tipoItem:hover { background: rgba(255,255,255,0.04); }
+
+.tipoItemValor {
+  font-size: 12px;
+  color: var(--text1);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.removeBtn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1;
+  padding: 0 3px;
+  cursor: pointer;
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity 0.15s, color 0.15s;
+}
+.removeBtn:hover { opacity: 1; color: var(--c-red); }
+
+/* ── Formulário de adição ── */
+.addForm {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.addInput {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 6px 10px;
+  color: var(--text);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s;
+  min-width: 0;
+}
+.addInput:focus { border-color: var(--accent); }
+
+/* ── Footer ── */
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
+  border-top: 1px solid var(--border);
+}

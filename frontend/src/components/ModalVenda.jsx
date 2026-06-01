@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { criarVenda, editarVenda, buscarCNPJ } from '../api'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { criarVenda, editarVenda, buscarCNPJ, getCategorias } from '../api'
 import { useToast } from './Toast'
 import styles from './ModalVenda.module.css'
 
@@ -14,22 +14,14 @@ const EMPTY = {
   zendesk: '',
 }
 
-const SEGMENTOS = [
-  '', 'Oficina Mecânica', 'Auto Peças', 'Auto Elétrica',
+/* Fallbacks usados enquanto a API carrega ou em caso de erro */
+const FB_SEGMENTOS = [
+  'Oficina Mecânica', 'Auto Peças', 'Auto Elétrica',
   'Auto Center', 'Estética Automotiva',
   'Oficina Mecânica Motos', 'Oficina Mecânica Pesada',
 ]
-
-const PLANOS = [
-  '', 'Plano Pro Desktop', 'Fiscalize', 'Acelera',
-  'Turbo', 'Performance', 'Full Drive',
-]
-
-const ORIGENS = [
-  '', 'Prospecção', 'Indicação', 'Inbound Orgânico',
-  'Tráfego Pago', 'Já é Cliente', 'Remarketing',
-  'Outros', 'Instagram',
-]
+const FB_PLANOS = ['Plano Pro Desktop', 'Fiscalize', 'Acelera', 'Turbo', 'Performance', 'Full Drive']
+const FB_ORIGENS = ['Prospecção', 'Indicação', 'Inbound Orgânico', 'Tráfego Pago', 'Já é Cliente', 'Remarketing', 'Outros', 'Instagram']
 
 export default function ModalVenda({ venda, onClose }) {
   const [form, setForm] = useState(EMPTY)
@@ -37,6 +29,15 @@ export default function ModalVenda({ venda, onClose }) {
   const [showChurn, setShowChurn] = useState(false)
   const qc = useQueryClient()
   const toast = useToast()
+
+  /* Listas dinâmicas — fallback automático se API indisponível */
+  const { data: catPlanos    = [] } = useQuery({ queryKey: ['categorias', 'plano'],    queryFn: () => getCategorias('plano'),    staleTime: 120_000 })
+  const { data: catSegmentos = [] } = useQuery({ queryKey: ['categorias', 'segmento'], queryFn: () => getCategorias('segmento'), staleTime: 120_000 })
+  const { data: catOrigens   = [] } = useQuery({ queryKey: ['categorias', 'origem'],   queryFn: () => getCategorias('origem'),   staleTime: 120_000 })
+
+  const planos    = catPlanos.length    ? catPlanos.map(c => c.valor)    : FB_PLANOS
+  const segmentos = catSegmentos.length ? catSegmentos.map(c => c.valor) : FB_SEGMENTOS
+  const origens   = catOrigens.length   ? catOrigens.map(c => c.valor)   : FB_ORIGENS
 
   useEffect(() => {
     if (venda) {
@@ -226,22 +227,24 @@ export default function ModalVenda({ venda, onClose }) {
             <div className="field">
               <label>Segmento</label>
               <select value={form.segmento} onChange={e => set('segmento', e.target.value)}>
-                {form.segmento && !SEGMENTOS.includes(form.segmento) && (
+                <option value="">— selecione —</option>
+                {form.segmento && !segmentos.includes(form.segmento) && (
                   <option value={form.segmento}>(legado) {form.segmento}</option>
                 )}
-                {SEGMENTOS.map(s => (
-                  <option key={s} value={s}>{s || '— selecione —'}</option>
+                {segmentos.map(s => (
+                  <option key={s} value={s}>{s}</option>
                 ))}
               </select>
             </div>
             <div className="field">
               <label>Plano</label>
               <select value={form.plano} onChange={e => set('plano', e.target.value)}>
-                {form.plano && !PLANOS.includes(form.plano) && (
+                <option value="">— selecione —</option>
+                {form.plano && !planos.includes(form.plano) && (
                   <option value={form.plano}>(legado) {form.plano}</option>
                 )}
-                {PLANOS.map(p => (
-                  <option key={p} value={p}>{p || '— selecione —'}</option>
+                {planos.map(p => (
+                  <option key={p} value={p}>{p}</option>
                 ))}
               </select>
             </div>
@@ -260,11 +263,12 @@ export default function ModalVenda({ venda, onClose }) {
             <div className="field">
               <label>Origem</label>
               <select value={form.origem} onChange={e => set('origem', e.target.value)}>
-                {form.origem && !ORIGENS.includes(form.origem) && (
+                <option value="">— selecione —</option>
+                {form.origem && !origens.includes(form.origem) && (
                   <option value={form.origem}>(legado) {form.origem}</option>
                 )}
-                {ORIGENS.map(o => (
-                  <option key={o} value={o}>{o || '— selecione —'}</option>
+                {origens.map(o => (
+                  <option key={o} value={o}>{o}</option>
                 ))}
               </select>
             </div>
