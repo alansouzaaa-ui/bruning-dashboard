@@ -80,6 +80,60 @@
   font-family: var(--mono);
 }
 
+/* ── Tabela ultimas 10 vendas ── */
+.tempoTableWrap {
+  overflow-x: auto;
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+
+.tempoTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.tempoTable thead tr {
+  border-bottom: 1px solid var(--border);
+}
+
+.tempoTable th {
+  text-align: left;
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  padding: 0 6px 6px;
+  white-space: nowrap;
+}
+
+.tempoTable td {
+  padding: 5px 6px;
+  color: var(--text1);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  vertical-align: middle;
+}
+
+.tempoTable tbody tr:last-child td { border-bottom: none; }
+.tempoTable tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+.tempoCliente {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.tempoData {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
 .semDados {
   display: flex;
   flex-direction: column;

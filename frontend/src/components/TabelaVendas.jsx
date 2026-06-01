@@ -126,7 +126,8 @@ export default function TabelaVendas({ mes, onEditar }) {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>Data</th>
+                <th>Entrada CRM</th>
+                <th>Fechamento</th>
                 <th>Cliente</th>
                 <th>Plano</th>
                 <th>Contrato</th>
@@ -142,7 +143,10 @@ export default function TabelaVendas({ mes, onEditar }) {
             <tbody>
               {filtradas.map(v => (
                 <tr key={v.id}>
-                  <td className={styles.muted}>{v.data}</td>
+                  <td className={styles.muted} style={{ whiteSpace: 'nowrap' }}>
+                    {v.data_crm || <span style={{ opacity: 0.3 }}>—</span>}
+                  </td>
+                  <td className={styles.muted} style={{ whiteSpace: 'nowrap' }}>{v.data}</td>
                   <td>
                     <div className={styles.clienteNome}>{v.cliente}</div>
                     {v.cnpj && <div className={styles.cnpj}>{v.cnpj}</div>}

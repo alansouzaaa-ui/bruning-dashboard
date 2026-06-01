@@ -65,25 +65,44 @@ function Legenda({ dados, total }) {
 
 /* ── Card: Tempo Médio de Fechamento ── */
 function TempoMedioCard({ vendas }) {
-  const { media, total, semData } = useMemo(() => {
-    const aptas = vendas.filter(
-      v => v.data_crm && v.data && v.status !== 'Cancelado'
-    )
-    const dias = aptas
-      .map(v => diffDias(v.data_crm, v.data))
-      .filter(d => d !== null)
+  const { media, ultimas10, semData } = useMemo(() => {
+    const aptas = vendas
+      .filter(v => v.data_crm && v.data && v.status !== 'Cancelado')
+      .map(v => ({ ...v, dias: diffDias(v.data_crm, v.data) }))
+      .filter(v => v.dias !== null)
+      .sort((a, b) => (b.data || '').localeCompare(a.data || ''))
 
-    if (!dias.length) return { media: null, total: 0, semData: vendas.filter(v => v.status !== 'Cancelado').length }
+    if (!aptas.length) return {
+      media: null,
+      ultimas10: [],
+      semData: vendas.filter(v => v.status !== 'Cancelado').length,
+    }
 
-    const media = dias.reduce((s, d) => s + d, 0) / dias.length
-    return { media: Math.round(media), total: dias.length, semData: 0 }
+    const mediaVal = aptas.reduce((s, v) => s + v.dias, 0) / aptas.length
+    return {
+      media: Math.round(mediaVal),
+      ultimas10: aptas.slice(0, 10),
+      semData: 0,
+    }
   }, [vendas])
+
+  function fmtDate(str) {
+    if (!str) return '—'
+    const [, m, d] = str.split('-')
+    const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']
+    return `${d}/${meses[parseInt(m, 10) - 1]}`
+  }
 
   return (
     <div className="card">
       <div className={styles.card}>
         <div className={styles.titleRow}>
           <p className={styles.title}>Tempo Médio de Fechamento</p>
+          {media !== null && (
+            <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--muted)' }}>
+              {ultimas10.length} vendas
+            </span>
+          )}
         </div>
 
         {media === null ? (
@@ -97,19 +116,47 @@ function TempoMedioCard({ vendas }) {
             )}
           </div>
         ) : (
-          <div className={styles.tempoWrap}>
-            <div className={styles.tempoValor}>
-              <span className={styles.tempoDias}>{media}</span>
-              <span className={styles.tempoUnidade}>dias</span>
-            </div>
-            <p className={styles.tempoDesc}>média entre entrada no CRM e fechamento da venda</p>
-            <div className={styles.tempoMeta}>
-              <div className={styles.tempoMetaRow}>
-                <span className={styles.tempoMetaLabel}>Vendas calculadas</span>
-                <span className={styles.tempoMetaVal}>{total}</span>
+          <>
+            {/* KPI principal */}
+            <div className={styles.tempoWrap} style={{ marginBottom: 14 }}>
+              <div className={styles.tempoValor}>
+                <span className={styles.tempoDias}>{media}</span>
+                <span className={styles.tempoUnidade}>dias</span>
               </div>
+              <p className={styles.tempoDesc}>média entre entrada no CRM e fechamento da venda</p>
             </div>
-          </div>
+
+            {/* Tabela — últimas 10 vendas */}
+            <div className={styles.tempoTableWrap}>
+              <table className={styles.tempoTable}>
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Entrada CRM</th>
+                    <th>Fechamento</th>
+                    <th>Dias</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ultimas10.map(v => {
+                    const cor = v.dias <= 7 ? 'var(--c-green)'
+                              : v.dias <= 21 ? 'var(--c-yellow)'
+                              : 'var(--c-red)'
+                    return (
+                      <tr key={v.id}>
+                        <td className={styles.tempoCliente} title={v.cliente}>{v.cliente}</td>
+                        <td className={styles.tempoData}>{fmtDate(v.data_crm)}</td>
+                        <td className={styles.tempoData}>{fmtDate(v.data)}</td>
+                        <td style={{ fontFamily: 'var(--mono)', fontWeight: 700, color: cor, fontSize: 11 }}>
+                          {v.dias}d
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </div>
