@@ -33,7 +33,10 @@ def listar_scripts(
     if busca:
         like = f"%{busca}%"
         q = q.filter(Script.titulo.ilike(like) | Script.conteudo.ilike(like))
-    return q.order_by(Script.categoria, Script.dia_toque.nullsfirst(), Script.id).all()
+    # nullsfirst não é garantido em todas as versões; ORDER BY simples coloca
+    # NULL por último no ascending — comportamento correto (scripts sem dia_toque
+    # aparecem depois dos scripts com cadência numerada).
+    return q.order_by(Script.categoria, Script.dia_toque, Script.id).all()
 
 
 # ── CRIAR ─────────────────────────────────────────────────────────────────────
