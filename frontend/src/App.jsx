@@ -11,6 +11,8 @@ import ModalVenda from './components/ModalVenda'
 import ComissoesPanel from './components/ComissoesPanel'
 import AvaliacaoTrimestral from './components/AvaliacaoTrimestral'
 import ConcorrentesPanel from './components/ConcorrentesPanel'
+import FunilDiarioPanel from './components/FunilDiarioPanel'
+import ScriptsPanel from './components/ScriptsPanel'
 import SemanaCard from './components/SemanaCard'
 import RitmoDiarioCard from './components/RitmoDiarioCard'
 import ComissaoRealtimeCard from './components/ComissaoRealtimeCard'
@@ -163,6 +165,22 @@ export default function App() {
           <main className="main">
             <ErrorBoundary>
               <ConcorrentesPanel />
+            </ErrorBoundary>
+          </main>
+        )}
+
+        {aba === 'funil' && (
+          <main className="main">
+            <ErrorBoundary>
+              <FunilDiarioPanel />
+            </ErrorBoundary>
+          </main>
+        )}
+
+        {aba === 'scripts' && (
+          <main className="main">
+            <ErrorBoundary>
+              <ScriptsPanel />
             </ErrorBoundary>
           </main>
         )}

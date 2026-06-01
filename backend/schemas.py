@@ -106,6 +106,29 @@ class MetasIn(BaseModel):
     meta_ades: float
 
 
+# ── Scripts ─────────────────────────────────────────────
+
+class ScriptBase(BaseModel):
+    titulo:    str
+    categoria: str
+    canal:     Optional[str] = None
+    perfil:    Optional[str] = None
+    dia_toque: Optional[int] = None
+    conteudo:  str
+    tags:      Optional[str] = None
+    favorito:  bool = False
+
+class ScriptCreate(ScriptBase):
+    pass
+
+class ScriptOut(ScriptBase):
+    id:        int
+    criado_em: datetime
+
+    class Config:
+        from_attributes = True
+
+
 # ── Avaliação Trimestral ────────────────────────────────
 
 class MetaTrimestralIn(BaseModel):

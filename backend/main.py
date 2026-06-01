@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text, extract, func
 
 from database import engine, Base, get_db
-from routers import vendas, comissoes, configs, trimestral
+from routers import vendas, comissoes, configs, trimestral, scripts
 from auth import verify_token
 from models import Venda
 from sqlalchemy.orm import Session
@@ -57,10 +57,11 @@ app.add_middleware(
 )
 
 # Todos os routers exigem token
-app.include_router(vendas.router,    dependencies=[Depends(verify_token)])
-app.include_router(comissoes.router, dependencies=[Depends(verify_token)])
-app.include_router(configs.router,   dependencies=[Depends(verify_token)])
+app.include_router(vendas.router,     dependencies=[Depends(verify_token)])
+app.include_router(comissoes.router,  dependencies=[Depends(verify_token)])
+app.include_router(configs.router,    dependencies=[Depends(verify_token)])
 app.include_router(trimestral.router, dependencies=[Depends(verify_token)])
+app.include_router(scripts.router,    dependencies=[Depends(verify_token)])
 
 
 @app.get("/")

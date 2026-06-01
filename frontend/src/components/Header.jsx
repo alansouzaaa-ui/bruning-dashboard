@@ -125,6 +125,18 @@ export default function Header({ aba, setAba, meses, mesFiltro, setMesFiltro, on
           >
             Concorrentes
           </button>
+          <button
+            className={aba === 'funil' ? styles.active : ''}
+            onClick={() => setAba('funil')}
+          >
+            Funil
+          </button>
+          <button
+            className={aba === 'scripts' ? styles.active : ''}
+            onClick={() => setAba('scripts')}
+          >
+            Scripts
+          </button>
         </nav>
       </div>
 

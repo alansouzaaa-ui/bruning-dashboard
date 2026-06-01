@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, BigInteger, String, Numeric, Date, Text, DateTime
+from sqlalchemy import Column, Integer, BigInteger, String, Numeric, Date, Text, DateTime, Boolean
 from sqlalchemy.sql import func
 from database import Base
 
@@ -60,5 +60,20 @@ class ComissaoPaga(Base):
     total_pago = Column(Numeric(10, 2), default=0)
     obs        = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class Script(Base):
+    __tablename__ = "scripts"
+
+    id        = Column(Integer, primary_key=True, index=True)
+    titulo    = Column(String(200), nullable=False)
+    categoria = Column(String(50),  nullable=False)
+    canal     = Column(String(50),  nullable=True)
+    perfil    = Column(String(10),  nullable=True)
+    dia_toque = Column(Integer,     nullable=True)
+    conteudo  = Column(Text,        nullable=False)
+    tags      = Column(String(200), nullable=True)
+    favorito  = Column(Boolean,     default=False)
+    criado_em = Column(DateTime(timezone=True), server_default=func.now())
 
 

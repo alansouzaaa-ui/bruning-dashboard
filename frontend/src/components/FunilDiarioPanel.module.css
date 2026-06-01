@@ -1,0 +1,194 @@
+/* ── Page ── */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pageHeader { margin-bottom: 4px; }
+.pageTitle  { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; color: var(--text); margin: 0 0 4px; }
+.pageSub    { font-size: 0.8rem; color: var(--muted); margin: 0; }
+
+/* ── Section ── */
+.section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px 20px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.sectionTitle {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin: 0 0 14px;
+}
+
+.sectionHeader .sectionTitle { margin: 0; }
+
+/* ── Form ── */
+.form { display: flex; flex-direction: column; gap: 14px; }
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 900px)  { .formGrid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px)  { .formGrid { grid-template-columns: 1fr; } }
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+
+.field label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.field input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 8px 10px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.field input:focus { border-color: var(--accent); }
+
+.formActions { display: flex; justify-content: flex-end; }
+
+.saveBtn { min-width: 120px; }
+
+/* ── KPI Grid ── */
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 1100px) { .kpiGrid { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 760px)  { .kpiGrid { grid-template-columns: repeat(2, 1fr); } }
+
+.kpiCard {
+  border-radius: 9px;
+  padding: 12px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px solid;
+  transition: transform 0.12s;
+}
+.kpiCard:hover { transform: translateY(-1px); }
+
+/* Color variants */
+.green  { background: rgba(204,244,106,0.07); border-color: rgba(204,244,106,0.2); }
+.yellow { background: rgba(245,158,11,0.07);  border-color: rgba(245,158,11,0.2);  }
+.red    { background: rgba(248,113,113,0.07); border-color: rgba(248,113,113,0.2); }
+.neutral { background: rgba(255,255,255,0.03); border-color: var(--border); }
+
+.kpiLabel {
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+}
+
+.kpiValue {
+  font-family: var(--mono);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.green  .kpiValue { color: var(--c-green);  }
+.yellow .kpiValue { color: var(--c-yellow); }
+.red    .kpiValue { color: var(--c-red);    }
+
+.barTrack {
+  height: 3px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 2px 0;
+}
+.barFill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+.kpiMeta { font-size: 9.5px; color: var(--muted); }
+
+/* ── Table ── */
+.clearBtn { font-size: 11px; padding: 5px 12px; }
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 24px 0;
+}
+
+.tableWrap { overflow-x: auto; }
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  min-width: 620px;
+}
+
+.table th {
+  text-align: left;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  padding: 0 8px 8px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 8px 8px;
+  color: var(--text1);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+
+.table tbody tr:last-child td { border-bottom: none; }
+.table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+.dateCell { font-family: var(--mono); font-size: 11px; white-space: nowrap; color: var(--muted); }
+.taxaCell { font-family: var(--mono); font-weight: 600; color: var(--text); }
+
+.rowHoje td { background: rgba(204,244,106,0.04); }
+
+.totalsRow td {
+  font-weight: 700;
+  color: var(--text);
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+  font-size: 11px;
+}

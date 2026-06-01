@@ -74,6 +74,25 @@ export const salvarMetasMensais = (metas) =>
 export const deletarMetaMensal = (mes) =>
   api.delete(`/trimestral/metas-mensais/${mes}`)
 
+// ── Scripts ──────────────────────────────────────────────
+export const getScripts = (params = {}) =>
+  api.get('/scripts/', { params }).then(r => r.data)
+
+export const criarScript = (body) =>
+  api.post('/scripts/', body).then(r => r.data)
+
+export const editarScript = (id, body) =>
+  api.put(`/scripts/${id}`, body).then(r => r.data)
+
+export const excluirScript = (id) =>
+  api.delete(`/scripts/${id}`)
+
+export const toggleFavorito = (id) =>
+  api.patch(`/scripts/${id}/favorito`).then(r => r.data)
+
+export const seedScripts = () =>
+  api.post('/scripts/seed').then(r => r.data)
+
 // ── BrasilAPI ────────────────────────────────────────────
 export const buscarCNPJ = (cnpj) => {
   const limpo = cnpj.replace(/\D/g, '')
